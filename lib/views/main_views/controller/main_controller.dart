@@ -7,10 +7,9 @@ class MainController extends GetxController {
   var currentIndex = 0.obs;
 
   final List<Map<String, dynamic>> bottomItems = [
-    {"icons": Icon(Icons.home), "label": "Home"},
-    {"icons": Icon(Icons.hearing_outlined), "label": "Service"},
+    {"icon": Icons.home, "label": "Home"},
+    {"icon": Icons.hearing_outlined, "label": "Service"},
   ];
+
   final List<Widget> pages = [HomeScreen(), ServiceScreen()];
-
-
 }
