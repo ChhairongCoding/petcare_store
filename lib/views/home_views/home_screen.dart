@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/views/category_views/controller/category_controller.dart';
 import 'package:petcare_store/views/home_views/controller/home_controller.dart';
 import 'package:petcare_store/widgets/card_show_widget.dart';
 import 'package:petcare_store/widgets/search_widget.dart';
@@ -9,6 +10,7 @@ import 'package:petcare_store/widgets/search_widget.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final HomeController homeController = Get.put(HomeController());
+  final CategoryController categoryController = Get.put(CategoryController());
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +138,7 @@ class HomeScreen extends StatelessWidget {
                 height: 80,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: homeController.cateLists.length,
+                  itemCount: categoryController.cateLists.length,
                   itemBuilder: (context, index) {
                     return Align(
                       alignment: Alignment.topCenter,
@@ -165,7 +167,7 @@ class HomeScreen extends StatelessWidget {
                                 child: ClipOval(
                                   child: CachedNetworkImage(
                                     imageUrl:
-                                        homeController.cateLists[index].image,
+                                        categoryController.cateLists[index].image,
                                     fit: BoxFit.cover,
                                     height: 40, // match 2 * radius
                                     width: 40,
@@ -174,7 +176,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 8),
                               Text(
-                                homeController.cateLists[index].name,
+                                categoryController.cateLists[index].name,
                                 style: Theme.of(context).textTheme.titleMedium
                                     ?.copyWith(color: Colors.black),
                               ),

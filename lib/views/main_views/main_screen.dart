@@ -11,6 +11,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
+        extendBody: true,
         body: _buidBody(),
         bottomNavigationBar: _buildBottomNavigationBar(),
       ),
@@ -21,25 +22,40 @@ class MainScreen extends StatelessWidget {
     return mainController.pages[mainController.currentIndex.value];
   }
 
-  GNav _buildBottomNavigationBar() {
+  Widget _buildBottomNavigationBar() {
     final bottomItem = mainController.bottomItems;
-    return GNav(
-      tabMargin: EdgeInsetsGeometry.all(12),
-      gap: 20,
-      backgroundColor: Colors.white,
-      activeColor: Colors.white,
-      color: Colors.grey[600],
 
-      tabBackgroundColor: Color(0xff378B6F),
-      tabs: List.generate(
-        bottomItem.length,
-        (index) => GButton(
-          icon: bottomItem[index]['icon'],
-          text: bottomItem[index]['label'],
-        ),
+    return Container(
+      margin: const EdgeInsets.all(16), // floating effect
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[400]!,
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
-      selectedIndex: mainController.currentIndex.value,
-      onTabChange: (index) => mainController.currentIndex.value = index,
+      child: GNav(
+        gap: 8,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        backgroundColor: Colors.transparent, // transparent to show container bg
+        color: Colors.grey[600],
+        activeColor: Colors.white,
+        tabBackgroundColor: const Color(0xff378B6F),
+        tabs: List.generate(
+          bottomItem.length,
+          (index) => GButton(
+            icon: bottomItem[index]['icon'],
+            text: bottomItem[index]['label'],
+          ),
+        ),
+        selectedIndex: mainController.currentIndex.value,
+        onTabChange: (index) => mainController.currentIndex.value = index,
+      ),
     );
   }
 }
