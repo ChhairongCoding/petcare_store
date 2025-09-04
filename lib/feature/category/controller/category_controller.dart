@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:petcare_store/views/home_views/model/category_model.dart';
+import 'package:petcare_store/feature/category/models/category_model.dart';
 
-class HomeController extends GetxController {
+class CategoryController extends GetxController {
   final List<CategoryModel> cateLists = [
     CategoryModel(
       image: 'https://www.dewsolutions.in/wp-content/uploads/2021/09/Petcare.png',
@@ -20,4 +20,4 @@ class HomeController extends GetxController {
       name: 'Training',
     ),
   ];
-}
+} 

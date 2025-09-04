@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
-import 'package:petcare_store/views/home_views/controller/home_controller.dart';
-import 'package:petcare_store/views/main_views/controller/main_controller.dart';
+import 'package:petcare_store/feature/category/controller/category_controller.dart';
+import 'package:petcare_store/feature/home/controller/home_controller.dart';
+import 'package:petcare_store/feature/main/controller/main_controller.dart';
+import 'package:petcare_store/feature/reminder_views/controller/reminder_controller.dart';
 
 class InitBinding  extends Bindings{
 
@@ -8,5 +10,7 @@ class InitBinding  extends Bindings{
   void dependencies() {
     Get.put(MainController());
     Get.put(HomeController());
+    Get.put(CategoryController());
+    Get.put(ReminderController());
   }
 }
