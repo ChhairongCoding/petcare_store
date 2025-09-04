@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:petcare_store/core/routes/app_routes.dart';
-import 'package:petcare_store/views/main_views/main_screen.dart';
-import 'package:petcare_store/views/notification_views/notification_screen.dart';
-import 'package:petcare_store/views/profile_views/profile_screen.dart';
-import 'package:petcare_store/views/reminder_views/reminder_screen.dart';
-import 'package:petcare_store/views/service_views/controller/service_screen.dart';
-import 'package:petcare_store/views/shop_views/shop_screen.dart';
+import 'package:petcare_store/feature/main/views/main_screen.dart';
+import 'package:petcare_store/feature/notification/views/notification_screen.dart';
+import 'package:petcare_store/feature/profile/views/profile_screen.dart';
+import 'package:petcare_store/feature/reminder_views/shop/views/reminder_screen.dart';
+import 'package:petcare_store/feature/service/views/service_screen.dart';
+import 'package:petcare_store/feature/shop/shop_screen.dart';
 
 List<GetPage<dynamic>> appPages = [
   GetPage(name: AppRoutes.mainScreen, page: () => MainScreen()),

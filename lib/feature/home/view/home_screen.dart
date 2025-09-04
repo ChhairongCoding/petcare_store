@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:petcare_store/views/category_views/controller/category_controller.dart';
-import 'package:petcare_store/views/home_views/controller/home_controller.dart';
+import 'package:petcare_store/feature/category/controller/category_controller.dart';
+import 'package:petcare_store/feature/home/controller/home_controller.dart';
 import 'package:petcare_store/widgets/card_show_widget.dart';
 import 'package:petcare_store/widgets/search_widget.dart';
 
@@ -68,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                     "Good Morning!",
                     style: Theme.of(
                       context,
-                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                    ).textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -129,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                     "See All",
                     style: Theme.of(
                       context,
-                    ).textTheme.titleSmall?.copyWith(color: Colors.grey[700]),
+                    ).textTheme.titleSmall,
                   ),
                 ],
               ),
@@ -149,13 +149,6 @@ class HomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(35),
                           color: Colors.white,
-                          // boxShadow: [
-                          //   BoxShadow(
-                          //     color: Colors.grey[300]!,
-                          //     blurRadius: 5,
-                          //     offset: Offset(0, 5),
-                          //   ),
-                          // ],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(4),
@@ -201,9 +194,8 @@ class HomeScreen extends StatelessWidget {
                       Spacer(),
                       Text(
                         "See All",
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: Colors.grey[700],
-                        ),
+                        style: Theme.of(context).textTheme.titleSmall
+
                       ),
                     ],
                   ),

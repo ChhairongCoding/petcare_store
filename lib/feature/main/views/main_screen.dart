@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:petcare_store/views/main_views/controller/main_controller.dart';
+import 'package:petcare_store/feature/main/controller/main_controller.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
@@ -54,7 +54,7 @@ class MainScreen extends StatelessWidget {
           ),
         ),
         selectedIndex: mainController.currentIndex.value,
-        onTabChange: (index) => mainController.currentIndex.value = index,
+        onTabChange: (index) => mainController.changePage(index),
       ),
     );
   }
