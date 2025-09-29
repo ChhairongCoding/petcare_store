@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:petcare_store/feature/category/controller/category_controller.dart';
-import 'package:petcare_store/feature/home/controller/home_controller.dart';
+import 'package:petcare_store/features/category/controller/category_controller.dart';
+import 'package:petcare_store/features/home/controller/home_controller.dart';
 import 'package:petcare_store/widgets/card_show_widget.dart';
 import 'package:petcare_store/widgets/search_widget.dart';
 

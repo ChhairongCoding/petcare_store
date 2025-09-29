@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:petcare_store/feature/reminder_views/models/reminder_model.dart';
+import 'package:petcare_store/features/reminder_views/models/reminder_model.dart';
 
 class ReminderController extends GetxController {
   RxList<ReminderModel> listReminder = <ReminderModel>[

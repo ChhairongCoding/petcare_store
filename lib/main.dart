@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/binding/init_binding.dart';
-import 'package:petcare_store/core/routes/app_pages.dart';
-import 'package:petcare_store/core/routes/app_routes.dart';
-import 'package:petcare_store/theme/app_theme.dart';
+import 'package:petcare_store/config/core/routes/app_pages.dart';
+import 'package:petcare_store/config/core/routes/app_routes.dart';
+import 'package:petcare_store/config/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();  
@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       color: Color(0xffF5F5F7),
       title: 'PetCare Store',
       theme: AppTheme.lightTheme,
+      themeMode: ThemeMode.light,
       initialRoute: AppRoutes.mainScreen,
       getPages: appPages,
     );
