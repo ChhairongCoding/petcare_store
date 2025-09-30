@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import '../models/pet_model.dart';
 import '../widgets/pet_details_view.dart';
 
 class MyPet extends StatelessWidget {
@@ -17,6 +18,18 @@ class MyPet extends StatelessWidget {
       'gender': 'Male',
       'image': 'https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg',
       'color': Colors.amber.shade100,
+      'vaccinationStatus': 'Up to date',
+      'lastCheckup': '2024-09-15',
+      'nextCheckup': '2025-03-15',
+      'allergies': ['Chicken', 'Beef'],
+      'medicalConditions': 'None',
+      'foodType': 'Premium dry kibble',
+      'feedingSchedule': '2 times per day (8 AM, 6 PM)',
+      'dailyPortion': '250g',
+      'specialDiet': 'Grain-free formula',
+      'distanceToVet': 2.3,
+      'nearestVetName': 'City Pet Clinic',
+      'vetAddress': '123 Main St, Downtown',
     },
     {
       'id': 2,
@@ -27,6 +40,18 @@ class MyPet extends StatelessWidget {
       'gender': 'Female',
       'image': 'https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_960_720.jpg',
       'color': Colors.pink.shade100,
+      'vaccinationStatus': 'Up to date',
+      'lastCheckup': '2024-08-20',
+      'nextCheckup': '2025-02-20',
+      'allergies': [],
+      'medicalConditions': 'Feline asthma',
+      'foodType': 'Wet cat food',
+      'feedingSchedule': '3 times per day',
+      'dailyPortion': '150g',
+      'specialDiet': 'Prescription diet for respiratory health',
+      'distanceToVet': 1.8,
+      'nearestVetName': 'Purr-fect Care Veterinary',
+      'vetAddress': '456 Oak Ave, Uptown',
     },
     {
       'id': 3,
@@ -37,13 +62,24 @@ class MyPet extends StatelessWidget {
       'gender': 'Male',
       'image': 'https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_960_720.jpg',
       'color': Colors.blue.shade100,
+      'vaccinationStatus': 'Due for booster',
+      'lastCheckup': '2024-06-10',
+      'nextCheckup': '2024-12-10',
+      'allergies': ['Fish'],
+      'medicalConditions': 'Hip dysplasia',
+      'foodType': 'Large breed dog food',
+      'feedingSchedule': '2 times per day (7 AM, 7 PM)',
+      'dailyPortion': '400g',
+      'specialDiet': 'Joint health supplement added',
+      'distanceToVet': 3.1,
+      'nearestVetName': 'Guardian Animal Hospital',
+      'vetAddress': '789 Pine Rd, Suburb',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: _buildAppBar(context),
       body: _buildBody(context),
       floatingActionButton: _buildFloatingActionButton(context),
@@ -386,7 +422,6 @@ class MyPet extends StatelessWidget {
         onPressed: () {
           _addNewPet(context);
         },
-
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         icon: Icon(HugeIcons.strokeRoundedAdd01),
@@ -406,7 +441,7 @@ class MyPet extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PetDetailsView(), // You already have this widget
+        builder: (context) => PetDetailsView(pet: Pet.fromMap(pet)),
       ),
     );
   }
