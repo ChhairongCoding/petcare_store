@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:petcare_store/feature/reminder_views/controller/reminder_controller.dart';
-import 'package:petcare_store/feature/reminder_views/widgets/card_reminder_widget.dart';
+import 'package:petcare_store/features/reminder_views/controller/reminder_controller.dart';
+import 'package:petcare_store/features/reminder_views/widgets/card_reminder_widget.dart';
 
 class ReminderScreen extends StatelessWidget {
   const ReminderScreen({super.key});

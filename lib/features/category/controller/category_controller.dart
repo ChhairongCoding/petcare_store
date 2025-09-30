@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:petcare_store/feature/category/models/category_model.dart';
+import 'package:petcare_store/features/category/models/category_model.dart';
 
 class CategoryController extends GetxController {
   final List<CategoryModel> cateLists = [

@@ -4,7 +4,7 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     fontFamily: 'Poppins',
     primaryColor: const Color(0xFF2F7C5B), // Green accent from the app
-    scaffoldBackgroundColor: const Color(0xFFFDF6EC), // Soft beige background
+    scaffoldBackgroundColor: Colors.white, // Soft beige background
     colorScheme: ColorScheme.light(
       primary: const Color(0xFF2F7C5B), // Dark green
       secondary: const Color(0xFFFFC857), // Soft yellow for highlights
