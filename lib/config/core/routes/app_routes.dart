@@ -1,4 +1,5 @@
 class AppRoutes  {
+  static String splashScreen = '/splash';
   static String mainScreen = '/';
   static String homeScreen = '/home';
   static String mypet = '/mypet';

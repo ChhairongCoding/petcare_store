@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'PetCare Store',
       theme: AppTheme.lightTheme,
       themeMode: ThemeMode.light,
-      initialRoute: AppRoutes.mainScreen,
+      initialRoute: AppRoutes.splashScreen,
       getPages: appPages,
     );
   }
