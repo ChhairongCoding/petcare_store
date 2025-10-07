@@ -8,5 +8,13 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(body: _buildBody());
   }
 
-  Center _buildBody() => Center(child: Text('Profile Screen'));
+  _buildBody() {
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          flexibleSpace: FlexibleSpaceBar(title: Text('Profile')),
+        ),
+      ],
+    );
+  }
 }

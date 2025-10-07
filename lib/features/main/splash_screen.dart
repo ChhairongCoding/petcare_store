@@ -18,7 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _navigateToMain() async {
     await Future.delayed(const Duration(seconds: 3));
-    Get.offNamed(AppRoutes.mainScreen);
+    // Get.offNamed(AppRoutes.mainScreen);
+    Get.offNamed(AppRoutes.login);
   }
 
   @override
