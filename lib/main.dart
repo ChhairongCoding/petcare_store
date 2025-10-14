@@ -5,6 +5,8 @@ import 'package:petcare_store/binding/init_binding.dart';
 import 'package:petcare_store/config/core/routes/app_pages.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/config/theme/app_theme.dart';
+// import 'package:petcare_store/services/local_service.dart';
+// import 'package:petcare_store/util/provider_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -16,8 +18,7 @@ void main() async {
       anonKey: dotenv.get('supabaseKey'),
     );
   } catch (e) {
-    print('Supabase initialization failed: $e');
-    // You might want to handle this error, e.g., show a dialog or exit
+    throw Exception(e);
   }
   runApp(const MyApp());
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/services/local_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
 class AuthController extends GetxController {
   final LocalService token = LocalService();
@@ -17,14 +18,14 @@ class AuthController extends GetxController {
       );
       if (response.session != null) {
         await token.saveToken(response.session!.accessToken);
-        print('Login successful: ${response.session!.accessToken}');
+        developer.log('Login successful: ${response.session!.accessToken}');
         Get.offNamed(AppRoutes.mainScreen);
         SnackBar(content: Text('Login successful'));
       } else {
-        print('Login failed: No session returned');
+        developer.log('Login failed: No session returned');
       }
     } catch (e) {
-      print('Login error: $e');
+      developer.log('Error logging in: $e');
     }
   }
 

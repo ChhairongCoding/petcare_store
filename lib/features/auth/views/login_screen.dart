@@ -84,6 +84,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   icon: isObscure ? Icons.visibility_off : Icons.visibility,
                   onPressed: tappedOpsecured,
                 ),
+                SizedBox(height: 12,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      child: Text("Forget Password"),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
