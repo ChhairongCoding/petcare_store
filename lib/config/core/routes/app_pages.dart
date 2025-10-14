@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
+import 'package:petcare_store/features/auth/views/login_screen.dart';
+import 'package:petcare_store/features/auth/views/signup_screen.dart';
 import 'package:petcare_store/features/main/splash_screen.dart';
 import 'package:petcare_store/features/main/views/main_screen.dart';
 import 'package:petcare_store/features/my_pet/views/my_pet_screen.dart';
@@ -10,6 +12,10 @@ import 'package:petcare_store/features/shop/shop_screen.dart';
 
 List<GetPage<dynamic>> appPages = [
   GetPage(name: AppRoutes.splashScreen, page: () => const SplashScreen()),
+
+  GetPage(name: AppRoutes.login, page: ()=>  LoginScreen()),
+  GetPage(name: AppRoutes.signup, page: ()=> const SignupScreen()),
+
   GetPage(name: AppRoutes.mainScreen, page: () => MainScreen()),
   GetPage(name: AppRoutes.homeScreen, page: () => MainScreen()),
   GetPage(name: AppRoutes.mypet, page: () => MyPet()),

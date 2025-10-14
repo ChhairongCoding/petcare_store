@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:petcare_store/features/main/controller/main_controller.dart';
+// import 'package:petcare_store/services/local_service.dart';
+import 'package:petcare_store/util/provider_local.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({super.key});
   final MainController mainController = Get.find<MainController>();
+  final ProviderLocal providerLocal = Get.find<ProviderLocal>();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,13 @@ class MainScreen extends StatelessWidget {
           ),
         ),
         selectedIndex: mainController.currentIndex.value,
-        onTabChange: (index) => mainController.changePage(index),
+        onTabChange: (index) {
+          if (Supabase.instance.client.auth.currentSession != null) {
+            mainController.changePage(index);
+          } else {
+              providerLocal.isPage(index, false);
+          }
+        },
       ),
     );
   }

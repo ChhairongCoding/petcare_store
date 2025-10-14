@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
+// import 'package:petcare_store/util/provider_local.dart';
+// import 'package:petcare_store/services/local_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,7 +20,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _navigateToMain() async {
     await Future.delayed(const Duration(seconds: 3));
-    Get.offNamed(AppRoutes.mainScreen);
+    // Get.offNamed(AppRoutes.mainScreen);
+    // if (Get.put(LocalService()).getToken() != null) {
+      Get.offNamed(AppRoutes.mainScreen);
+ 
   }
 
   @override
