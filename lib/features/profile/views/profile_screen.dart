@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/features/products/controllers/product_controller.dart';
+import 'package:petcare_store/features/profile/controller/profile_controller.dart';
+import 'package:petcare_store/features/profile/widgets/feature_item_profile.dart';
+import 'package:petcare_store/features/profile/widgets/item_head_widget.dart';
 import 'package:petcare_store/widgets/reusables/product_card_widget_custom.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -10,309 +13,254 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _buildBody(context));
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 220,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            flexibleSpace: FlexibleSpaceBar(background: _buildHeader(context)),
+          ),
+          SliverToBoxAdapter(child: _buildFeature(context)),
+        ],
+      ),
+    );
   }
 
-  _buildBody(BuildContext context) => CustomScrollView(
-    slivers: [
-      SliverAppBar(
-        expandedHeight: 200,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        flexibleSpace: _buildHeader(context),
-      ),
-      SliverToBoxAdapter(child: _buildFeature(context)),
-    ],
-  );
+  // 🔹 HEADER SECTION
+  Widget _buildHeader(BuildContext context) {
+    final profileController = Get.find<ProfileController>();
 
-  _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 20,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.grey[200],
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(40),
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        "https://cdn.dribbble.com/userupload/16957240/file/original-953ea24eebfc40bb353251aa77abf1ee.jpg?resize=1504x1128&vertical=center",
-                    fit: BoxFit.cover,
-                    width: 200,
-                    height: 200,
-                    placeholder: (context, url) =>
-                        Icon(Icons.person, color: Colors.grey[400]),
-                    errorWidget: (context, url, error) =>
-                        Icon(Icons.error, color: Colors.redAccent),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Top Row: Avatar + Info + Settings
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Avatar
+                Obx(() {
+                  final avatarUrl =
+                      profileController.profile.value?.avatar ?? '';
+                  return CircleAvatar(
+                    radius: 45,
+                    backgroundColor: Colors.grey[300],
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: avatarUrl.isNotEmpty ? avatarUrl : '',
+                        fit: BoxFit.cover,
+                        width: 90,
+                        height: 90,
+                        placeholder: (context, url) => Icon(
+                          Icons.person,
+                          color: Colors.grey[500],
+                          size: 40,
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.error_outline,
+                          color: Colors.redAccent,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(width: 16),
+
+                // Name + Email
+                Expanded(
+                  child: Obx(
+                    () => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profileController.profile.value?.name ?? "Guest User",
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          profileController.profile.value?.email ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey[200]),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 0,
+
+                // Settings Button
+                IconButton(
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedSettings01,
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                  onPressed: () => Get.toNamed(
+                    "/settings",
+                    arguments: profileController.profile.value,
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Chhairong",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleLarge?.copyWith(color: Colors.white),
-                    ),
-                    Text(
-                      "chchairong@gmail.com",
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall?.copyWith(color: Colors.grey[200]),
-                    ),
-                  ],
-                ),
-              ),
-              Spacer(),
-              IconButton(
-                icon: HugeIcon(
-                  icon: HugeIcons.strokeRoundedSettings01,
-                  color: Colors.white,
-                  size: 26,
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildItemHead(context, title: "5", subtitle: "Wishlist"),
-              Container(
-                width: 1,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  border: Border.all(color: Colors.white),
-                ),
-              ),
-              _buildItemHead(context, title: "10", subtitle: "Coupons"),
-              Container(
-                width: 1,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  border: Border.all(color: Colors.white),
-                ),
-              ),
-              _buildItemHead(context, title: "55", subtitle: "Points"),
-            ],
-          ),
-        ],
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // Wishlist / Coupons / Points
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                buildItemHead(context, title: "5", subtitle: "Wishlist"),
+                _divider(),
+                buildItemHead(context, title: "10", subtitle: "Coupons"),
+                _divider(),
+                buildItemHead(context, title: "55", subtitle: "Points"),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  GestureDetector _buildItemHead(
-    BuildContext context, {
-    String? title,
-    String? subtitle,
-  }) {
-    return GestureDetector(
-      onTap: () {},
-      child: Column(
-        children: [
-          Text(
-            title ?? "0",
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.white),
-          ),
-          Text(
-            subtitle ?? "0",
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _divider() =>
+      Container(width: 1, height: 40, color: Colors.white.withOpacity(0.3));
 
-  _buildFeature(BuildContext context) {
+  // 🔹 FEATURE SECTION
+  Widget _buildFeature(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
-        spacing: 14,
         children: [
-          Container(
-            padding: EdgeInsets.all(16),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10,
-                  offset: Offset(0, 0.5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "My orders",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Spacer(),
-                    Text(
-                      "See all",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _featureItemProfile(
-                      context,
-                      "Pending",
-                      HugeIcons.strokeRoundedDeliveryBox01,
-                      Colors.grey[600],
-                    ),
-                    _featureItemProfile(
-                      context,
-                      "Processing",
-                      HugeIcons.strokeRoundedDeliveryView01,
-                      Colors.grey[600],
-                    ),
-                    _featureItemProfile(
-                      context,
-                      "Shipped",
-                      HugeIcons.strokeRoundedDeliverySent01,
-                      Colors.grey[600],
-                    ),
-                    _featureItemProfile(
-                      context,
-                      "Review",
-                      HugeIcons.strokeRoundedSafeDelivery01,
-                      Colors.grey[600],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          _buildCardSection(
+            context,
+            title: "My Orders",
+            items: [
+              featureItemProfile(
+                context,
+                "Pending",
+                HugeIcons.strokeRoundedDeliveryBox01,
+                Colors.grey[600],
+              ),
+              featureItemProfile(
+                context,
+                "Processing",
+                HugeIcons.strokeRoundedDeliveryView01,
+                Colors.grey[600],
+              ),
+              featureItemProfile(
+                context,
+                "Shipped",
+                HugeIcons.strokeRoundedDeliverySent01,
+                Colors.grey[600],
+              ),
+              featureItemProfile(
+                context,
+                "Review",
+                HugeIcons.strokeRoundedSafeDelivery01,
+                Colors.grey[600],
+              ),
+            ],
           ),
-          Container(
-            padding: EdgeInsets.all(16),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10,
-                  offset: Offset(0, 0.5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      "My bookings Services",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Spacer(),
-                    Text(
-                      "See all",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _featureItemProfile(
-                      context,
-                      "Pending",
-                      HugeIcons.strokeRoundedTime02,
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                    _featureItemProfile(
-                      context,
-                      "Confirmed",
-                      HugeIcons.strokeRoundedCheckList,
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                    _featureItemProfile(
-                      context,
-                      "Completed",
-                      HugeIcons.strokeRoundedCheckmarkBadge01,
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                    _featureItemProfile(
-                      context,
-                      "Concelled",
-                      HugeIcons.strokeRoundedCancelCircle,
-                      Theme.of(context).colorScheme.primary,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          const SizedBox(height: 16),
+          _buildCardSection(
+            context,
+            title: "My Booking Services",
+            items: [
+              featureItemProfile(
+                context,
+                "Pending",
+                HugeIcons.strokeRoundedTime02,
+                Theme.of(context).colorScheme.primary,
+              ),
+              featureItemProfile(
+                context,
+                "Confirmed",
+                HugeIcons.strokeRoundedCheckList,
+                Theme.of(context).colorScheme.primary,
+              ),
+              featureItemProfile(
+                context,
+                "Completed",
+                HugeIcons.strokeRoundedCheckmarkBadge01,
+                Theme.of(context).colorScheme.primary,
+              ),
+              featureItemProfile(
+                context,
+                "Cancelled",
+                HugeIcons.strokeRoundedCancelCircle,
+                Theme.of(context).colorScheme.primary,
+              ),
+            ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 20),
           _buildHotSales(context),
         ],
       ),
     );
   }
 
-  _featureItemProfile(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color? color,
-  ) {
-    return GestureDetector(
-      onTap: () {},
+  Widget _buildCardSection(
+    BuildContext context, {
+    required String title,
+    required List<Widget> items,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 0.5),
+          ),
+        ],
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(height: 28),
-          Icon(icon, color: color, size: 35),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+          Row(
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleMedium),
+              const Spacer(),
+              Text(
+                "See all",
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: items,
           ),
         ],
       ),
     );
   }
 
-  _buildHotSales(BuildContext context) {
-    ProductController productController = Get.find<ProductController>();
+  // 🔹 HOT SALES SECTION
+  Widget _buildHotSales(BuildContext context) {
+    final productController = Get.find<ProductController>();
+    final products = productController.products;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Hot sales", style: Theme.of(context).textTheme.titleMedium),
+        Text("Hot Sales", style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 10),
+
         Align(
           alignment: Alignment.topLeft,
           child: Wrap(

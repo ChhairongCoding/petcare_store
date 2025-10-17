@@ -20,32 +20,37 @@ class ProfileController extends GetxController {
   }
 
   Future<void> loadProfile() async {
-    if (!_authService.isLoggedIn) return;
 
     try {
       isLoading.value = true;
       final user = _supabaseClient.auth.currentUser;
       if (user == null) return;
 
-      // Fetch profile from profiles table (assuming it exists)
+      // Try to fetch from 'profiles' table
       final response = await _supabaseClient
           .from('profiles')
           .select()
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
 
-      profile.value = ProfileModel.fromJson(response);
-    } catch (e) {
-     
-      final user = _supabaseClient.auth.currentUser;
-      if (user != null) {
+      if (response != null) {
+        // Found profile in DB
+        profile.value = ProfileModel.fromJson(response);
+      } else {
+        // No record in 'profiles', fallback to auth.user
         profile.value = ProfileModel(
           id: user.id,
           email: user.email ?? '',
-          name: user.userMetadata?['name'],
-          createdAt: user.createdAt.isNotEmpty ? DateTime.parse(user.createdAt) : null,
+          name:
+          response?['full_name'],
+          avatar: response?['avatar'],
+          createdAt: user.createdAt,
         );
       }
+
+      print('Loaded profile: ${response?['full_name']}');
+    } catch (e, stack) {
+      print('Error loading profile: $e\n$stack');
     } finally {
       isLoading.value = false;
     }

@@ -11,4 +11,6 @@ class AppRoutes {
   static String reminderScreen = '/remider';
   static String profileScreen = '/profile';
   static String notificationScreen = '/notification';
+  static String myorders = '/myorders';
+  static String settings = '/settings';
 }

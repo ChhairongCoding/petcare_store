@@ -19,12 +19,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color.fromARGB(255, 171, 255, 227), Colors.white],
-          begin: Alignment.topCenter,
-          stops: [0.6, 0.9],
-          end: Alignment.bottomCenter,
-        ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -45,7 +39,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           SizedBox(height: 20),
           SearchWidget(),
-          CartShowWidget(),
+          CartBannerSlider(),
 
           Column(
             spacing: 12,

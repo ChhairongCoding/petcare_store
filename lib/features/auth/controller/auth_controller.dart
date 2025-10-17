@@ -29,6 +29,16 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> logout() async {
+    try {
+      await _supabaseClient.auth.signOut();
+      await token.removeToken();
+      await LocalService().removeToken();
+      Get.offNamed(AppRoutes.login);
+    } catch (e) {
+      developer.log('Error logging out: $e');
+    }
+  }
   String? get currentToken {
     final session = _supabaseClient.auth.currentSession;
     return session?.accessToken;
