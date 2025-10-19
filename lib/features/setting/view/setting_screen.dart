@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/route_manager.dart';
+// import 'package:get/route_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/features/auth/controller/auth_controller.dart';
 import 'package:petcare_store/features/profile/models/profile_model.dart';

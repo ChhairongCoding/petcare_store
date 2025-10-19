@@ -13,7 +13,7 @@ class SearchWidget extends StatelessWidget {
         height: 50,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.white12,
           borderRadius: BorderRadius.circular(20),
           boxShadow: const [
             BoxShadow(

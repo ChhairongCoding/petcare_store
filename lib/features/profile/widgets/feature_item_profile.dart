@@ -16,6 +16,8 @@ featureItemProfile(
           SizedBox(height: 8),
           Text(
             title,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),

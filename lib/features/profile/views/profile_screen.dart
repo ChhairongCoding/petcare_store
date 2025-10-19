@@ -270,6 +270,7 @@ class ProfileScreen extends StatelessWidget {
                 price: product.price.toString(),
                 productImage: product.imagePath,
                 name: product.name,
+                products: productController.products[index],
               );
             }),
           ),

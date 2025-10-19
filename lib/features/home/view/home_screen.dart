@@ -135,6 +135,7 @@ class HomeScreen extends StatelessWidget {
                           price: product.price.toString(),
                           productImage: product.imagePath,
                           name: product.name,
+                          products : productController.products[index]
                         );
                       },
                     ),
@@ -170,6 +171,7 @@ class HomeScreen extends StatelessWidget {
                             price: product.price.toString(),
                             productImage: product.imagePath,
                             name: product.name,
+                            products : productController.products[index]
                           );
                         },
                       ),
