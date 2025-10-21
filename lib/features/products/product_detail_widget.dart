@@ -2,9 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/config/core/routes/app_routes.dart';
+import 'package:petcare_store/features/cart/controller/cart_controller.dart';
 import 'package:petcare_store/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/features/products/model/product_model.dart';
-import 'package:petcare_store/features/shop/controller/cart_controller.dart';
 import 'package:petcare_store/widgets/reusables/product_card_widget_custom.dart';
 
 class ProductDetailWidget extends StatefulWidget {
@@ -64,7 +65,7 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
         icon: Icon(HugeIcons.strokeRoundedFavourite),
       ),
       IconButton(
-        onPressed: () => cartController.addToCart(product, quantity: quantity),
+        onPressed: () => Get.toNamed(AppRoutes.cart),
         icon: Badge(
           label: Text(quantity.toString()),
           child: Icon(HugeIcons.strokeRoundedShoppingCart02),
@@ -249,7 +250,7 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
           color: Colors.grey.shade300,
         ),
         ),
-        Text("Shop" , style: Theme.of(context).textTheme.titleMedium,),
+        Text("Related Products" , style: Theme.of(context).textTheme.titleMedium,),
         Column(
           children: [
             Align(

@@ -13,4 +13,5 @@ class AppRoutes {
   static String notificationScreen = '/notification';
   static String myorders = '/myorders';
   static String settings = '/settings';
+  static String cart = '/cart';
 }

@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
-import 'package:petcare_store/features/shop/models/cart_item_model.dart';
+import 'package:petcare_store/features/cart/models/cart_item_model.dart';
 import 'package:petcare_store/features/products/model/product_model.dart';
 
 class CartController extends GetxController {
   final RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
+  RxInt quantity = 0.obs;
+
 
   double get totalPrice => cartItems.fold(0, (sum, item) => sum + item.totalPrice);
 

@@ -1,12 +1,16 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/get_core.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:marquee/marquee.dart';
+import 'package:petcare_store/config/core/routes/app_routes.dart';
 
 buildAppBar(BuildContext context) {
   return SliverAppBar(
     elevation: 0,
-    backgroundColor: Colors.transparent,
+    floating: true,
+            backgroundColor: Colors.white,
     flexibleSpace: FlexibleSpaceBar(
       titlePadding: EdgeInsets.only(left: 12),
       title: Row(
@@ -59,13 +63,16 @@ buildAppBar(BuildContext context) {
       SizedBox(width: 8),
       CircleAvatar(
         backgroundColor: Colors.white,
-        child: IconButton(
-          icon: Icon(
-            HugeIcons.strokeRoundedShoppingCart01,
-            size: 26,
-            color: Colors.grey[700],
+        child: Badge(
+          label: Text('0'),
+          child: IconButton(
+            icon: Icon(
+              HugeIcons.strokeRoundedShoppingCart01,
+              size: 26,
+              color: Colors.grey[700],
+            ),
+            onPressed: () => Get.toNamed(AppRoutes.cart),
           ),
-          onPressed: () {},
         ),
       ),
     ],

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/features/category/controller/category_controller.dart';
 import 'package:petcare_store/features/home/controller/home_controller.dart';
-import 'package:petcare_store/features/home/widgets/app_bar.dart';
+import 'package:petcare_store/features/home/view/widgets/app_bar.dart';
 import 'package:petcare_store/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/widgets/card_show_widget.dart';
 import 'package:petcare_store/widgets/reusables/product_card_widget_custom.dart';
@@ -18,14 +18,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-      ),
+      decoration: BoxDecoration(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
           padding: const EdgeInsets.all(12),
           child: CustomScrollView(
-            slivers: <Widget>[buildAppBar(context), _buildBody(context)],
+            slivers: <Widget>[
+            buildAppBar(context),
+              _buildBody(context),
+            ],
           ),
         ),
       ),
@@ -135,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                           price: product.price.toString(),
                           productImage: product.imagePath,
                           name: product.name,
-                          products : productController.products[index]
+                          products: productController.products[index],
                         );
                       },
                     ),
@@ -171,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                             price: product.price.toString(),
                             productImage: product.imagePath,
                             name: product.name,
-                            products : productController.products[index]
+                            products: productController.products[index],
                           );
                         },
                       ),
