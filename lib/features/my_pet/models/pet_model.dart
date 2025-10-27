@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Pet {
+class PetModel {
   final int id;
   final String name;
   final String breed;
@@ -28,7 +28,7 @@ class Pet {
   final String nearestVetName;
   final String vetAddress;
 
-  Pet({
+  PetModel({
     required this.id,
     required this.name,
     required this.breed,
@@ -51,9 +51,9 @@ class Pet {
     required this.vetAddress,
   });
 
-  // Factory constructor for creating Pet from Map (for mock data)
-  factory Pet.fromMap(Map<String, dynamic> map) {
-    return Pet(
+  // Factory constructor for creating PetModel from Map (for mock data)
+  factory PetModel.fromMap(Map<String, dynamic> map) {
+    return PetModel(
       id: map['id'],
       name: map['name'],
       breed: map['breed'],

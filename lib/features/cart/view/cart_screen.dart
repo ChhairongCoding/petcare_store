@@ -69,7 +69,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     Spacer(),
                     Text(
-                      '\$${cartController.totalPrice}',
+                      '\$${cartController.totalPrice.value}',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -108,14 +108,14 @@ class _CartScreenState extends State<CartScreen> {
     CartController cartController,
     // String size,
   ) {
-    return Obx(() => Slidable(
+    return Slidable(
           key: ValueKey(index),
           endActionPane: ActionPane(
             motion: ScrollMotion(),
             children: [
               SlidableAction(
                 onPressed: (context) =>
-                    cartController.removeFromCart(index.toString()),
+                    cartController.removeFromCart(cartController.cartItems[index].product.id),
                 backgroundColor: Color(0xFFFE4A49),
                 foregroundColor: Colors.white,
                 icon: Icons.delete,
@@ -157,11 +157,11 @@ class _CartScreenState extends State<CartScreen> {
                       minimumSize: Size(18, 18),
                       side: BorderSide(color: Colors.black54, width: 1),
                     ),
-                    onPressed: () {},
+                    onPressed: () => cartController.updateQuantity(cartController.cartItems[index].product.id, quantity - 1),
                     icon: const Icon(HugeIcons.strokeRoundedRemove01),
                   ),
                   Text(
-                    ''.padLeft(2, '0'),
+                    quantity.toString().padLeft(2, '0'),
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   IconButton(
@@ -171,7 +171,7 @@ class _CartScreenState extends State<CartScreen> {
                       backgroundColor: Colors.black,
                       side: BorderSide(color: Colors.black54, width: 1),
                     ),
-                    onPressed: () {},
+                    onPressed: () => cartController.updateQuantity(cartController.cartItems[index].product.id, quantity + 1),
                     icon: const Icon(
                       HugeIcons.strokeRoundedAdd01,
                       color: Colors.white,
@@ -181,6 +181,6 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ],
           ),
-        ));
+        );
   }
 }

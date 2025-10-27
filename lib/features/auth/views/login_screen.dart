@@ -71,14 +71,16 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormFieldWidget(
-                  label: "Enter Email",
+                  label: "Email",
+                  hintText: "Enter Email",
                   controller: emailController,
                   validator: validateEmail,
                 ),
 
                 SizedBox(height: 12),
                 TextFormFieldWidget(
-                  label: "Enter Password",
+                  label: "Password",
+                  hintText: "Enter Password",
                   controller: passwordController,
                   obscureText: isObscure,
                   icon: isObscure ? Icons.visibility_off : Icons.visibility,

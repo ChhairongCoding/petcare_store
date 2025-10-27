@@ -441,7 +441,7 @@ class MyPet extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PetDetailsView(pet: Pet.fromMap(pet)),
+        builder: (context) => PetDetailsView(pet: PetModel.fromMap(pet)),
       ),
     );
   }

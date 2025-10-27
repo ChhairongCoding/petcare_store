@@ -25,11 +25,26 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            automaticallyImplyLeading: false,
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(HugeIcons.strokeRoundedShare01),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(HugeIcons.strokeRoundedFavourite),
+              ),
+              IconButton(
+                onPressed: () => Get.toNamed(AppRoutes.cart),
+                icon: Badge(
+                  label: Text(cartController.cartItems.length.toString()),
+                  child: Icon(HugeIcons.strokeRoundedShoppingCart02),
+                ),
+              ),
+            ],
             expandedHeight: 390,
             flexibleSpace: FlexibleSpaceBar(
               background: CachedNetworkImage(imageUrl: product.imagePath),
@@ -55,24 +70,6 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
       ),
     );
   }
-
-  AppBar _buildAppBar() => AppBar(
-    backgroundColor: Theme.of(context).colorScheme.primary,
-    actions: [
-      IconButton(onPressed: () {}, icon: Icon(HugeIcons.strokeRoundedShare01)),
-      IconButton(
-        onPressed: () {},
-        icon: Icon(HugeIcons.strokeRoundedFavourite),
-      ),
-      IconButton(
-        onPressed: () => Get.toNamed(AppRoutes.cart),
-        icon: Badge(
-          label: Text(quantity.toString()),
-          child: Icon(HugeIcons.strokeRoundedShoppingCart02),
-        ),
-      ),
-    ],
-  );
 
   _buildBody(BuildContext context) => Padding(
     padding: const EdgeInsets.all(16),
@@ -245,18 +242,20 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
 
         SizedBox(
           height: 20,
-        child: Divider(
-          thickness: 1,
-          color: Colors.grey.shade300,
+          child: Divider(thickness: 1, color: Colors.grey.shade300),
         ),
+        Text(
+          "Related Products",
+          style: Theme.of(context).textTheme.titleMedium,
         ),
-        Text("Related Products" , style: Theme.of(context).textTheme.titleMedium,),
         Column(
           children: [
             Align(
               alignment: Alignment.topLeft,
               child: Wrap(
-                children: List.generate(productController.products.length, (index) {
+                children: List.generate(productController.products.length, (
+                  index,
+                ) {
                   final product = productController.products[index];
                   return ProductCardWidgetCustom(
                     price: product.price.toString(),

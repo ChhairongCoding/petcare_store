@@ -4,7 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/features/home/view/home_screen.dart';
 import 'package:petcare_store/features/my_pet/views/my_pet_screen.dart';
 import 'package:petcare_store/features/profile/views/profile_screen.dart';
-import 'package:petcare_store/features/reminder_views/shop/views/reminder_screen.dart';
+import 'package:petcare_store/features/reminder_views/view/views/reminder_screen.dart';
 // import 'package:petcare_store/features/shop/shop_screen.dart';
 
 class MainController extends GetxController {

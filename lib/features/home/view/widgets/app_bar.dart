@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:marquee/marquee.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
@@ -10,20 +9,29 @@ buildAppBar(BuildContext context) {
   return SliverAppBar(
     elevation: 0,
     floating: true,
-            backgroundColor: Colors.white,
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.transparent, 
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarBrightness: Brightness.light
+    ),
     flexibleSpace: FlexibleSpaceBar(
-      titlePadding: EdgeInsets.only(left: 12),
+      titlePadding: EdgeInsets.all(12),
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(HugeIcons.strokeRoundedPinLocation01, size: 32, color: Colors.red,),
+          Icon(
+            HugeIcons.strokeRoundedPinLocation01,
+            size: 32,
+            color: Colors.red,
+          ),
           SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                 Text(
+                Text(
                   "Location",
                   style: Theme.of(context).textTheme.bodyMedium,
                   overflow: TextOverflow.ellipsis,
@@ -40,7 +48,6 @@ buildAppBar(BuildContext context) {
                     pauseAfterRound: Duration(seconds: 3),
                   ),
                 ),
-               
               ],
             ),
           ),
@@ -75,6 +82,7 @@ buildAppBar(BuildContext context) {
           ),
         ),
       ),
+      SizedBox(width: 8),
     ],
   );
 }

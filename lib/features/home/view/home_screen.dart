@@ -128,6 +128,7 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(
                     height: 290,
                     child: ListView.builder(
+                      
                       scrollDirection: Axis.horizontal,
                       itemCount: productController.products.length,
                       itemBuilder: (context, index) {
@@ -165,6 +166,7 @@ class HomeScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Wrap(
+                      spacing: 20,
                       children: List.generate(
                         productController.products.length,
                         (index) {

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 // import 'package:flutter/widgets.dart';
 
@@ -12,6 +11,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.onPressed,
     this.validator,
     this.prefixIcon,
+    this.hintText,
   });
 
   final String label;
@@ -21,10 +21,10 @@ class TextFormFieldWidget extends StatefulWidget {
   final VoidCallback? onPressed;
   final String? Function(String?)? validator;
   final IconData? prefixIcon;
+  final String? hintText;
 
   @override
-  State<TextFormFieldWidget> createState() =>
-      _TexFormtFieldWidgetState();
+  State<TextFormFieldWidget> createState() => _TexFormtFieldWidgetState();
 }
 
 class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
@@ -34,7 +34,8 @@ class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
       controller: widget.controller,
       obscureText: widget.obscureText ?? false,
       decoration: InputDecoration(
-        hintText: widget.label,
+        label: widget.label.isEmpty ? null : Text(widget.label),
+        hintText: widget.hintText,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(width: 0.5, color: Colors.grey),

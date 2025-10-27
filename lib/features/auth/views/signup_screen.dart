@@ -93,6 +93,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 32),
                 TextFormFieldWidget(
                   label: "Name",
+                  hintText: "Name",
                   controller: nameController,
                   prefixIcon: Icons.person,
                 ),
@@ -100,6 +101,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextFormFieldWidget(
                   controller: emailController,
                   label: "Email",
+                  hintText: "Email",
                   validator: validateEmail,
                   prefixIcon: Icons.email,
                 ),
@@ -107,6 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextFormFieldWidget(
                   controller: passwordController,
                   label: "Password",
+                  hintText: "Password",
                   // obscureText: isObscure,
                   // icon: isObscure ? Icons.visibility_off : Icons.visibility,
                   // onPressed: tappedOpsecured,
@@ -116,6 +119,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 TextFormFieldWidget(
                   label: "Confirm Password",
+                  hintText: "Confirm Password",
                   controller: cfPasswordController,
                 ),
                 SizedBox(height: 40),

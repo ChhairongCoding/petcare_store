@@ -1,22 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/config/core/routes/app_routes.dart';
 import '../models/pet_model.dart';
 
 class PetDetailsView extends StatelessWidget {
-  final Pet? pet;
+  final PetModel? pet;
 
   const PetDetailsView({super.key, this.pet});
 
   // Mock pet data for demonstration - in real app this would come from navigation arguments
-  Pet get _mockPet => Pet.fromMap({
+  PetModel get _mockPet => PetModel.fromMap({
     'id': 1,
     'name': 'Buddy',
     'breed': 'Golden Retriever',
     'age': '2 years',
     'weight': '25 kg',
     'gender': 'Male',
-    'image': 'https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg',
+    'image':
+        'https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg',
     'color': Colors.amber.shade100,
     'vaccinationStatus': 'Up to date',
     'lastCheckup': '2024-09-15',
@@ -32,28 +35,30 @@ class PetDetailsView extends StatelessWidget {
     'vetAddress': '123 Main St, Downtown',
   });
 
-  Pet get currentPet => pet ?? _mockPet;
+  PetModel get currentPet => pet ?? _mockPet;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(context),
-    );
+    return Scaffold(appBar: _buildAppBar(context), body: _buildBody(context));
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text(
         '${currentPet.name} Details',
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       actions: [
         IconButton(
           onPressed: () {
-            // Edit pet functionality
+            Get.toNamed(AppRoutes.trackingPet,arguments: currentPet);
+          },
+          icon: Icon(HugeIcons.strokeRoundedLocation01),
+        ),
+        IconButton(
+          onPressed: () {
           },
           icon: Icon(HugeIcons.strokeRoundedEdit01),
         ),
@@ -112,11 +117,7 @@ class PetDetailsView extends StatelessWidget {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Icon(
-                  Icons.pets,
-                  color: Colors.grey[400],
-                  size: 40,
-                ),
+                child: Icon(Icons.pets, color: Colors.grey[400], size: 40),
               ),
               errorWidget: (context, url, error) => Container(
                 height: 120,
@@ -125,11 +126,7 @@ class PetDetailsView extends StatelessWidget {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Icon(
-                  Icons.pets,
-                  color: Colors.grey[400],
-                  size: 40,
-                ),
+                child: Icon(Icons.pets, color: Colors.grey[400], size: 40),
               ),
             ),
           ),
@@ -155,16 +152,19 @@ class PetDetailsView extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: currentPet.color,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   currentPet.gender,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -201,9 +201,9 @@ class PetDetailsView extends StatelessWidget {
       children: [
         Text(
           'Basic Information',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 16),
         Row(
@@ -228,16 +228,14 @@ class PetDetailsView extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           item["title"] as String,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           item["value"] as String,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -257,12 +255,37 @@ class PetDetailsView extends StatelessWidget {
       icon: HugeIcons.strokeRoundedFavourite,
       color: Colors.red.shade50,
       children: [
-        _buildInfoRow(context, 'Vaccination Status', currentPet.vaccinationStatus, HugeIcons.strokeRoundedShield01),
-        _buildInfoRow(context, 'Last Checkup', currentPet.lastCheckup, HugeIcons.strokeRoundedCalendar03),
-        _buildInfoRow(context, 'Next Checkup', currentPet.nextCheckup, HugeIcons.strokeRoundedCalendarAdd01),
+        _buildInfoRow(
+          context,
+          'Vaccination Status',
+          currentPet.vaccinationStatus,
+          HugeIcons.strokeRoundedShield01,
+        ),
+        _buildInfoRow(
+          context,
+          'Last Checkup',
+          currentPet.lastCheckup,
+          HugeIcons.strokeRoundedCalendar03,
+        ),
+        _buildInfoRow(
+          context,
+          'Next Checkup',
+          currentPet.nextCheckup,
+          HugeIcons.strokeRoundedCalendarAdd01,
+        ),
         if (currentPet.allergies.isNotEmpty)
-          _buildInfoRow(context, 'Allergies', currentPet.allergies.join(', '), HugeIcons.strokeRoundedNotification02),
-        _buildInfoRow(context, 'Medical Conditions', currentPet.medicalConditions, HugeIcons.strokeRoundedNotification02),
+          _buildInfoRow(
+            context,
+            'Allergies',
+            currentPet.allergies.join(', '),
+            HugeIcons.strokeRoundedNotification02,
+          ),
+        _buildInfoRow(
+          context,
+          'Medical Conditions',
+          currentPet.medicalConditions,
+          HugeIcons.strokeRoundedNotification02,
+        ),
       ],
     );
   }
@@ -274,10 +297,30 @@ class PetDetailsView extends StatelessWidget {
       icon: HugeIcons.strokeRoundedShoppingBag01,
       color: Colors.orange.shade50,
       children: [
-        _buildInfoRow(context, 'Food Type', currentPet.foodType, HugeIcons.strokeRoundedShoppingBag01),
-        _buildInfoRow(context, 'Feeding Schedule', currentPet.feedingSchedule, HugeIcons.strokeRoundedTime02),
-        _buildInfoRow(context, 'Daily Portion', currentPet.dailyPortion, HugeIcons.strokeRoundedWeightScale),
-        _buildInfoRow(context, 'Special Diet', currentPet.specialDiet, HugeIcons.strokeRoundedLeaf01),
+        _buildInfoRow(
+          context,
+          'Food Type',
+          currentPet.foodType,
+          HugeIcons.strokeRoundedShoppingBag01,
+        ),
+        _buildInfoRow(
+          context,
+          'Feeding Schedule',
+          currentPet.feedingSchedule,
+          HugeIcons.strokeRoundedTime02,
+        ),
+        _buildInfoRow(
+          context,
+          'Daily Portion',
+          currentPet.dailyPortion,
+          HugeIcons.strokeRoundedWeightScale,
+        ),
+        _buildInfoRow(
+          context,
+          'Special Diet',
+          currentPet.specialDiet,
+          HugeIcons.strokeRoundedLeaf01,
+        ),
       ],
     );
   }
@@ -289,14 +332,30 @@ class PetDetailsView extends StatelessWidget {
       icon: HugeIcons.strokeRoundedLocation01,
       color: Colors.blue.shade50,
       children: [
-        _buildInfoRow(context, 'Clinic Name', currentPet.nearestVetName, HugeIcons.strokeRoundedHospital01),
-        _buildInfoRow(context, 'Address', currentPet.vetAddress, HugeIcons.strokeRoundedLocation01),
-        _buildInfoRow(context, 'Distance', '${currentPet.distanceToVet} km away', HugeIcons.strokeRoundedRoute01),
+        _buildInfoRow(
+          context,
+          'Clinic Name',
+          currentPet.nearestVetName,
+          HugeIcons.strokeRoundedHospital01,
+        ),
+        _buildInfoRow(
+          context,
+          'Address',
+          currentPet.vetAddress,
+          HugeIcons.strokeRoundedLocation01,
+        ),
+        _buildInfoRow(
+          context,
+          'Distance',
+          '${currentPet.distanceToVet} km away',
+          HugeIcons.strokeRoundedRoute01,
+        ),
       ],
     );
   }
 
-  Widget _buildSectionCard(BuildContext context, {
+  Widget _buildSectionCard(
+    BuildContext context, {
     required String title,
     required IconData icon,
     required Color color,
@@ -324,9 +383,9 @@ class PetDetailsView extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -337,7 +396,12 @@ class PetDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String label, String value, IconData icon) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -359,9 +423,9 @@ class PetDetailsView extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
