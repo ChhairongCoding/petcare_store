@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: CustomScrollView(
             slivers: <Widget>[
-            buildAppBar(context),
+              AppBarWidget(),
               _buildBody(context),
             ],
           ),

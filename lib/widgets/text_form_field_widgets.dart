@@ -12,6 +12,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.validator,
     this.prefixIcon,
     this.hintText,
+    this.keyboardType,
   });
 
   final String label;
@@ -22,6 +23,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final String? Function(String?)? validator;
   final IconData? prefixIcon;
   final String? hintText;
+  final TextInputType? keyboardType;
 
   @override
   State<TextFormFieldWidget> createState() => _TexFormtFieldWidgetState();
@@ -33,6 +35,7 @@ class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
     return TextFormField(
       controller: widget.controller,
       obscureText: widget.obscureText ?? false,
+      keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         label: widget.label.isEmpty ? null : Text(widget.label),
         hintText: widget.hintText,

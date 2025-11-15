@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/features/reminder_views/controller/reminder_controller.dart';
-import 'package:petcare_store/features/reminder_views/widgets/card_reminder_widget.dart';
+import 'package:petcare_store/features/reminder_views/view/views/widgets/card_reminder_widget.dart';
 import 'package:petcare_store/widgets/text_form_field_widgets.dart';
 
 class ReminderScreen extends StatefulWidget {
@@ -19,10 +19,10 @@ class _ReminderScreenState extends State<ReminderScreen> {
   final TextEditingController _typeController = TextEditingController();
 
   DateTime? _selectedDateTime;
-  final ValueNotifier<DateTime?> _scheduleNotifier =
-      ValueNotifier<DateTime?>(null);
-  final ValueNotifier<bool> _scheduleErrorNotifier =
-      ValueNotifier<bool>(false);
+  final ValueNotifier<DateTime?> _scheduleNotifier = ValueNotifier<DateTime?>(
+    null,
+  );
+  final ValueNotifier<bool> _scheduleErrorNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -68,25 +68,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Stay on top of your pet care routine.',
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontSize: 26, height: 1.2),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Today's reminders",
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.grey[700]),
-          ),
-          const SizedBox(height: 12),
-          Expanded(child: _buildReminderList()),
-        ],
+        children: [Expanded(child: _buildReminderList())],
       ),
     );
   }
@@ -111,10 +93,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
           onRefresh: reminderController.fetchReminders,
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            children: const [
-              SizedBox(height: 40),
-              _EmptyState(),
-            ],
+            children: const [SizedBox(height: 40), _EmptyState()],
           ),
         );
       }
@@ -131,6 +110,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
               reminder: reminder,
               onToggleComplete: () =>
                   reminderController.toggleCompletion(reminder),
+              onDelete: () => reminderController.deleteReminder(reminder),
             );
           },
         ),
@@ -147,146 +127,141 @@ class _ReminderScreenState extends State<ReminderScreen> {
     _scheduleNotifier.value = null;
     _scheduleErrorNotifier.value = false;
 
-    Get.bottomSheet(
-      _addFormReminderModal(context),
-      isScrollControlled: true,
-    );
+    Get.bottomSheet(_addFormReminderModal(context), isScrollControlled: true);
   }
 
   Widget _addFormReminderModal(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: bottomInset),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            color: Theme.of(context).canvasColor,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomInset),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          color: Theme.of(context).canvasColor,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "Add New Reminder",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Get.back(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+              Divider(color: Colors.grey[600], thickness: 0.5),
+              const SizedBox(height: 8),
+              Form(
+                key: _formKey,
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Text(
-                        "Add New Reminder",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge,
+                    TextFormFieldWidget(
+                      hintText: "Enter reminder title",
+                      label: "Title",
+                      controller: _titleController,
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _descriptionController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        hintText: 'Add details about this reminder',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.close),
+                    const SizedBox(height: 12),
+                    TextFormFieldWidget(
+                      hintText: "Medication, grooming, vet visit...",
+                      label: "Reminder type",
+                      controller: _typeController,
                     ),
+                    const SizedBox(height: 12),
+                    GestureDetector(
+                      onTap: _pickDateTime,
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: _scheduleErrorNotifier,
+                        builder: (context, showError, _) {
+                          return ValueListenableBuilder<DateTime?>(
+                            valueListenable: _scheduleNotifier,
+                            builder: (context, scheduled, __) {
+                              return InputDecorator(
+                                decoration: InputDecoration(
+                                  labelText: 'Schedule',
+                                  errorText: showError && scheduled == null
+                                      ? 'Please choose a date and time'
+                                      : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.calendar_today_outlined),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        scheduled != null
+                                            ? _formatDateTime(scheduled)
+                                            : 'Select date & time',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              color: scheduled != null
+                                                  ? null
+                                                  : Colors.grey[600],
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Obx(() {
+                      final isSubmitting =
+                          reminderController.isSubmitting.value;
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: isSubmitting ? null : _submitReminderForm,
+                          child: isSubmitting
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : const Text('Save Reminder'),
+                        ),
+                      );
+                    }),
                   ],
                 ),
-                Divider(color: Colors.grey[600], thickness: 0.5),
-                const SizedBox(height: 8),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormFieldWidget(
-                        hintText: "Enter reminder title",
-                        label: "Title",
-                        controller: _titleController,
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _descriptionController,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          labelText: 'Description',
-                          hintText: 'Add details about this reminder',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormFieldWidget(
-                        hintText: "Medication, grooming, vet visit...",
-                        label: "Reminder type",
-                        controller: _typeController,
-                      ),
-                      const SizedBox(height: 12),
-                      GestureDetector(
-                        onTap: _pickDateTime,
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: _scheduleErrorNotifier,
-                          builder: (context, showError, _) {
-                            return ValueListenableBuilder<DateTime?>(
-                              valueListenable: _scheduleNotifier,
-                              builder: (context, scheduled, __) {
-                                return InputDecorator(
-                                  decoration: InputDecoration(
-                                    labelText: 'Schedule',
-                                    errorText: showError && scheduled == null
-                                        ? 'Please choose a date and time'
-                                        : null,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.calendar_today_outlined),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          scheduled != null
-                                              ? _formatDateTime(scheduled)
-                                              : 'Select date & time',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium
-                                              ?.copyWith(
-                                                color: scheduled != null
-                                                    ? null
-                                                    : Colors.grey[600],
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Obx(() {
-                        final isSubmitting =
-                            reminderController.isSubmitting.value;
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed:
-                                isSubmitting ? null : _submitReminderForm,
-                            child: isSubmitting
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    ),
-                                  )
-                                : const Text('Save Reminder'),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -356,12 +331,16 @@ class _ReminderScreenState extends State<ReminderScreen> {
     if (success) {
       Get.back();
       Get.snackbar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        colorText: Colors.white,
         'Success',
         'Reminder added successfully',
         snackPosition: SnackPosition.BOTTOM,
       );
     } else if (reminderController.errorMessage.value != null) {
       Get.snackbar(
+        backgroundColor: Theme.of(context).colorScheme.error,
+        colorText: Colors.white,
         'Error',
         reminderController.errorMessage.value!,
         snackPosition: SnackPosition.BOTTOM,
@@ -393,10 +372,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({
-    required this.message,
-    required this.onRetry,
-  });
+  const _ErrorState({required this.message, required this.onRetry});
 
   final String message;
   final Future<void> Function() onRetry;
@@ -411,17 +387,13 @@ class _ErrorState extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             message,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.grey[700]),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: const Text('Try again'),
-          ),
+          ElevatedButton(onPressed: onRetry, child: const Text('Try again')),
         ],
       ),
     );
@@ -444,10 +416,9 @@ class _EmptyState extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           'Tap the add button to schedule your first reminder.',
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall
-              ?.copyWith(color: Colors.grey[600]),
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 40),

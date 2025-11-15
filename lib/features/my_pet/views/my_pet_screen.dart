@@ -1,81 +1,36 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/features/my_pet/controller/my_pet_controller.dart';
+// import 'package:petcare_store/features/my_pet/models/my_pet_entity.dart';
+import 'package:petcare_store/features/my_pet/views/widgets/pet_form_page.dart';
 import '../models/pet_model.dart';
-import '../widgets/pet_details_view.dart';
+import 'widgets/pet_details_view.dart';
 
-class MyPet extends StatelessWidget {
+class MyPet extends StatefulWidget {
   const MyPet({super.key});
 
-  // Mock pet data - in a real app this would come from a controller/database
-  static final List<Map<String, dynamic>> petsList = [
-    {
-      'id': 1,
-      'name': 'Buddy',
-      'breed': 'Golden Retriever',
-      'age': '2 years',
-      'weight': '25 kg',
-      'gender': 'Male',
-      'image': 'https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg',
-      'color': Colors.amber.shade100,
-      'vaccinationStatus': 'Up to date',
-      'lastCheckup': '2024-09-15',
-      'nextCheckup': '2025-03-15',
-      'allergies': ['Chicken', 'Beef'],
-      'medicalConditions': 'None',
-      'foodType': 'Premium dry kibble',
-      'feedingSchedule': '2 times per day (8 AM, 6 PM)',
-      'dailyPortion': '250g',
-      'specialDiet': 'Grain-free formula',
-      'distanceToVet': 2.3,
-      'nearestVetName': 'City Pet Clinic',
-      'vetAddress': '123 Main St, Downtown',
-    },
-    {
-      'id': 2,
-      'name': 'Luna',
-      'breed': 'Persian Cat',
-      'age': '1.5 years',
-      'weight': '4 kg',
-      'gender': 'Female',
-      'image': 'https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_960_720.jpg',
-      'color': Colors.pink.shade100,
-      'vaccinationStatus': 'Up to date',
-      'lastCheckup': '2024-08-20',
-      'nextCheckup': '2025-02-20',
-      'allergies': [],
-      'medicalConditions': 'Feline asthma',
-      'foodType': 'Wet cat food',
-      'feedingSchedule': '3 times per day',
-      'dailyPortion': '150g',
-      'specialDiet': 'Prescription diet for respiratory health',
-      'distanceToVet': 1.8,
-      'nearestVetName': 'Purr-fect Care Veterinary',
-      'vetAddress': '456 Oak Ave, Uptown',
-    },
-    {
-      'id': 3,
-      'name': 'Max',
-      'breed': 'German Shepherd',
-      'age': '3 years',
-      'weight': '30 kg',
-      'gender': 'Male',
-      'image': 'https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_960_720.jpg',
-      'color': Colors.blue.shade100,
-      'vaccinationStatus': 'Due for booster',
-      'lastCheckup': '2024-06-10',
-      'nextCheckup': '2024-12-10',
-      'allergies': ['Fish'],
-      'medicalConditions': 'Hip dysplasia',
-      'foodType': 'Large breed dog food',
-      'feedingSchedule': '2 times per day (7 AM, 7 PM)',
-      'dailyPortion': '400g',
-      'specialDiet': 'Joint health supplement added',
-      'distanceToVet': 3.1,
-      'nearestVetName': 'Guardian Animal Hospital',
-      'vetAddress': '789 Pine Rd, Suburb',
-    },
+  @override
+  State<MyPet> createState() => _MyPetState();
+}
+
+class _MyPetState extends State<MyPet> {
+  final MyPetController _controller = Get.find<MyPetController>();
+
+  final List<Color> _colorPalette = [
+    Colors.amber.shade100,
+    Colors.pink.shade100,
+    Colors.blue.shade100,
+    Colors.green.shade100,
+    Colors.purple.shade100,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.fetchPets();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +45,9 @@ class MyPet extends StatelessWidget {
     return AppBar(
       title: Text(
         'My Pets',
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       actions: [
         IconButton(
@@ -123,9 +78,27 @@ class MyPet extends StatelessWidget {
       children: [
         _buildHeader(context),
         Expanded(
-          child: petsList.isEmpty
-              ? _buildEmptyState(context)
-              : _buildPetsList(context),
+          child: Obx(() {
+            final isBusy =
+                _controller.isLoading.value && _controller.pets.isEmpty;
+
+            if (isBusy) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            return RefreshIndicator(
+              onRefresh: _controller.fetchPets,
+              child: _controller.pets.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(height: 120),
+                        _buildEmptyState(context),
+                      ],
+                    )
+                  : _buildPetsList(context, _controller.pets),
+            );
+          }),
         ),
       ],
     );
@@ -144,7 +117,7 @@ class MyPet extends StatelessWidget {
             Theme.of(context).colorScheme.primary.withOpacity(0.8),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
@@ -161,17 +134,19 @@ class MyPet extends StatelessWidget {
               children: [
                 Text(
                   'Total Pets',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
                 ),
                 SizedBox(height: 4),
-                Text(
-                  '${petsList.length}',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
+                Obx(
+                  () => Text(
+                    '${_controller.pets.length}',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
@@ -181,7 +156,7 @@ class MyPet extends StatelessWidget {
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
               HugeIcons.strokeRoundedFavourite,
@@ -194,29 +169,35 @@ class MyPet extends StatelessWidget {
     );
   }
 
-  Widget _buildPetsList(BuildContext context) {
+  Widget _buildPetsList(BuildContext context, List<PetModel> pets) {
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: 16),
-      itemCount: petsList.length,
+      itemCount: pets.length,
       itemBuilder: (context, index) {
-        final pet = petsList[index];
-        return _buildPetCard(context, pet, index);
+        return _buildPetCard(context, pets[index], index);
       },
     );
   }
 
-  Widget _buildPetCard(BuildContext context, Map<String, dynamic> pet, int index) {
+  Widget _buildPetCard(BuildContext context, PetModel pet, int index) {
+    final accentColor = _colorPalette[index % _colorPalette.length];
+    final subtitleParts = <String>[];
+    if ((pet.type ?? '').isNotEmpty) subtitleParts.add(pet.type!);
+    if ((pet.breed ?? '').isNotEmpty) subtitleParts.add(pet.breed!);
+    final subtitle = subtitleParts.isEmpty
+        ? 'Details coming soon'
+        : subtitleParts.join(' • ');
+    final ageText = pet.age != null ? '${pet.age} yrs' : 'Age N/A';
+
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
         onTap: () {
           // Navigate to pet details
           _navigateToPetDetails(context, pet);
         },
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
@@ -225,39 +206,10 @@ class MyPet extends StatelessWidget {
                 children: [
                   // Pet Image
                   Hero(
-                    tag: 'pet_image_${pet['id']}',
+                    tag: 'pet_image_${pet.id}',
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: CachedNetworkImage(
-                        imageUrl: pet['image'],
-                        height: 80,
-                        width: 80,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Icon(
-                            Icons.pets,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Icon(
-                            Icons.pets,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _buildPetImage(pet.avatar),
                     ),
                   ),
                   SizedBox(width: 16),
@@ -270,34 +222,38 @@ class MyPet extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                pet['name'],
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                pet.name,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w700),
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: pet['color'],
+                                color: accentColor,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
-                                pet['gender'],
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                pet.gender?.isNotEmpty == true
+                                    ? pet.gender!
+                                    : 'Unknown',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(fontWeight: FontWeight.w600),
                               ),
                             ),
                           ],
                         ),
                         SizedBox(height: 4),
                         Text(
-                          pet['breed'],
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
+                          subtitle,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
                         SizedBox(height: 8),
                         Row(
@@ -309,23 +265,21 @@ class MyPet extends StatelessWidget {
                             ),
                             SizedBox(width: 4),
                             Text(
-                              pet['age'],
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                              ageText,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: Colors.grey[600]),
                             ),
                             SizedBox(width: 16),
                             Icon(
-                              HugeIcons.strokeRoundedWeightScale,
+                              HugeIcons.strokeRoundedLocation01,
                               size: 16,
                               color: Colors.grey[600],
                             ),
                             SizedBox(width: 4),
                             Text(
-                              pet['weight'],
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                              _formatLocation(pet),
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: Colors.grey[600]),
                             ),
                           ],
                         ),
@@ -336,18 +290,14 @@ class MyPet extends StatelessWidget {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: () {
-                          _editPet(context, pet);
-                        },
+                        onPressed: () => _editPet(context, pet),
                         icon: Icon(
                           HugeIcons.strokeRoundedEdit01,
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
-                          _showPetOptions(context, pet);
-                        },
+                        onPressed: () => showPetOptions(context, pet),
                         icon: Icon(
                           HugeIcons.strokeRoundedMoreVertical,
                           color: Colors.grey[600],
@@ -364,6 +314,39 @@ class MyPet extends StatelessWidget {
     );
   }
 
+  Widget _buildPetImage(String? imageUrl, {double size = 80}) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return _buildImagePlaceholder(size);
+    }
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      height: size,
+      width: size,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => _buildImagePlaceholder(size),
+      errorWidget: (context, url, error) => _buildImagePlaceholder(size),
+    );
+  }
+
+  Widget _buildImagePlaceholder(double size) {
+    return Container(
+      height: size,
+      width: size,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Icon(Icons.pets, color: Colors.grey[400]),
+    );
+  }
+
+  String _formatLocation(PetModel pet) {
+    if (pet.lat == null || pet.long == null) {
+      return 'Location N/A';
+    }
+    return '${pet.lat}, ${pet.long}';
+  }
+
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
@@ -377,38 +360,24 @@ class MyPet extends StatelessWidget {
                 color: Colors.grey[100],
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.pets,
-                size: 80,
-                color: Colors.grey[400],
-              ),
+              child: Icon(Icons.pets, size: 80, color: Colors.grey[400]),
             ),
             SizedBox(height: 24),
             Text(
               'No Pets Yet',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.grey[700],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: Colors.grey[700]),
             ),
             SizedBox(height: 8),
             Text(
               'Add your first furry friend to get started!',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 32),
-            ElevatedButton.icon(
-              onPressed: () {
-                _addNewPet(context);
-              },
-              icon: Icon(HugeIcons.strokeRoundedAdd01),
-              label: Text('Add Pet'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              ),
-            ),
           ],
         ),
       ),
@@ -427,22 +396,17 @@ class MyPet extends StatelessWidget {
         icon: Icon(HugeIcons.strokeRoundedAdd01),
         label: Text(
           'Add Pet',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-          ),
+          style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
         ),
       ),
     );
   }
 
   // Helper methods for navigation and actions
-  void _navigateToPetDetails(BuildContext context, Map<String, dynamic> pet) {
+  void _navigateToPetDetails(BuildContext context, PetModel pet) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => PetDetailsView(pet: PetModel.fromMap(pet)),
-      ),
+      MaterialPageRoute(builder: (context) => PetDetailsView(pet: pet)),
     );
   }
 
@@ -452,16 +416,16 @@ class MyPet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => _buildAddPetBottomSheet(context),
+      builder: (context) => AddPetBottomSheet(),
     );
   }
 
-  void _editPet(BuildContext context, Map<String, dynamic> pet) {
+  void _editPet(BuildContext context, PetModel pet) {
     // Show edit pet dialog or navigate to edit screen
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit ${pet['name']}'),
+        title: Text('Edit ${pet.name}'),
         content: Text('Edit pet functionality will be implemented here.'),
         actions: [
           TextButton(
@@ -480,7 +444,7 @@ class MyPet extends StatelessWidget {
     );
   }
 
-  void _showPetOptions(BuildContext context, Map<String, dynamic> pet) {
+  void showPetOptions(BuildContext context, PetModel pet) {
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -518,12 +482,14 @@ class MyPet extends StatelessWidget {
     );
   }
 
-  void _deletePet(BuildContext context, Map<String, dynamic> pet) {
+  void _deletePet(BuildContext context, PetModel pet) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete ${pet['name']}?'),
-        content: Text('Are you sure you want to delete this pet? This action cannot be undone.'),
+        title: Text('Delete ${pet.name}?'),
+        content: Text(
+          'Are you sure you want to delete this pet? This action cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -531,117 +497,14 @@ class MyPet extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
+              String id = pet.id;
               Navigator.pop(context);
-              // Remove pet from list (in real app, remove from database)
-              petsList.removeWhere((p) => p['id'] == pet['id']);
+              _controller.deletePet(id);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: Text('Delete'),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildAddPetBottomSheet(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Add New Pet',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Pet photo upload section
-                    Container(
-                      height: 120,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey[300]!, width: 2),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            HugeIcons.strokeRoundedCamera01,
-                            size: 32,
-                            color: Colors.grey[600],
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Add Photo',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    // Form fields would go here
-                    Text(
-                      'Pet registration form will be implemented here with fields for:',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '• Pet Name\n• Breed\n• Age\n• Weight\n• Gender\n• Medical History\n• Emergency Contact',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel'),
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      // Implement save pet logic
-                    },
-                    child: Text('Save Pet'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

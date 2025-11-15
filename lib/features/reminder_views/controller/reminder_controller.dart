@@ -44,7 +44,7 @@ class ReminderController extends GetxController {
       reminders.assignAll(fetched);
     } on PostgrestException catch (e, stack) {
       developer.log('PostgREST fetch error', error: e, stackTrace: stack);
-      errorMessage.value = e.message ?? 'Unable to load reminders right now.';
+      errorMessage.value = e.message;
     } on SocketException catch (e, stack) {
       developer.log('Network error fetching reminders', error: e, stackTrace: stack);
       errorMessage.value = 'No internet connection. Pull to retry.';
@@ -97,7 +97,7 @@ class ReminderController extends GetxController {
       return true;
     } on PostgrestException catch (e, stack) {
       developer.log('PostgREST insert error', error: e, stackTrace: stack);
-      errorMessage.value = e.message ?? 'Could not add reminder. Please try again.';
+      errorMessage.value = e.message;
       return false;
     } on SocketException catch (e, stack) {
       developer.log('Network error adding reminder', error: e, stackTrace: stack);
@@ -130,13 +130,29 @@ class ReminderController extends GetxController {
       }
     } on PostgrestException catch (e, stack) {
       developer.log('PostgREST update error', error: e, stackTrace: stack);
-      errorMessage.value = e.message ?? 'Unable to update reminder.';
+      errorMessage.value = e.message;
     } on SocketException catch (e, stack) {
       developer.log('Network error updating reminder', error: e, stackTrace: stack);
       errorMessage.value = 'No internet connection. Please try again.';
     } catch (e, stack) {
       developer.log('Failed to toggle reminder', error: e, stackTrace: stack);
       errorMessage.value = 'Unable to update reminder.';
+    }
+  }
+
+  Future<void> deleteReminder(ReminderModel reminder) async {
+    try {
+      await _client.from('reminders').delete().eq('id', reminder.id);
+      reminders.removeWhere((existing) => existing.id == reminder.id);
+    } on PostgrestException catch (e, stack) {
+      developer.log('PostgREST delete error', error: e, stackTrace: stack);
+      errorMessage.value = e.message;
+    } on SocketException catch (e, stack) {
+      developer.log('Network error deleting reminder', error: e, stackTrace: stack);
+      errorMessage.value = 'No internet connection. Please try again.';
+    } catch (e, stack) {
+      developer.log('Failed to delete reminder', error: e, stackTrace: stack);
+      errorMessage.value = 'Unable to delete reminder.';
     }
   }
 }

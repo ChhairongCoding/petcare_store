@@ -254,7 +254,7 @@ class ProfileScreen extends StatelessWidget {
   // 🔹 HOT SALES SECTION
   Widget _buildHotSales(BuildContext context) {
     final productController = Get.find<ProductController>();
-    final products = productController.products;
+    // final products = productController.products;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

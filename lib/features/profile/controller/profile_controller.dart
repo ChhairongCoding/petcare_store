@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:petcare_store/features/profile/models/profile_model.dart';
-import 'package:petcare_store/services/auth_service.dart';
+// import 'package:petcare_store/services/auth_service.dart';
 import 'package:petcare_store/services/local_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
 class ProfileController extends GetxController {
-  final AuthService _authService = Get.find<AuthService>();
+  // final AuthService _authService = Get.find<AuthService>();
   final LocalService _localService = Get.find<LocalService>();
   final _supabaseClient = Supabase.instance.client;
 
@@ -48,7 +48,7 @@ class ProfileController extends GetxController {
         );
       }
 
-      print('Loaded profile: ${response?['full_name']}');
+      // print('Loaded profile: ${response?['full_name']}');
     } catch (e, stack) {
       print('Error loading profile: $e\n$stack');
     } finally {

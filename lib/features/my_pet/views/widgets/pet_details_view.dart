@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
-import '../models/pet_model.dart';
+import '../../models/pet_model.dart';
 
 class PetDetailsView extends StatelessWidget {
   final PetModel? pet;
@@ -82,15 +84,15 @@ class PetDetailsView extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Health Details Section
-            _buildHealthSection(context),
-            const SizedBox(height: 24),
+            // _buildHealthSection(context),
+            // const SizedBox(height: 24),
 
-            // Feeding Information Section
-            _buildFeedingSection(context),
-            const SizedBox(height: 24),
+            // // Feeding Information Section
+            // _buildFeedingSection(context),
+            // const SizedBox(height: 24),
 
-            // Distance/Location Section
-            _buildDistanceSection(context),
+            // // Distance/Location Section
+            // _buildDistanceSection(context),
           ],
         ),
       ),
@@ -105,30 +107,7 @@ class PetDetailsView extends StatelessWidget {
           tag: 'pet_image_${currentPet.id}',
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: CachedNetworkImage(
-              imageUrl: currentPet.image,
-              height: 120,
-              width: 120,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                height: 120,
-                width: 120,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(Icons.pets, color: Colors.grey[400], size: 40),
-              ),
-              errorWidget: (context, url, error) => Container(
-                height: 120,
-                width: 120,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(Icons.pets, color: Colors.grey[400], size: 40),
-              ),
-            ),
+            // child: _buildPetImageWidget(),
           ),
         ),
         const SizedBox(width: 16),
@@ -144,7 +123,7 @@ class PetDetailsView extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                currentPet.breed,
+                currentPet.breed.toString(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.grey[600],
                   fontWeight: FontWeight.w500,
@@ -157,11 +136,11 @@ class PetDetailsView extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: currentPet.color,
+                  // color: ,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  currentPet.gender,
+                  currentPet.gender.toString(),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -185,7 +164,7 @@ class PetDetailsView extends StatelessWidget {
       {
         "Color": Colors.blue.shade100,
         "title": "Weight",
-        "value": currentPet.weight,
+        // "value": currentPet.weight,
         "icon": HugeIcons.strokeRoundedWeightScale,
       },
       {
@@ -248,111 +227,111 @@ class PetDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildHealthSection(BuildContext context) {
-    return _buildSectionCard(
-      context,
-      title: 'Health Details',
-      icon: HugeIcons.strokeRoundedFavourite,
-      color: Colors.red.shade50,
-      children: [
-        _buildInfoRow(
-          context,
-          'Vaccination Status',
-          currentPet.vaccinationStatus,
-          HugeIcons.strokeRoundedShield01,
-        ),
-        _buildInfoRow(
-          context,
-          'Last Checkup',
-          currentPet.lastCheckup,
-          HugeIcons.strokeRoundedCalendar03,
-        ),
-        _buildInfoRow(
-          context,
-          'Next Checkup',
-          currentPet.nextCheckup,
-          HugeIcons.strokeRoundedCalendarAdd01,
-        ),
-        if (currentPet.allergies.isNotEmpty)
-          _buildInfoRow(
-            context,
-            'Allergies',
-            currentPet.allergies.join(', '),
-            HugeIcons.strokeRoundedNotification02,
-          ),
-        _buildInfoRow(
-          context,
-          'Medical Conditions',
-          currentPet.medicalConditions,
-          HugeIcons.strokeRoundedNotification02,
-        ),
-      ],
-    );
-  }
+  // Widget _buildHealthSection(BuildContext context) {
+  //   return _buildSectionCard(
+  //     context,
+  //     title: 'Health Details',
+  //     icon: HugeIcons.strokeRoundedFavourite,
+  //     color: Colors.red.shade50,
+  //     children: [
+  //       _buildInfoRow(
+  //         context,
+  //         'Vaccination Status',
+  //         currentPet.vaccinationStatus,
+  //         HugeIcons.strokeRoundedShield01,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Last Checkup',
+  //         currentPet.lastCheckup,
+  //         HugeIcons.strokeRoundedCalendar03,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Next Checkup',
+  //         currentPet.nextCheckup,
+  //         HugeIcons.strokeRoundedCalendarAdd01,
+  //       ),
+  //       if (currentPet.allergies.isNotEmpty)
+  //         _buildInfoRow(
+  //           context,
+  //           'Allergies',
+  //           currentPet.allergies.join(', '),
+  //           HugeIcons.strokeRoundedNotification02,
+  //         ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Medical Conditions',
+  //         currentPet.medicalConditions,
+  //         HugeIcons.strokeRoundedNotification02,
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildFeedingSection(BuildContext context) {
-    return _buildSectionCard(
-      context,
-      title: 'Feeding Information',
-      icon: HugeIcons.strokeRoundedShoppingBag01,
-      color: Colors.orange.shade50,
-      children: [
-        _buildInfoRow(
-          context,
-          'Food Type',
-          currentPet.foodType,
-          HugeIcons.strokeRoundedShoppingBag01,
-        ),
-        _buildInfoRow(
-          context,
-          'Feeding Schedule',
-          currentPet.feedingSchedule,
-          HugeIcons.strokeRoundedTime02,
-        ),
-        _buildInfoRow(
-          context,
-          'Daily Portion',
-          currentPet.dailyPortion,
-          HugeIcons.strokeRoundedWeightScale,
-        ),
-        _buildInfoRow(
-          context,
-          'Special Diet',
-          currentPet.specialDiet,
-          HugeIcons.strokeRoundedLeaf01,
-        ),
-      ],
-    );
-  }
+  // Widget _buildFeedingSection(BuildContext context) {
+  //   return _buildSectionCard(
+  //     context,
+  //     title: 'Feeding Information',
+  //     icon: HugeIcons.strokeRoundedShoppingBag01,
+  //     color: Colors.orange.shade50,
+  //     children: [
+  //       _buildInfoRow(
+  //         context,
+  //         'Food Type',
+  //         currentPet.foodType,
+  //         HugeIcons.strokeRoundedShoppingBag01,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Feeding Schedule',
+  //         currentPet.feedingSchedule,
+  //         HugeIcons.strokeRoundedTime02,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Daily Portion',
+  //         currentPet.dailyPortion,
+  //         HugeIcons.strokeRoundedWeightScale,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Special Diet',
+  //         currentPet.specialDiet,
+  //         HugeIcons.strokeRoundedLeaf01,
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildDistanceSection(BuildContext context) {
-    return _buildSectionCard(
-      context,
-      title: 'Nearest Veterinary',
-      icon: HugeIcons.strokeRoundedLocation01,
-      color: Colors.blue.shade50,
-      children: [
-        _buildInfoRow(
-          context,
-          'Clinic Name',
-          currentPet.nearestVetName,
-          HugeIcons.strokeRoundedHospital01,
-        ),
-        _buildInfoRow(
-          context,
-          'Address',
-          currentPet.vetAddress,
-          HugeIcons.strokeRoundedLocation01,
-        ),
-        _buildInfoRow(
-          context,
-          'Distance',
-          '${currentPet.distanceToVet} km away',
-          HugeIcons.strokeRoundedRoute01,
-        ),
-      ],
-    );
-  }
+  // Widget _buildDistanceSection(BuildContext context) {
+  //   return _buildSectionCard(
+  //     context,
+  //     title: 'Nearest Veterinary',
+  //     icon: HugeIcons.strokeRoundedLocation01,
+  //     color: Colors.blue.shade50,
+  //     children: [
+  //       _buildInfoRow(
+  //         context,
+  //         'Clinic Name',
+  //         currentPet.nearestVetName,
+  //         HugeIcons.strokeRoundedHospital01,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Address',
+  //         currentPet.vetAddress,
+  //         HugeIcons.strokeRoundedLocation01,
+  //       ),
+  //       _buildInfoRow(
+  //         context,
+  //         'Distance',
+  //         '${currentPet.distanceToVet} km away',
+  //         HugeIcons.strokeRoundedRoute01,
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildSectionCard(
     BuildContext context, {
@@ -432,6 +411,48 @@ class PetDetailsView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // Widget _buildPetImageWidget({double size = 120}) {
+  //   final placeholder = _buildPetImagePlaceholder(size);
+
+  //   if (currentPet.isLocalImage && currentPet.image.isNotEmpty) {
+  //     final file = File(currentPet.image);
+  //     if (file.existsSync()) {
+  //       return Image.file(
+  //         file,
+  //         height: size,
+  //         width: size,
+  //         fit: BoxFit.cover,
+  //       );
+  //     }
+  //     return placeholder;
+  //   }
+
+  //   if (currentPet.image.isEmpty) {
+  //     return placeholder;
+  //   }
+
+  //   return CachedNetworkImage(
+  //     imageUrl: currentPet.image,
+  //     height: size,
+  //     width: size,
+  //     fit: BoxFit.cover,
+  //     placeholder: (context, url) => placeholder,
+  //     errorWidget: (context, url, error) => placeholder,
+  //   );
+  // }
+
+  Widget _buildPetImagePlaceholder(double size) {
+    return Container(
+      height: size,
+      width: size,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Icon(Icons.pets, color: Colors.grey[400], size: size * 0.35),
     );
   }
 }

@@ -8,6 +8,7 @@ class CartController extends GetxController {
   final RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
   RxInt quantity = 0.obs;
   RxDouble totalPrice = 0.0.obs;
+  RxBool isLoading = false.obs;
 
   @override
   void onInit() {
@@ -36,28 +37,6 @@ class CartController extends GetxController {
       DialogAddToCartSuccessWidget());
   }
 
-  // void addToCart(ProductModel product, {int quantity = 1}) {
-  //   final existingItemIndex = cartItems.indexWhere(
-  //     (item) => item.product.id == product.id,
-  //   );
-
-  //   if (existingItemIndex != -1) {
-  //     // Product already in cart, increase quantity
-  //     cartItems[existingItemIndex].quantity += quantity;
-  //     cartItems.refresh();
-  //   } else {
-  //     // Add new item to cart
-  //     cartItems.add(CartItemModel(product: product, quantity: quantity));
-  //   }
-
-  //   Get.snackbar(
-  //     'Added to Cart',
-  //     '${product.name} added to cart',
-  //     snackPosition: SnackPosition.BOTTOM,
-  //     duration: const Duration(seconds: 2),
-  //   );
-  // }
-
   void removeFromCart(String productId) {
     cartItems.removeWhere((item) => item.product.id == productId);
     _updateTotalPrice();
@@ -80,6 +59,12 @@ class CartController extends GetxController {
   }
 
   void clearCart() {
+    cartItems.clear();
+    _updateTotalPrice();
+  }
+
+  void removeAllItem(){
+    isLoading(true);
     cartItems.clear();
     _updateTotalPrice();
   }

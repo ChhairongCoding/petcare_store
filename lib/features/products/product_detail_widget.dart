@@ -27,27 +27,29 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(HugeIcons.strokeRoundedShare01),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(HugeIcons.strokeRoundedFavourite),
-              ),
-              IconButton(
-                onPressed: () => Get.toNamed(AppRoutes.cart),
-                icon: Badge(
-                  label: Text(cartController.cartItems.length.toString()),
-                  child: Icon(HugeIcons.strokeRoundedShoppingCart02),
+          Obx(
+            () => SliverAppBar(
+              actions: [
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(HugeIcons.strokeRoundedShare01),
                 ),
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(HugeIcons.strokeRoundedFavourite),
+                ),
+                IconButton(
+                  onPressed: () => Get.toNamed(AppRoutes.cart),
+                  icon: Badge(
+                    label: Text(cartController.cartItems.length.toString()),
+                    child: Icon(HugeIcons.strokeRoundedShoppingCart02),
+                  ),
+                ),
+              ],
+              expandedHeight: 390,
+              flexibleSpace: FlexibleSpaceBar(
+                background: CachedNetworkImage(imageUrl: product.imagePath),
               ),
-            ],
-            expandedHeight: 390,
-            flexibleSpace: FlexibleSpaceBar(
-              background: CachedNetworkImage(imageUrl: product.imagePath),
             ),
           ),
           SliverToBoxAdapter(child: _buildBody(context)),
