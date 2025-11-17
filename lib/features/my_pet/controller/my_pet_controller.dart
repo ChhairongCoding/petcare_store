@@ -258,4 +258,29 @@ class MyPetController extends GetxController {
 
     return segments.isNotEmpty ? segments.last : 'product_image';
   }
+
+  Future<void> updatePet(PetModel pet) async {
+    try {
+      isLoading(true);
+      await _client.from('mypet').update(pet.toMap()).eq('id', pet.id);
+      isLoading(false);
+    } on PostgrestException catch (e, stack) {
+      developer.log(
+        'PostgREST error when updating pet',
+        error: e,
+        stackTrace: stack,
+      );
+      Get.snackbar('Unable to update pet', e.message);
+    } on SocketException catch (e, stack) {
+      developer.log(
+        'Network error when updating pet',
+        error: e,
+        stackTrace: stack,
+      );
+      Get.snackbar('Network error', 'Check your connection and try again.');
+    } catch (e, stack) {
+      developer.log('Unexpected error when updating pet', error: e, stackTrace: stack);
+      Get.snackbar('Unable to update pet', 'Please try again later.');
+    }
+  }
 }

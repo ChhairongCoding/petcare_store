@@ -1,15 +1,19 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/features/my_pet/controller/my_pet_controller.dart';
+import 'package:petcare_store/features/my_pet/models/pet_model.dart';
 import 'package:petcare_store/helper/helper.dart';
 import 'package:petcare_store/widgets/text_form_field_widgets.dart';
 
 class AddPetBottomSheet extends StatefulWidget {
-  const AddPetBottomSheet({super.key});
+  const AddPetBottomSheet({super.key, this.pet});
+
+  final PetModel? pet;
 
   @override
   State<AddPetBottomSheet> createState() => AddPetBottomSheetState();
@@ -27,9 +31,25 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
   final TextEditingController latitudeController = TextEditingController();
   final TextEditingController longitudeController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pet != null) {
+      nameController.text = widget.pet!.name;
+      typeController.text = widget.pet!.type ?? '';
+      breedController.text = widget.pet!.breed ?? '';
+      ageController.text = widget.pet!.age?.toString() ?? '';
+      genderController.text = widget.pet!.gender ?? '';
+      latitudeController.text = widget.pet!.lat ?? '';
+      longitudeController.text = widget.pet!.long ?? '';
+      _existingAvatarUrl = widget.pet!.avatar;
+    }
+  }
+
   File? _imageFile;
   Uint8List? _imageBytes;
   String? _imageExtension;
+  String? _existingAvatarUrl;
 
   @override
   void dispose() {
@@ -71,7 +91,7 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Add New Pet',
+                  widget.pet != null ? 'Edit Pet' : 'Add New Pet',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -166,7 +186,7 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
                                   color: Colors.white,
                                 ),
                               )
-                            : Text('Save Pet'),
+                            : Text(widget.pet != null ? 'Update Pet' : 'Save Pet'),
                       ),
                     );
                   },
@@ -180,7 +200,10 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
   }
 
   Widget _buildImageSelector(BuildContext context) {
-    final hasImage = _imageFile != null || _imageBytes != null;
+    final hasNewImage = _imageFile != null || _imageBytes != null;
+    final hasExistingImage = _existingAvatarUrl != null && _existingAvatarUrl!.isNotEmpty;
+    final hasImage = hasNewImage || hasExistingImage;
+
     return Container(
       height: 120,
       width: 120,
@@ -225,6 +248,20 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
     if (_imageBytes != null) {
       return Image.memory(_imageBytes!, fit: BoxFit.cover);
     }
+    if (_existingAvatarUrl != null && _existingAvatarUrl!.isNotEmpty) {
+      return CachedNetworkImage(
+        imageUrl: _existingAvatarUrl!,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          color: Colors.grey[200],
+          child: Icon(Icons.pets, color: Colors.grey[400]),
+        ),
+        errorWidget: (context, url, error) => Container(
+          color: Colors.grey[200],
+          child: Icon(Icons.pets, color: Colors.grey[400]),
+        ),
+      );
+    }
     return const SizedBox.shrink();
   }
 
@@ -233,7 +270,7 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
       return;
     }
 
-    if (_imageFile == null && _imageBytes == null) {
+    if (widget.pet == null && _imageFile == null && _imageBytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please add a pet photo.')),
       );
@@ -248,26 +285,33 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
       return;
     }
 
-    final Uint8List avatarBytes =
-        _imageBytes ?? await _imageFile!.readAsBytes();
-
-    await _petController.addPet(
-      name: nameController.text.trim(),
-      type: typeController.text.trim(),
-      breed: breedController.text.trim(),
-      age: parsedAge,
-      gender: genderController.text.trim(),
-      lat: latitudeController.text.trim().isEmpty
-          ? null
-      : latitudeController.text.trim(),
-      long: longitudeController.text.trim().isEmpty
-          ? null
-          : longitudeController.text.trim(),
-      // imageFile: _imageFile,
-      avatar: avatarBytes,
-      // fileExtension: _imageExtension,
-
-    );
+    if (widget.pet != null) {
+      // Update pet
+      final updatedPet = widget.pet!.copyWith(
+        name: nameController.text.trim(),
+        type: typeController.text.trim().isEmpty ? null : typeController.text.trim(),
+        breed: breedController.text.trim().isEmpty ? null : breedController.text.trim(),
+        age: parsedAge,
+        gender: genderController.text.trim().isEmpty ? null : genderController.text.trim(),
+        lat: latitudeController.text.trim().isEmpty ? null : latitudeController.text.trim(),
+        long: longitudeController.text.trim().isEmpty ? null : longitudeController.text.trim(),
+        // avatar: keep old for now
+      );
+      await _petController.updatePet(updatedPet);
+    } else {
+      // Add pet
+      final Uint8List avatarBytes = _imageBytes ?? await _imageFile!.readAsBytes();
+      await _petController.addPet(
+        name: nameController.text.trim(),
+        type: typeController.text.trim(),
+        breed: breedController.text.trim(),
+        age: parsedAge,
+        gender: genderController.text.trim(),
+        lat: latitudeController.text.trim().isEmpty ? null : latitudeController.text.trim(),
+        long: longitudeController.text.trim().isEmpty ? null : longitudeController.text.trim(),
+        avatar: avatarBytes,
+      );
+    }
 
     if (!mounted) return;
 
@@ -276,15 +320,14 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          content: Text('Pet added successfully!'),
+          content: Text(widget.pet != null ? 'Pet updated successfully!' : 'Pet added successfully!'),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _petController.errorMessage.value ??
-                'Unable to add pet. Please try again.',
+            _petController.errorMessage.value ?? (widget.pet != null ? 'Unable to update pet. Please try again.' : 'Unable to add pet. Please try again.'),
           ),
         ),
       );
