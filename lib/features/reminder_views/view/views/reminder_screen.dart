@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/features/reminder_views/controller/reminder_controller.dart';
 import 'package:petcare_store/features/reminder_views/view/views/widgets/card_reminder_widget.dart';
-import 'package:petcare_store/widgets/text_form_field_widgets.dart';
+import 'package:petcare_store/features/reminder_views/view/views/widgets/reminders_add_form.dart';
 
 class ReminderScreen extends StatefulWidget {
   const ReminderScreen({super.key});
@@ -13,31 +13,11 @@ class ReminderScreen extends StatefulWidget {
 
 class _ReminderScreenState extends State<ReminderScreen> {
   late final ReminderController reminderController;
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _typeController = TextEditingController();
-
-  DateTime? _selectedDateTime;
-  final ValueNotifier<DateTime?> _scheduleNotifier = ValueNotifier<DateTime?>(
-    null,
-  );
-  final ValueNotifier<bool> _scheduleErrorNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
     reminderController = Get.find<ReminderController>();
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    _typeController.dispose();
-    _scheduleNotifier.dispose();
-    _scheduleErrorNotifier.dispose();
-    super.dispose();
   }
 
   @override
@@ -119,14 +99,6 @@ class _ReminderScreenState extends State<ReminderScreen> {
   }
 
   void _openAddReminderModal() {
-    _formKey.currentState?.reset();
-    _titleController.clear();
-    _descriptionController.clear();
-    _typeController.clear();
-    _selectedDateTime = null;
-    _scheduleNotifier.value = null;
-    _scheduleErrorNotifier.value = false;
-
     Get.bottomSheet(_addFormReminderModal(context), isScrollControlled: true);
   }
 
@@ -162,105 +134,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
               ),
               Divider(color: Colors.grey[600], thickness: 0.5),
               const SizedBox(height: 8),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormFieldWidget(
-                      hintText: "Enter reminder title",
-                      label: "Title",
-                      controller: _titleController,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _descriptionController,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        labelText: 'Description',
-                        hintText: 'Add details about this reminder',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormFieldWidget(
-                      hintText: "Medication, grooming, vet visit...",
-                      label: "Reminder type",
-                      controller: _typeController,
-                    ),
-                    const SizedBox(height: 12),
-                    GestureDetector(
-                      onTap: _pickDateTime,
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: _scheduleErrorNotifier,
-                        builder: (context, showError, _) {
-                          return ValueListenableBuilder<DateTime?>(
-                            valueListenable: _scheduleNotifier,
-                            builder: (context, scheduled, __) {
-                              return InputDecorator(
-                                decoration: InputDecoration(
-                                  labelText: 'Schedule',
-                                  errorText: showError && scheduled == null
-                                      ? 'Please choose a date and time'
-                                      : null,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.calendar_today_outlined),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        scheduled != null
-                                            ? _formatDateTime(scheduled)
-                                            : 'Select date & time',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium
-                                            ?.copyWith(
-                                              color: scheduled != null
-                                                  ? null
-                                                  : Colors.grey[600],
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Obx(() {
-                      final isSubmitting =
-                          reminderController.isSubmitting.value;
-                      return SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: isSubmitting ? null : _submitReminderForm,
-                          child: isSubmitting
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white,
-                                    ),
-                                  ),
-                                )
-                              : const Text('Save Reminder'),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
+              const RemindersAddForm(),
             ],
           ),
         ),
@@ -268,107 +142,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
     );
   }
 
-  Future<void> _pickDateTime() async {
-    final now = DateTime.now();
-    final initialDate = _selectedDateTime ?? now;
 
-    final date = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: now.subtract(const Duration(days: 365)),
-      lastDate: now.add(const Duration(days: 365 * 5)),
-    );
-
-    if (!mounted) return;
-
-    if (date == null) return;
-
-    final timeOfDay = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_selectedDateTime ?? now),
-    );
-
-    if (!mounted) return;
-
-    if (timeOfDay == null) return;
-
-    final selected = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      timeOfDay.hour,
-      timeOfDay.minute,
-    );
-    _selectedDateTime = selected;
-    _scheduleNotifier.value = selected;
-    _scheduleErrorNotifier.value = false;
-  }
-
-  Future<void> _submitReminderForm() async {
-    FocusScope.of(context).unfocus();
-    final isValid = _formKey.currentState?.validate() ?? false;
-
-    if (!isValid) return;
-
-    if (_selectedDateTime == null) {
-      _scheduleErrorNotifier.value = true;
-      return;
-    }
-
-    final success = await reminderController.addReminder(
-      title: _titleController.text.trim(),
-      description: _descriptionController.text.trim().isEmpty
-          ? null
-          : _descriptionController.text.trim(),
-      reminderType: _typeController.text.trim().isEmpty
-          ? null
-          : _typeController.text.trim(),
-      reminderDate: _selectedDateTime,
-    );
-
-    if (!mounted) return;
-
-    if (success) {
-      Get.back();
-      Get.snackbar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        colorText: Colors.white,
-        'Success',
-        'Reminder added successfully',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } else if (reminderController.errorMessage.value != null) {
-      Get.snackbar(
-        backgroundColor: Theme.of(context).colorScheme.error,
-        colorText: Colors.white,
-        'Error',
-        reminderController.errorMessage.value!,
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    final local = dateTime.toLocal();
-    final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
-    final minute = local.minute.toString().padLeft(2, '0');
-    final period = local.hour >= 12 ? 'PM' : 'AM';
-    return '${months[local.month - 1]} ${local.day}, ${local.year} at $hour:$minute $period';
-  }
 }
 
 class _ErrorState extends StatelessWidget {

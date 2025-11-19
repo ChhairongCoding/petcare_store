@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/features/products/controllers/product_controller.dart';
+import 'package:petcare_store/widgets/reusables/product_card_widget_custom.dart';
 
 class SearchWidget extends StatelessWidget {
   const SearchWidget({super.key});
@@ -8,7 +11,7 @@ class SearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () =>
-          showSearch(context: context, delegate: CustomSearchDelagate()),
+          showSearch(context: context, delegate: CustomSearchDelegate()),
       child: Container(
         height: 50,
         width: double.infinity,
@@ -39,7 +42,7 @@ class SearchWidget extends StatelessWidget {
                     onPressed: () {},
                   ),
                   Text(
-                    "Search",
+                    "Search products...",
                     style: Theme.of(
                       context,
                     ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
@@ -62,16 +65,9 @@ class SearchWidget extends StatelessWidget {
   }
 }
 
-class CustomSearchDelagate extends SearchDelegate<String> {
-  List<String> searchTerms = [
-    'Flutter',
-    'Dart',
-    'Android',
-    'iOS',
-    'Web',
-    'UI/UX',
-    'Animation',
-  ];
+class CustomSearchDelegate extends SearchDelegate<String> {
+  final ProductController productController = Get.find<ProductController>();
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -96,35 +92,61 @@ class CustomSearchDelagate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var pet in searchTerms) {
-      if (pet.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(pet);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(title: Text(result));
-      },
-    );
+    final filteredProducts = productController.products.where((product) {
+      return product.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    return _buildProductList(filteredProducts, context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var pet in searchTerms) {
-      if (pet.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(pet);
-      }
+    final filteredProducts = productController.products.where((product) {
+      return product.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    return _buildProductList(filteredProducts, context);
+  }
+
+  Widget _buildProductList(List products, BuildContext context) {
+    if (query.isEmpty) {
+      return Center(
+        child: Text(
+          'Start typing to search products...',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
     }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(title: Text(result));
-      },
+
+    if (products.isEmpty) {
+      return Center(
+        child: Text(
+          'No products found',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.75,
+        ),
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          final product = products[index];
+          return ProductCardWidgetCustom(
+            price: product.price.toString(),
+            productImage: product.imagePath,
+            name: product.name,
+            products: product,
+          );
+        },
+      ),
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,27 +13,14 @@ class PetDetailsView extends StatelessWidget {
 
   // Mock pet data for demonstration - in real app this would come from navigation arguments
   PetModel get _mockPet => PetModel.fromMap({
-    'id': 1,
+    'id': '1',
+    'owner': 'mock_owner',
     'name': 'Buddy',
     'breed': 'Golden Retriever',
-    'age': '2 years',
-    'weight': '25 kg',
+    'age': 2,
     'gender': 'Male',
-    'image':
+    'avatar':
         'https://t4.ftcdn.net/jpg/02/66/72/41/360_F_266724172_Iy8gdKgMa7XmrhYYxLCxyhx6J7070Pr8.jpg',
-    'color': Colors.amber.shade100,
-    'vaccinationStatus': 'Up to date',
-    'lastCheckup': '2024-09-15',
-    'nextCheckup': '2025-03-15',
-    'allergies': ['Chicken', 'Beef'],
-    'medicalConditions': 'None',
-    'foodType': 'Premium dry kibble',
-    'feedingSchedule': '2 times per day (8 AM, 6 PM)',
-    'dailyPortion': '250g',
-    'specialDiet': 'Grain-free formula',
-    'distanceToVet': 2.3,
-    'nearestVetName': 'City Pet Clinic',
-    'vetAddress': '123 Main St, Downtown',
   });
 
   PetModel get currentPet => pet ?? _mockPet;
@@ -58,11 +44,6 @@ class PetDetailsView extends StatelessWidget {
             Get.toNamed(AppRoutes.trackingPet,arguments: currentPet);
           },
           icon: Icon(HugeIcons.strokeRoundedLocation01),
-        ),
-        IconButton(
-          onPressed: () {
-          },
-          icon: Icon(HugeIcons.strokeRoundedEdit01),
         ),
       ],
     );
@@ -91,8 +72,8 @@ class PetDetailsView extends StatelessWidget {
             // _buildFeedingSection(context),
             // const SizedBox(height: 24),
 
-            // // Distance/Location Section
-            // _buildDistanceSection(context),
+            // Location Section
+            _buildLocationSection(context),
           ],
         ),
       ),
@@ -107,7 +88,7 @@ class PetDetailsView extends StatelessWidget {
           tag: 'pet_image_${currentPet.id}',
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            // child: _buildPetImageWidget(),
+            child: _buildPetImageWidget(),
           ),
         ),
         const SizedBox(width: 16),
@@ -158,20 +139,20 @@ class PetDetailsView extends StatelessWidget {
       {
         "Color": Colors.amber.shade100,
         "title": "Age",
-        "value": currentPet.age,
+        "value": currentPet.age != null ? '${currentPet.age} years' : 'N/A',
         "icon": HugeIcons.strokeRoundedCalendar03,
-      },
-      {
-        "Color": Colors.blue.shade100,
-        "title": "Weight",
-        // "value": currentPet.weight,
-        "icon": HugeIcons.strokeRoundedWeightScale,
       },
       {
         "Color": Colors.green.shade100,
         "title": "Gender",
-        "value": currentPet.gender,
+        "value": currentPet.gender ?? 'N/A',
         "icon": HugeIcons.strokeRoundedUser,
+      },
+      {
+        "Color": Colors.blue.shade100,
+        "title": "Type",
+        "value": currentPet.type ?? 'N/A',
+        "icon": HugeIcons.strokeRoundedFavourite,
       },
     ];
 
@@ -304,34 +285,32 @@ class PetDetailsView extends StatelessWidget {
   //   );
   // }
 
-  // Widget _buildDistanceSection(BuildContext context) {
-  //   return _buildSectionCard(
-  //     context,
-  //     title: 'Nearest Veterinary',
-  //     icon: HugeIcons.strokeRoundedLocation01,
-  //     color: Colors.blue.shade50,
-  //     children: [
-  //       _buildInfoRow(
-  //         context,
-  //         'Clinic Name',
-  //         currentPet.nearestVetName,
-  //         HugeIcons.strokeRoundedHospital01,
-  //       ),
-  //       _buildInfoRow(
-  //         context,
-  //         'Address',
-  //         currentPet.vetAddress,
-  //         HugeIcons.strokeRoundedLocation01,
-  //       ),
-  //       _buildInfoRow(
-  //         context,
-  //         'Distance',
-  //         '${currentPet.distanceToVet} km away',
-  //         HugeIcons.strokeRoundedRoute01,
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildLocationSection(BuildContext context) {
+    if (currentPet.lat == null || currentPet.long == null) {
+      return const SizedBox.shrink();
+    }
+
+    return _buildSectionCard(
+      context,
+      title: 'Location',
+      icon: HugeIcons.strokeRoundedLocation01,
+      color: Colors.blue.shade50,
+      children: [
+        _buildInfoRow(
+          context,
+          'Latitude',
+          currentPet.lat!,
+          HugeIcons.strokeRoundedLocation01,
+        ),
+        _buildInfoRow(
+          context,
+          'Longitude',
+          currentPet.long!,
+          HugeIcons.strokeRoundedLocation01,
+        ),
+      ],
+    );
+  }
 
   Widget _buildSectionCard(
     BuildContext context, {
@@ -414,35 +393,22 @@ class PetDetailsView extends StatelessWidget {
     );
   }
 
-  // Widget _buildPetImageWidget({double size = 120}) {
-  //   final placeholder = _buildPetImagePlaceholder(size);
+  Widget _buildPetImageWidget({double size = 120}) {
+    final placeholder = _buildPetImagePlaceholder(size);
 
-  //   if (currentPet.isLocalImage && currentPet.image.isNotEmpty) {
-  //     final file = File(currentPet.image);
-  //     if (file.existsSync()) {
-  //       return Image.file(
-  //         file,
-  //         height: size,
-  //         width: size,
-  //         fit: BoxFit.cover,
-  //       );
-  //     }
-  //     return placeholder;
-  //   }
+    if (currentPet.avatar == null || currentPet.avatar!.isEmpty) {
+      return placeholder;
+    }
 
-  //   if (currentPet.image.isEmpty) {
-  //     return placeholder;
-  //   }
-
-  //   return CachedNetworkImage(
-  //     imageUrl: currentPet.image,
-  //     height: size,
-  //     width: size,
-  //     fit: BoxFit.cover,
-  //     placeholder: (context, url) => placeholder,
-  //     errorWidget: (context, url, error) => placeholder,
-  //   );
-  // }
+    return CachedNetworkImage(
+      imageUrl: currentPet.avatar!,
+      height: size,
+      width: size,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => placeholder,
+      errorWidget: (context, url, error) => placeholder,
+    );
+  }
 
   Widget _buildPetImagePlaceholder(double size) {
     return Container(

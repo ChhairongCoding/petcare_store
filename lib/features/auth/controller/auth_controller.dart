@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/services/local_service.dart';
@@ -7,11 +6,13 @@ import 'dart:developer' as developer;
 
 class AuthController extends GetxController {
   final LocalService token = LocalService();
+  RxBool isLoading = false.obs;
   final _supabaseClient = Supabase.instance.client;
 
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
+    isLoading.value = true;
     try {
-      if (password.isEmpty || email.isEmpty) return;
+      if (password.isEmpty || email.isEmpty) return false;
       final response = await _supabaseClient.auth.signInWithPassword(
         email: email,
         password: password,
@@ -19,13 +20,17 @@ class AuthController extends GetxController {
       if (response.session != null) {
         await token.saveToken(response.session!.accessToken);
         developer.log('Login successful: ${response.session!.accessToken}');
-        Get.offNamed(AppRoutes.mainScreen);
-        SnackBar(content: Text('Login successful'));
+        isLoading.value = false;
+        return true;
       } else {
         developer.log('Login failed: No session returned');
+        isLoading.value = false;
+        return false;
       }
     } catch (e) {
+      isLoading.value = false;
       developer.log('Error logging in: $e');
+      return false;
     }
   }
 
@@ -39,6 +44,7 @@ class AuthController extends GetxController {
       developer.log('Error logging out: $e');
     }
   }
+
   String? get currentToken {
     final session = _supabaseClient.auth.currentSession;
     return session?.accessToken;

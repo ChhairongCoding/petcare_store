@@ -287,6 +287,14 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
 
     if (widget.pet != null) {
       // Update pet
+      String? newAvatarUrl = widget.pet!.avatar;
+
+      // Upload new image if selected
+      if (_imageFile != null || _imageBytes != null) {
+        final Uint8List avatarBytes = _imageBytes ?? await _imageFile!.readAsBytes();
+        newAvatarUrl = await _petController.uploadAvatarFromBytes(avatarBytes, extensionHint: _imageExtension);
+      }
+
       final updatedPet = widget.pet!.copyWith(
         name: nameController.text.trim(),
         type: typeController.text.trim().isEmpty ? null : typeController.text.trim(),
@@ -295,7 +303,7 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
         gender: genderController.text.trim().isEmpty ? null : genderController.text.trim(),
         lat: latitudeController.text.trim().isEmpty ? null : latitudeController.text.trim(),
         long: longitudeController.text.trim().isEmpty ? null : longitudeController.text.trim(),
-        // avatar: keep old for now
+        avatar: newAvatarUrl,
       );
       await _petController.updatePet(updatedPet);
     } else {

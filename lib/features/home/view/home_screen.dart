@@ -125,24 +125,32 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 290,
-                    child: ListView.builder(
-                      
-                      scrollDirection: Axis.horizontal,
-                      itemCount: productController.products.length,
-                      itemBuilder: (context, index) {
-                        final product = productController.products[index];
+                  Obx(() {
+                    if (productController.isFirstLoadRunning.value) {
+                      return SizedBox(
+                        height: 290,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    } else {
+                      return SizedBox(
+                        height: 290,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: productController.products.length,
+                          itemBuilder: (context, index) {
+                            final product = productController.products[index];
 
-                        return ProductCardWidgetCustom(
-                          price: product.price.toString(),
-                          productImage: product.imagePath,
-                          name: product.name,
-                          products: productController.products[index],
-                        );
-                      },
-                    ),
-                  ),
+                            return ProductCardWidgetCustom(
+                              price: product.price.toString(),
+                              productImage: product.imagePath,
+                              name: product.name,
+                              products: productController.products[index],
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  }),
                 ],
               ),
 
@@ -163,7 +171,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
 
-                  Align(
+                  Obx(() => Align(
                     alignment: Alignment.topLeft,
                     child: Wrap(
                       spacing: 20,
@@ -180,7 +188,7 @@ class HomeScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                  ),
+                  )),
                 ],
               ),
 

@@ -181,6 +181,19 @@ class MyPetController extends GetxController {
   //   return _client.storage.from(_bucketName).getPublicUrl(objectPath);
   // }
 
+  Future<String?> uploadAvatarFromBytes(
+    Uint8List data, {
+    String? extensionHint,
+  }) async {
+    final session = _client.auth.currentSession;
+    if (session == null) {
+      errorMessage.value = 'Please sign in first.';
+      return null;
+    }
+    final user = session.user;
+    return _uploadAvatarFromBytes(data, ownerId: user.id, extensionHint: extensionHint);
+  }
+
   Future<String?> _uploadAvatarFromBytes(
     Uint8List data, {
     required String ownerId,
@@ -263,6 +276,11 @@ class MyPetController extends GetxController {
     try {
       isLoading(true);
       await _client.from('mypet').update(pet.toMap()).eq('id', pet.id);
+      // Update the local list
+      final index = pets.indexWhere((p) => p.id == pet.id);
+      if (index != -1) {
+        pets[index] = pet;
+      }
       isLoading(false);
     } on PostgrestException catch (e, stack) {
       developer.log(
