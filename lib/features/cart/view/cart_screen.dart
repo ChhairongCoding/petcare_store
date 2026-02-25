@@ -76,14 +76,21 @@ class _CartScreenState extends State<CartScreen> {
                             '\$${cartController.totalPrice.value}',
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
+                          ),  
                         ],
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: cartController.totalItems == 0
+                                    ? Colors.blueGrey
+                                    : Get.theme.primaryColor,
+                              ),
+                              onPressed: () {
+                                Get.toNamed('/processBuy', arguments: cartController);
+                              },
                               label: Text('Process To Checkout'),
                               icon: Icon(
                                 HugeIcons.strokeRoundedArrowRight04,
@@ -144,7 +151,7 @@ class _CartScreenState extends State<CartScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text('Size: M'),
-                Text('Price: ', style: Theme.of(context).textTheme.titleMedium),
+                Text('Price: \$$price', style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           ),

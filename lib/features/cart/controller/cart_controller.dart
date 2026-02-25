@@ -29,8 +29,9 @@ class CartController extends GetxController {
     if (existingItemIndex != -1) {
       cartItems[existingItemIndex].quantity += quantity;
       cartItems.refresh();
-    }else{
+    } else {
       cartItems.add(CartItemModel(product: product, quantity: quantity));
+      cartItems.refresh();
     }
     _updateTotalPrice();
     Get.dialog(
@@ -67,6 +68,7 @@ class CartController extends GetxController {
     isLoading(true);
     cartItems.clear();
     _updateTotalPrice();
+    isLoading(false);
   }
 
   bool isInCart(String productId) {

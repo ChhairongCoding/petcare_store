@@ -17,7 +17,7 @@ class MainController extends GetxController {
     {"icon": HugeIcons.strokeRoundedUser, "label": "Profile"},
   ];
 
-  final List<Widget> pages = [HomeScreen(), ReminderScreen(),MyPet(),ProfileScreen()];
+  final List<Widget> pages = [HomeScreen(), ReminderScreen(), MyPet(), ProfileScreen()];
 
   void changePage(int index) => currentIndex.value = index;
 }

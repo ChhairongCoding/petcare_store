@@ -8,15 +8,10 @@ import 'package:petcare_store/features/products/product_detail_widget.dart';
 class ProductCardWidgetCustom extends StatelessWidget {
   const ProductCardWidgetCustom({
     super.key,
-    required this.name,
-    required this.price,
-    required this.productImage,
+    
     required this.products,
   });
 
-  final String name;
-  final String price;
-  final String productImage;
   final ProductModel products;
 
   @override
@@ -40,26 +35,61 @@ class ProductCardWidgetCustom extends StatelessWidget {
               child: Stack(
                   children: [
                     CachedNetworkImage(
-                      imageUrl: productImage,
+                      imageUrl: products.imagePath,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
                       placeholder: (context, url) => Container(
                         color: Colors.grey[200],
-                        child: Icon(
-                          Icons.image,
-                          color: Colors.grey[400],
-                          size: 40,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.image,
+                                color: Colors.grey[400],
+                                size: 40,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Loading...',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       errorWidget: (context, url, error) => Container(
                         color: Colors.grey[200],
-                        child: Icon(
-                          Icons.broken_image,
-                          color: Colors.grey[400],
-                          size: 40,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.broken_image,
+                                color: Colors.grey[400],
+                                size: 40,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Failed to load',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                url.split('/').last,
+                                style: TextStyle(color: Colors.grey[600], fontSize: 10),
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      // Add debugging to see what's happening
+                      cacheManager: null,
+                      httpHeaders: {
+                        'Cache-Control': 'no-cache',
+                      },
                     ),
                     Positioned(
                       top: 8,
@@ -83,7 +113,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
             ),
             SizedBox(height: 12),
             Text(
-              name,
+             products.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -112,7 +142,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "\$$price",
+                  "\$${products.price}",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: Colors.black87,
                     fontWeight: FontWeight.w600,

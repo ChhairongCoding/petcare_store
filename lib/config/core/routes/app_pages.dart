@@ -3,6 +3,7 @@ import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/features/auth/views/login_screen.dart';
 import 'package:petcare_store/features/auth/views/signup_screen.dart';
 import 'package:petcare_store/features/cart/view/cart_screen.dart';
+import 'package:petcare_store/features/cart/view/checkout_screen.dart';
 import 'package:petcare_store/features/main/splash_screen.dart';
 import 'package:petcare_store/features/main/views/main_screen.dart';
 import 'package:petcare_store/features/my_orders/my_orders_screen.dart';
@@ -31,4 +32,5 @@ List<GetPage<dynamic>> appPages = [
   GetPage(name: AppRoutes.settings, page: () => SettingScreen()),
   GetPage(name: AppRoutes.cart, page: () => CartScreen()),
   GetPage(name: AppRoutes.trackingPet, page: () => TrackingMyPet()),
+  GetPage(name: AppRoutes.processBuy, page: () => ProcessBuyScreen()),
 ];

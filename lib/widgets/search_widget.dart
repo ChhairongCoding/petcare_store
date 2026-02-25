@@ -140,9 +140,6 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         itemBuilder: (context, index) {
           final product = products[index];
           return ProductCardWidgetCustom(
-            price: product.price.toString(),
-            productImage: product.imagePath,
-            name: product.name,
             products: product,
           );
         },
