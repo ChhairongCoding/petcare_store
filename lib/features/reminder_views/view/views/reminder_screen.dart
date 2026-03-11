@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:petcare_store/features/reminder_views/controller/reminder_controller.dart';
 import 'package:petcare_store/features/reminder_views/view/views/widgets/card_reminder_widget.dart';
 import 'package:petcare_store/features/reminder_views/view/views/widgets/reminders_add_form.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ReminderScreen extends StatefulWidget {
   const ReminderScreen({super.key});
@@ -22,12 +23,15 @@ class _ReminderScreenState extends State<ReminderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = reminderController.isLoading.value;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Reminders'),
       ),
-      body: _buildBody(context),
+      body: Skeletonizer(
+        enabled: isLoading,
+        child: _buildBody(context)),
       floatingActionButton: _buildFloatingButton(),
     );
   }

@@ -16,4 +16,6 @@ class AppRoutes {
   static String cart = '/cart';
   static String trackingPet = '/trackingPet';
   static String processBuy = '/processBuy';
+  static String shipping = '/shipping';
+  static String addressForm = '/addressForm';
 }

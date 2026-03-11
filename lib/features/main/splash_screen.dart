@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
+import 'package:petcare_store/features/cart/controller/cart_controller.dart';
 // import 'package:petcare_store/util/provider_local.dart';
 // import 'package:petcare_store/services/local_service.dart';
 
@@ -12,10 +13,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final CartController cartController = CartController();
   @override
   void initState() {
     super.initState();
     _navigateToMain();
+    cartController.getAllProductCart();
+
   }
 
   _navigateToMain() async {

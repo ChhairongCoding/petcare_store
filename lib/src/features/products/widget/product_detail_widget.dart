@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
-import 'package:petcare_store/features/cart/controller/cart_controller.dart';
-import 'package:petcare_store/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/features/products/model/product_model.dart';
+import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
+import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/widgets/reusables/product_card_widget_custom.dart';
 
 class ProductDetailWidget extends StatefulWidget {
@@ -55,17 +55,19 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
           SliverToBoxAdapter(child: _buildBody(context)),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ElevatedButton.icon(
-          onPressed: () =>
-              cartController.addToCart(product, quantity: quantity),
-          icon: const Icon(Icons.shopping_cart),
-          label: const Text('Add to Cart'),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ElevatedButton.icon(
+            onPressed: () =>
+                cartController.addToCart(product, quantity: quantity),
+            icon: const Icon(Icons.shopping_cart),
+            label: const Text('Add to Cart'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ),
@@ -258,9 +260,7 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
                 children: List.generate(productController.products.length, (
                   index,
                 ) {
-                  final product = productController.products[index];
                   return ProductCardWidgetCustom(
-                  
                     products: productController.products[index],
                   );
                 }),

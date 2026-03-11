@@ -15,7 +15,7 @@ class AppBarWidget extends StatelessWidget {
 
     return SliverAppBar(
       elevation: 0,
-      floating: true,
+      floating: false,
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       systemOverlayStyle: SystemUiOverlayStyle(
@@ -77,17 +77,20 @@ class AppBarWidget extends StatelessWidget {
         SizedBox(width: 8),
         CircleAvatar(
           backgroundColor: Colors.white,
-          child: Obx(() => Badge(
-            label: Text(cartController.totalItems.toString()),
-            child: IconButton(
-              icon: Icon(
-                HugeIcons.strokeRoundedShoppingCart01,
-                size: 26,
-                color: Colors.grey[700],
+          child: Obx(() {
+            final count = cartController.cartItems.length;
+            return Badge(
+              label: Text(count.toString()),
+              child: IconButton(
+                icon: Icon(
+                  HugeIcons.strokeRoundedShoppingCart01,
+                  size: 26,
+                  color: Colors.grey[700],
+                ),
+                onPressed: () => Get.toNamed(AppRoutes.cart),
               ),
-              onPressed: () => Get.toNamed(AppRoutes.cart),
-            ),
-          )),
+            );
+          }),
         ),
         SizedBox(width: 8),
       ],

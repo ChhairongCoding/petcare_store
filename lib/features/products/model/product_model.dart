@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ProductModel {
   final String id;
   final String name;
@@ -15,16 +17,19 @@ class ProductModel {
     this.rating,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      id: json['id']?.toString() ?? '',
-      name: json['name'] ?? 'Unknown',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
-      imagePath: json['image_path'] ?? '',
-      description: json['description'],
-      rating: json['rating'],
-    );
-  }
+factory ProductModel.fromJson(Map<String, dynamic> json) {
+  final bucketUrl = dotenv.env['bucketUrl']??'';
+  final rawPath = json['image_path'] ?? '';
+
+  return ProductModel(
+    id: json['id']?.toString() ?? '',
+    name: json['name'] ?? 'Unknown',
+    price: (json['price'] as num?)?.toDouble() ?? 0.0,
+   imagePath: rawPath.startsWith('http') ? rawPath : '$bucketUrl$rawPath',
+    description: json['description'],
+    rating: json['rating'],
+  );
+}
 
   Map<String, dynamic> toJson() {
     return {
@@ -35,5 +40,16 @@ class ProductModel {
       'description': description,
       'rating': rating,
     };
+  }
+
+  factory ProductModel.fake() {
+    return ProductModel(
+      id: 'fake',
+      name: 'Loading product...',
+      price: 0,
+      imagePath: '',
+      description: '',
+      rating: 0,
+    );
   }
 }

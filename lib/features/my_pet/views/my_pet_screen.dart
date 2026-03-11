@@ -6,6 +6,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/features/my_pet/controller/my_pet_controller.dart';
 // import 'package:petcare_store/features/my_pet/models/my_pet_entity.dart';
 import 'package:petcare_store/features/my_pet/views/widgets/pet_form_page.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../models/pet_model.dart';
 import 'widgets/pet_details_view.dart';
 
@@ -54,33 +55,36 @@ class _MyPetState extends State<MyPet> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Column(
-      children: [
-        _buildHeader(context),
-        Expanded(
-          child: Obx(() {
-            final isBusy =
-                _controller.isLoading.value && _controller.pets.isEmpty;
-
-            if (isBusy) {
-              return Center(child: CircularProgressIndicator());
-            }
-
-            return RefreshIndicator(
-              onRefresh: _controller.fetchPets,
-              child: _controller.pets.isEmpty
-                  ? ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        SizedBox(height: 120),
-                        _buildEmptyState(context),
-                      ],
-                    )
-                  : _buildPetsList(context, _controller.pets),
-            );
-          }),
-        ),
-      ],
+    return Skeletonizer(
+      enabled: _controller.isLoading.value,
+      child: Column(
+        children: [
+          _buildHeader(context),
+          Expanded(
+            child: Obx(() {
+              final isBusy =
+                  _controller.isLoading.value && _controller.pets.isEmpty;
+      
+              if (isBusy) {
+                return Center(child: CircularProgressIndicator());
+              }
+      
+              return RefreshIndicator(
+                onRefresh: _controller.fetchPets,
+                child: _controller.pets.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(height: 120),
+                          _buildEmptyState(context),
+                        ],
+                      )
+                    : _buildPetsList(context, _controller.pets),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 

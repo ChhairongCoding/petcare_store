@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class TextFormFieldWidget extends StatefulWidget {
   const TextFormFieldWidget({
     super.key,
-    required this.label,
+    this.label,
     required this.controller,
     this.obscureText,
     this.icon,
@@ -15,7 +15,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.keyboardType,
   });
 
-  final String label;
+  final String? label;
   final TextEditingController controller;
   final bool? obscureText;
   final IconData? icon;
@@ -37,7 +37,9 @@ class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
       obscureText: widget.obscureText ?? false,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
-        label: widget.label.isEmpty ? null : Text(widget.label),
+        label: (widget.label != null && widget.label!.isNotEmpty) 
+      ? Text(widget.label!) 
+      : null,
         hintText: widget.hintText,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
