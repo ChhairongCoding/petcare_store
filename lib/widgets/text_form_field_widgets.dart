@@ -13,6 +13,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.prefixIcon,
     this.hintText,
     this.keyboardType,
+    this.sizeHeight,
   });
 
   final String? label;
@@ -24,6 +25,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final IconData? prefixIcon;
   final String? hintText;
   final TextInputType? keyboardType;
+  final double? sizeHeight;
 
   @override
   State<TextFormFieldWidget> createState() => _TexFormtFieldWidgetState();
@@ -31,34 +33,43 @@ class TextFormFieldWidget extends StatefulWidget {
 
 class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
   @override
-  Widget build(BuildContext context) {
-    return TextFormField(
+Widget build(BuildContext context) {
+  final isMultiline = widget.sizeHeight != null;
+
+  return SizedBox(
+    height: isMultiline ? widget.sizeHeight : null,
+    child: TextFormField(
       controller: widget.controller,
       obscureText: widget.obscureText ?? false,
       keyboardType: widget.keyboardType,
+      textAlignVertical: TextAlignVertical.top,
+      maxLines: isMultiline ? null : 1,
+      expands: isMultiline,
       decoration: InputDecoration(
-        label: (widget.label != null && widget.label!.isNotEmpty) 
-      ? Text(widget.label!) 
-      : null,
+        label: (widget.label != null && widget.label!.isNotEmpty)
+            ? Text(widget.label!)
+            : null,
         hintText: widget.hintText,
+        hintStyle: TextStyle(color: Theme.of(context).hintColor),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 12,   // fixed padding, NOT sizeHeight
+          horizontal: 12,
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(width: 0.5, color: Colors.grey),
+          borderSide:  BorderSide(width: 0.5,color: Theme.of(context).hintColor ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            width: 2,
-            color: Colors.grey,
-          ), // thicker when focused
+          borderSide:  BorderSide(width: 2, color:Theme.of(context).primaryColor),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(width: 0.5, color: Colors.red),
+          borderSide: const BorderSide(width: 0.5, color: Colors.red),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(width: 2, color: Colors.red),
+          borderSide: const BorderSide(width: 2, color: Colors.red),
         ),
         suffixIcon: widget.icon != null
             ? IconButton(icon: Icon(widget.icon), onPressed: widget.onPressed)
@@ -73,6 +84,7 @@ class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
         }
         return null;
       },
-    );
-  }
+    ),
+  );
+}
 }
