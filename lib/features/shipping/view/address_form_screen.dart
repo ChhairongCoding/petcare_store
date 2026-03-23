@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:petcare_store/features/shipping/controller/shipping_controller.dart';
+import 'package:petcare_store/features/shipping/service/shipping_service.dart';
 import 'package:petcare_store/widgets/text_form_field_widgets.dart';
 
 class AddressFormScreen extends StatefulWidget {
@@ -41,19 +42,17 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Address Form"),
-      ),
+      appBar: AppBar(title: const Text("Address Form")),
       body: _buildBody(theme, shippingController),
     );
   }
 
   Padding _buildBody(TextTheme theme, ShippingController shippingController) {
+    ShippingService service = ShippingService();
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
+      child: Obx(()=> Column(
         children: [
-
           /// FORM AREA
           Expanded(
             child: SingleChildScrollView(
@@ -62,7 +61,6 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                 child: Column(
                   spacing: 10,
                   children: [
-
                     /// Address Name
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,20 +96,21 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                             child: Row(
                               children: [
                                 SizedBox(
-                                    width: 15,
-                                    height: 15,
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: 2)),
+                                  width: 15,
+                                  height: 15,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
                                 SizedBox(width: 10),
-                                Text("Detecting address...")
+                                Text("Detecting address..."),
                               ],
                             ),
                           );
                         }
 
                         if (shippingController.addressText.value.isEmpty) {
-                          return const Text(
-                              "Move map to detect address");
+                          return const Text("Move map to detect address");
                         }
                         return SizedBox();
                       }),
@@ -125,7 +124,6 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-
                             /// MAP
                             FlutterMap(
                               mapController: mapController,
@@ -136,8 +134,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                                   if (event is MapEventMoveStart) {
                                     setState(() => _isMoving = true);
                                   } else if (event is MapEventMoveEnd ||
-                                      event
-                                          is MapEventFlingAnimationEnd) {
+                                      event is MapEventFlingAnimationEnd) {
                                     setState(() {
                                       _isMoving = false;
                                       _selectedLocation =
@@ -145,7 +142,8 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                                     });
 
                                     shippingController.reverseGeocode(
-                                        _selectedLocation);
+                                      _selectedLocation,
+                                    );
                                   }
                                 },
                               ),
@@ -153,18 +151,17 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                                 TileLayer(
                                   urlTemplate:
                                       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                  userAgentPackageName:
-                                      "com.petcarestore.app",
+                                  userAgentPackageName: "com.petcarestore.app",
                                 ),
                               ],
                             ),
 
                             /// PIN
                             AnimatedContainer(
-                              duration:
-                                  const Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 200),
                               margin: EdgeInsets.only(
-                                  bottom: _isMoving ? 20 : 0),
+                                bottom: _isMoving ? 20 : 0,
+                              ),
                               child: Icon(
                                 Icons.location_pin,
                                 color: Colors.redAccent,
@@ -175,7 +172,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                                           blurRadius: 8,
                                           color: Colors.black38,
                                           offset: Offset(0, 4),
-                                        )
+                                        ),
                                       ]
                                     : [],
                               ),
@@ -186,24 +183,24 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                               bottom: 10,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(20),
                                   boxShadow: const [
                                     BoxShadow(
                                       color: Colors.black26,
                                       blurRadius: 4,
                                       offset: Offset(0, 2),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 child: Text(
                                   '${_selectedLocation.latitude.toStringAsFixed(5)}, '
                                   '${_selectedLocation.longitude.toStringAsFixed(5)}',
-                                  style:
-                                      const TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12),
                                 ),
                               ),
                             ),
@@ -216,22 +213,32 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
               ),
             ),
           ),
-
           /// CONFIRM BUTTON
           Row(
             children: [
               Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    
-                  },
-                  child: const Text("Confirm"),
-                ),
+                child:
+                    /// CONFIRM BUTTON
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          shippingController.addAdress(
+                           name:  addressName.text,
+                            addressDetail:  shippingController
+                                .addressDetail
+                                .text, // .text to get String
+                           lat:   _selectedLocation.latitude, // lat
+                           lng:  _selectedLocation.longitude, // lng
+                          );
+                        }
+                      },
+                      child: shippingController.isLoading == true ? CircularProgressIndicator.adaptive(): const Text("Confirm"),
+                    ),
               ),
             ],
-          )
+          ),
         ],
-      ),
+      ),)
     );
   }
 }

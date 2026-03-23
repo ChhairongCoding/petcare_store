@@ -34,10 +34,11 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildBody(context) {
-     final isLoading =
-                        productController.isFirstLoadRunning.value;
     return SliverToBoxAdapter(
-      child: Skeletonizer(
+      child: Obx(() {
+          final isLoading =
+                        productController.isFirstLoadRunning.value;
+       return  Skeletonizer(
         enabled: isLoading,
         child: Column(
           spacing: 20,
@@ -129,7 +130,8 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                     Obx(() {
-                     
+                       final isLoading =
+                        productController.isFirstLoadRunning.value;
                       return SizedBox(
                         height: 290,
                         child: ListView.builder(
@@ -197,7 +199,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+  );},));
   }
 }

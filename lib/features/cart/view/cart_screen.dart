@@ -71,7 +71,7 @@ class _CartScreenState extends State<CartScreen> {
   _buildButtonProcessToCheckout() {
     return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16.0, ),
-    child: Column(
+    child: Obx(()=> Column(
       mainAxisSize: MainAxisSize.min,
         spacing: 8,
         children: [
@@ -119,7 +119,7 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
         ],
-      ),
+      ),)
     );
   }
 

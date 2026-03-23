@@ -1,4 +1,3 @@
-import 'package:petcare_store/features/cart/models/cart_item_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as dev;
 
@@ -25,17 +24,12 @@ class CartService {
 
     dev.log("Cart response: ${response.toString()}");
     dev.log("Cart response type: ${response.runtimeType}");
-    dev.log("Cart response details: ${response.runtimeType} - ${response is List ? 'List' : 'Not List'}");
+    dev.log("Cart response details: ${response.runtimeType} - ${'List'}");
     
-    if (response is List) {
-      final cartList = List<Map<String, dynamic>>.from(response);
-      dev.log("Cart list processed: ${cartList.length} items");
-      return cartList;
-    } else {
-      dev.log("Unexpected response format: $response");
-      return [];
-    }
-
+    final cartList = List<Map<String, dynamic>>.from(response);
+    dev.log("Cart list processed: ${cartList.length} items");
+    return cartList;
+  
   } catch (e) {
     dev.log("Error getting cart: $e");
     return [];

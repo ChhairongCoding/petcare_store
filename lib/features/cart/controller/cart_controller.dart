@@ -26,8 +26,6 @@ class CartController extends GetxController {
     );
   }
 
-  
-
   int get totalItems => cartItems.fold(0, (sum, item) => sum + item.quantity);
 
   void addToCart(ProductModel product, {int quantity = 1}) {
@@ -62,7 +60,11 @@ class CartController extends GetxController {
   }
 
   void removeFromCart(String productId) {
-    cartService.removeFromCart(productId);
+    cartItems.removeWhere(
+      (item) => item.product.id == productId,
+    ); // ✅ remove locally
+    _updateTotalPrice(); // ✅ update total
+    cartService.removeFromCart(productId); // sync to supabase
   }
 
   void updateQuantity(String productId, int newQuantity) {
@@ -101,74 +103,74 @@ class CartController extends GetxController {
   CartItemModel? getCartItem(String productId) {
     return cartItems.firstWhereOrNull((item) => item.product.id == productId);
   }
-Future<void> getAllProductCart() async {
-  try {
-    isLoading(true);
-    dev.log("Starting cart load process");
 
-    final cartList = await cartService.getCart();
-    dev.log("Cart list loaded: ${cartList.length} items");
+  Future<void> getAllProductCart() async {
+    try {
+      isLoading(true);
+      dev.log("Starting cart load process");
 
-    if (cartList.isEmpty) {
-      cartItems.clear();
+      final cartList = await cartService.getCart();
+      dev.log("Cart list loaded: ${cartList.length} items");
+
+      if (cartList.isEmpty) {
+        cartItems.clear();
+        cartItems.refresh();
+        dev.log("Cart is empty, cleared items");
+        return;
+      }
+
+      /// Extract product IDs
+      final productIds = cartList.map((e) => e['product_id']).toList();
+      dev.log("Product IDs to fetch: $productIds");
+
+      /// Get product detail from Supabase
+      final products = await cartService.client
+          .from('products')
+          .select()
+          .inFilter('id', productIds);
+
+      dev.log("Products fetched: ${products.length}");
+
+      /// Convert to ProductModel list
+      final productModels = products
+          .map<ProductModel>((p) => ProductModel.fromJson(p))
+          .toList();
+
+      dev.log("Product models created: ${productModels.length}");
+
+      /// Merge Cart + Product
+      final cartItemsList = <CartItemModel>[];
+
+      for (final cart in cartList) {
+        final productId = cart['product_id'];
+        dev.log("Looking for product with ID: $productId");
+
+        final product = productModels.firstWhere(
+          (p) => p.id == productId,
+          orElse: () => throw Exception("Product not found for ID: $productId"),
+        );
+
+        dev.log("Found product: ${product.name}");
+
+        final cartItem = CartItemModel(
+          product: product,
+          quantity: cart['quantity'] ?? 0,
+        );
+
+        cartItemsList.add(cartItem);
+      }
+
+      cartItems.value = cartItemsList;
+      dev.log("Cart items mapped: ${cartItems.length}");
+
+      _updateTotalPrice();
       cartItems.refresh();
-      dev.log("Cart is empty, cleared items");
-      return;
+
+      dev.log("Cart load completed successfully");
+    } catch (e) {
+      dev.log("Error loading full cart: $e");
+    } finally {
+      isLoading(false);
     }
-
-    /// Extract product IDs
-    final productIds = cartList.map((e) => e['product_id']).toList();
-    dev.log("Product IDs to fetch: $productIds");
-
-    /// Get product detail from Supabase
-    final products = await cartService.client
-        .from('products')
-        .select()
-        .inFilter('id', productIds);
-
-    dev.log("Products fetched: ${products.length}");
-
-    /// Convert to ProductModel list
-    final productModels = products
-        .map<ProductModel>((p) => ProductModel.fromJson(p))
-        .toList();
-
-    dev.log("Product models created: ${productModels.length}");
-
-    /// Merge Cart + Product
-    final cartItemsList = <CartItemModel>[];
-    
-    for (final cart in cartList) {
-      final productId = cart['product_id'];
-      dev.log("Looking for product with ID: $productId");
-      
-      final product = productModels.firstWhere(
-        (p) => p.id == productId,
-        orElse: () => throw Exception("Product not found for ID: $productId"),
-      );
-      
-      dev.log("Found product: ${product.name}");
-      
-      final cartItem = CartItemModel(
-        product: product,
-        quantity: cart['quantity'] ?? 0,
-      );
-      
-      cartItemsList.add(cartItem);
-    }
-
-    cartItems.value = cartItemsList;
-    dev.log("Cart items mapped: ${cartItems.length}");
-
-    _updateTotalPrice();
-    cartItems.refresh();
-
-    dev.log("Cart load completed successfully");
-
-  } catch (e) {
-    dev.log("Error loading full cart: $e");
-  } finally {
-    isLoading(false);
   }
-}
 }

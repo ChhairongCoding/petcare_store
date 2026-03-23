@@ -421,37 +421,9 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen> {
                   ],
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "\$${controller.cartItems[index].product.price}",
-                      style: Get.textTheme.titleMedium,
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            controller.updateQuantity(
-                              controller.cartItems[index].product.id,
-                              controller.cartItems[index].quantity - 1,
-                            );
-                          },
-                          icon: Icon(Icons.remove, size: 18),
-                        ),
-                       Text(controller.cartItems[index].quantity.toString()),
-                        IconButton(
-                          onPressed: () {
-                            controller.updateQuantity(
-                              controller.cartItems[index].product.id,
-                              controller.cartItems[index].quantity + 1,
-                            );
-                          },
-                          icon: Icon(Icons.add, size: 18),
-                        ),
-                      ],
-                    ),
-                  ],
+                Text(
+                  "\$${controller.cartItems[index].product.price}",
+                  style: Get.textTheme.titleMedium,
                 ),
               ],
             ),
