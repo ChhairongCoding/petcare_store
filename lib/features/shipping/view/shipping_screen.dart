@@ -7,6 +7,7 @@ import 'package:petcare_store/features/shipping/model/shipping_model.dart';
 class ShippingScreen extends StatelessWidget {
   ShippingScreen({super.key});
   final ShippingController shippingController = Get.find();
+  final bool isSelectMode = Get.arguments?['selectMode'] ?? false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: _buildAppBar(), body: _buildBody());
@@ -42,7 +43,9 @@ class ShippingScreen extends StatelessWidget {
           itemCount: shippingController.addressLists.length,
           itemBuilder: (context, index) {
             final address = shippingController.addressLists[index];
-            return _addressCard(address, context, shippingController, index);
+            return GestureDetector(
+              onTap: isSelectMode ? (){Get.back(result: address);}:null,
+              child: _addressCard(address, context, shippingController, index));
           },
         );
       }),

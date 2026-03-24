@@ -22,6 +22,7 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen> {
   late int _currentStep;
   bool _isPaymentSelected = false;
   bool _isPaymentSuccessful = false;
+  dynamic _selectedAddress;
 
   @override
   void initState() {
@@ -435,7 +436,15 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen> {
 
   GestureDetector _buildLocationPick() {
     return GestureDetector(
-      onTap: () => Get.toNamed("/shipping"),
+      onTap: ()async{
+     final result =await Get.toNamed("/shipping", arguments: {'selectMode': true});
+
+     if(result != null){
+      setState(() {
+        _selectedAddress = result;
+      });
+     }
+      } ,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
@@ -451,12 +460,24 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen> {
           ],
         ),
         child: Row(
+          spacing: 10,
           children: [
             Icon(Icons.pin_drop_outlined, color: Colors.blue),
-            Text(
-              " 123 Main Street, City, Country",
-              style: Get.textTheme.bodyMedium,
+            Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _selectedAddress != null
+                      ? " ${_selectedAddress.name}"
+                      : " Select your address",
+                  style: Get.textTheme.titleSmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text("${_selectedAddress.addressDetail}",style: Get.textTheme.bodyMedium, overflow: TextOverflow.ellipsis,maxLines: 2,),
+              ],
             ),
+          ),
           ],
         ),
       ),

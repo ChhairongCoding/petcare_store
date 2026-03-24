@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'dart:developer' as developer ;
+import 'dart:developer' as developer;
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:petcare_store/features/shipping/model/shipping_model.dart';
@@ -10,7 +10,6 @@ class ShippingController extends GetxController {
   RxString addressText = "".obs;
   RxBool isLoading = false.obs;
   RxBool isGeocoding = false.obs;
-
 
   RxList<ShippingModel> addressLists = <ShippingModel>[].obs;
 
@@ -56,57 +55,62 @@ class ShippingController extends GetxController {
   }
 
   Future<void> getAddress() async {
-  isLoading(true);
-  try {
-    addressLists.clear(); // ✅ clear old data first
-    final list = await _shippingService.fetchAddress();
-    addressLists.assignAll(list); // ✅ assign all at once
-  } catch (e) {
-    developer.log("$e");
-  } finally {
-    isLoading(false);
-  }
-}
-
-
-Future<void> addAdress({
-  required String name,
-  required String addressDetail,
-  required double lat,
-  required double lng,
-}) async {
-  try {
     isLoading(true);
-    await _shippingService.addAdress(
-      name: name,
-      addressDetail: addressDetail,
-      lat: lat,
-      lng: lng,
-    );
-    await getAddress();
-    // Use Navigator.pop instead of Get.back() to avoid snackbar conflict
-    Navigator.of(Get.context!).pop();
-    await Future.delayed(const Duration(milliseconds: 300));
-    Get.snackbar("Success", "Address saved!",
-        snackPosition: SnackPosition.BOTTOM);
-  } catch (e) {
-    Get.snackbar("Error", "Something went wrong!",
-        snackPosition: SnackPosition.BOTTOM);
-        isLoading(false);
-  }finally{
-    isLoading(false);
+    try {
+      addressLists.clear(); // ✅ clear old data first
+      final list = await _shippingService.fetchAddress();
+      addressLists.assignAll(list); // ✅ assign all at once
+    } catch (e) {
+      developer.log("$e");
+    } finally {
+      isLoading(false);
+    }
   }
-}
 
- Future<void> removeAddress(int index) async{
+  Future<void> addAdress({
+    required String name,
+    required String addressDetail,
+    required double lat,
+    required double lng,
+  }) async {
+    try {
+      isLoading(true);
+      await _shippingService.addAdress(
+        name: name,
+        addressDetail: addressDetail,
+        lat: lat,
+        lng: lng,
+      );
+      await getAddress();
+      // Use Navigator.pop instead of Get.back() to avoid snackbar conflict
+      Navigator.of(Get.context!).pop();
+      await Future.delayed(const Duration(milliseconds: 300));
+      Get.snackbar(
+        "Success",
+        "Address saved!",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Something went wrong!",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      isLoading(false);
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> removeAddress(int index) async {
     isLoading(true);
     String? id = addressLists[index].id;
-    if(id == null) return; 
+    if (id == null) return;
     _shippingService.removeAddress(id);
     await getAddress();
     isLoading(false);
   }
-  
+
   @override
   void onClose() {
     addressDetail.dispose();
