@@ -14,6 +14,7 @@ class AppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.find<CartController>();
     final ShippingController shippingController = Get.find();
+  
 
     return SliverAppBar(
       elevation: 0,
@@ -26,51 +27,46 @@ class AppBarWidget extends StatelessWidget {
       ),
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: EdgeInsets.all(12),
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              HugeIcons.strokeRoundedPinLocation01,
-              size: 32,
-              color: Colors.red,
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "Location",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(
-                    height: 20,
-                    width: 120,
-                    child: Marquee(
-                      text:
-                          shippingController.addressLists
-                              .firstWhere(
-                                (e) =>
-                                    e.isDefault ==
-                                    shippingController.defaultAddress(),
-                                orElse: () =>
-                                    shippingController.addressLists.first,
-                              )
-                              .addressDetail ??
-                          'No address',
-                      style: Theme.of(context).textTheme.titleSmall,
-                      scrollAxis: Axis.horizontal,
-                      velocity: 30.0,
-                      blankSpace: 20.0,
-                      pauseAfterRound: Duration(seconds: 3),
-                    ),
-                  ),
-                ],
+        title: GestureDetector(
+          onTap: (){ 
+            Get.toNamed("/shipping");
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                HugeIcons.strokeRoundedPinLocation01,
+                size: 32,
+                color: Colors.red,
               ),
-            ),
-          ],
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Location",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: 20,
+                      width: 120,
+                      child: Marquee(
+                        text: shippingController.defaultAddress?.addressDetail ?? 'No address',
+                        style: Theme.of(context).textTheme.titleSmall,
+                        scrollAxis: Axis.horizontal,
+                        velocity: 30.0,
+                        blankSpace: 20.0,
+                        pauseAfterRound: Duration(seconds: 3),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
 

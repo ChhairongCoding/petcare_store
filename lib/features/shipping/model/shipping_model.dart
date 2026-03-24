@@ -22,7 +22,7 @@ class ShippingModel {
       addressDetail: json["address_detail"]??"",
       lat: json["lat"]??'',
       lng: json["lng"]??'',
-      isDefault :  json["default"] ?? ''
+      isDefault :  json["default"] ?? false
     );
   }
 
@@ -36,4 +36,22 @@ class ShippingModel {
       'default' : isDefault
     };
   }
+  // Add to ShippingModel
+ShippingModel copyWith({
+  String? id,
+  String? name,
+  String? addressDetail,
+  String? lat,
+  String? lng,
+  bool? isDefault,
+}) {
+  return ShippingModel(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    addressDetail: addressDetail ?? this.addressDetail,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
+    isDefault: isDefault ?? this.isDefault,
+  );
+}
 }

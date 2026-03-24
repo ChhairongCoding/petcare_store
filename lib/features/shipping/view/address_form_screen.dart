@@ -229,6 +229,7 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                                 .text, // .text to get String
                            lat:   _selectedLocation.latitude, // lat
                            lng:  _selectedLocation.longitude, // lng
+                           isDefault: false
                           );
                         }
                       },

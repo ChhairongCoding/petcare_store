@@ -10,6 +10,7 @@ class ShippingController extends GetxController {
   RxString addressText = "".obs;
   RxBool isLoading = false.obs;
   RxBool isGeocoding = false.obs;
+   
 
   RxList<ShippingModel> addressLists = <ShippingModel>[].obs;
 
@@ -54,24 +55,26 @@ class ShippingController extends GetxController {
     }
   }
 
-  Future<void> getAddress() async {
+Future<void> getAddress() async {
+  try {
     isLoading(true);
-    try {
-      addressLists.clear(); // ✅ clear old data first
-      final list = await _shippingService.fetchAddress();
-      addressLists.assignAll(list); // ✅ assign all at once
-    } catch (e) {
-      developer.log("$e");
-    } finally {
-      isLoading(false);
-    }
+    final list = await _shippingService.fetchAddress();
+    addressLists.clear();
+    await Future.delayed(Duration(milliseconds: 50)); // 👈 force Obx to see the clear
+    addressLists.addAll(list);
+  } catch (e) {
+    developer.log("$e");
+  } finally {
+    isLoading(false);
   }
+}
 
   Future<void> addAdress({
     required String name,
     required String addressDetail,
     required double lat,
     required double lng,
+    required bool isDefault
   }) async {
     try {
       isLoading(true);
@@ -80,6 +83,7 @@ class ShippingController extends GetxController {
         addressDetail: addressDetail,
         lat: lat,
         lng: lng,
+        isDefault: isDefault
       );
       await getAddress();
       // Use Navigator.pop instead of Get.back() to avoid snackbar conflict
@@ -111,11 +115,23 @@ class ShippingController extends GetxController {
     isLoading(false);
   }
 
-  bool defaultAddress(){
+  bool checkAddressDefault(){
     final isDefault = addressLists.map((e)=> e.isDefault == true);
     return isDefault.first;
     
   }
+  
+  ShippingModel? get defaultAddress => addressLists.firstWhereOrNull((e) => e.isDefault == true);
+
+Future<void> setDefault(String id) async {
+  try {
+    await _shippingService.setDefault(id);
+    await getAddress();
+    print("$id");
+  } catch (e) {
+    developer.log("$e");
+  }
+}
 
   @override
   void onClose() {
