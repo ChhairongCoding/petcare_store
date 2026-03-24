@@ -8,6 +8,7 @@ class ShippingService {
     addressDetail: "",
     lat: '',
     lng: '',
+    isDefault: false
   );
   final _client = Supabase.instance.client;
 

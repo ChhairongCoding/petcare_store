@@ -19,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _navigateToMain();
     cartController.getAllProductCart();
-
   }
 
   _navigateToMain() async {

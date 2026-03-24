@@ -4,6 +4,7 @@ class ShippingModel {
   final String addressDetail;
   final String lat;
   final String lng;
+  final bool isDefault;
 
   ShippingModel({
     this.id,
@@ -11,6 +12,7 @@ class ShippingModel {
     required this.addressDetail,
     required this.lat,
     required this.lng,
+    required this.isDefault
   });
 
   factory ShippingModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class ShippingModel {
       addressDetail: json["address_detail"]??"",
       lat: json["lat"]??'',
       lng: json["lng"]??'',
+      isDefault :  json["default"] ?? ''
     );
   }
 
@@ -30,6 +33,7 @@ class ShippingModel {
       'address_detail': addressDetail,
       'lat': lat,
       'lng': lng,
+      'default' : isDefault
     };
   }
 }

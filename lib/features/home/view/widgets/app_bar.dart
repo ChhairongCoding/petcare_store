@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:marquee/marquee.dart';
 import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/features/cart/controller/cart_controller.dart';
+import 'package:petcare_store/features/shipping/controller/shipping_controller.dart';
 
 class AppBarWidget extends StatelessWidget {
   const AppBarWidget({super.key});
@@ -12,6 +13,7 @@ class AppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.find<CartController>();
+    final ShippingController shippingController = Get.find();
 
     return SliverAppBar(
       elevation: 0,
@@ -20,7 +22,7 @@ class AppBarWidget extends StatelessWidget {
       surfaceTintColor: Colors.transparent,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.white,
-        statusBarBrightness: Brightness.light
+        statusBarBrightness: Brightness.light,
       ),
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: EdgeInsets.all(12),
@@ -47,7 +49,17 @@ class AppBarWidget extends StatelessWidget {
                     height: 20,
                     width: 120,
                     child: Marquee(
-                      text: "7c, Phnom Penh, Cambodia",
+                      text:
+                          shippingController.addressLists
+                              .firstWhere(
+                                (e) =>
+                                    e.isDefault ==
+                                    shippingController.defaultAddress(),
+                                orElse: () =>
+                                    shippingController.addressLists.first,
+                              )
+                              .addressDetail ??
+                          'No address',
                       style: Theme.of(context).textTheme.titleSmall,
                       scrollAxis: Axis.horizontal,
                       velocity: 30.0,
@@ -78,9 +90,8 @@ class AppBarWidget extends StatelessWidget {
         CircleAvatar(
           backgroundColor: Colors.white,
           child: Obx(() {
-            final count = cartController.cartItems.length;
             return Badge(
-              label: Text(count.toString()),
+              label: Text(cartController.countItemCart().toString()),
               child: IconButton(
                 icon: Icon(
                   HugeIcons.strokeRoundedShoppingCart01,

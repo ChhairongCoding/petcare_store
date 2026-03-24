@@ -4,6 +4,26 @@ import 'dart:developer' as dev;
 class CartService {
   final client = Supabase.instance.client;
 
+  
+  Future<Map<String, dynamic>?> getCartItem(String productId) async {
+  try {
+    final userId = getCurrentUserId();
+    if (userId == null) return null;
+
+    final response = await client
+        .from("carts")
+        .select()
+        .eq('user_id', userId)
+        .eq('product_id', productId)
+        .maybeSingle(); // ✅ Returns null if not found, no exception
+
+    return response;
+  } catch (e) {
+    dev.log("Error getting cart item: $e");
+    return null;
+  }
+}
+
   /// Get the current user ID from Supabase auth
   String? getCurrentUserId() {
     return client.auth.currentSession?.user?.id;

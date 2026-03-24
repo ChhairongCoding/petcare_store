@@ -17,6 +17,11 @@ class CartController extends GetxController {
   void onInit() {
     super.onInit();
     _updateTotalPrice();
+    getAllProductCart();
+  }
+
+  int countItemCart (){
+    return cartItems.length;
   }
 
   void _updateTotalPrice() {
@@ -28,36 +33,48 @@ class CartController extends GetxController {
 
   int get totalItems => cartItems.fold(0, (sum, item) => sum + item.quantity);
 
-  void addToCart(ProductModel product, {int quantity = 1}) {
-    // Check if user is logged in
-    final userId = cartService.getCurrentUserId();
-    if (userId == null) {
-      Get.snackbar(
-        'Authentication Required',
-        'Please log in to add items to your cart.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    final existingItemIndex = cartItems.indexWhere(
-      (item) => item.product.id == product.id,
+  void addToCart(ProductModel product, {int quantity = 1}) async {
+  final userId = cartService.getCurrentUserId();
+  if (userId == null) {
+    Get.snackbar(
+      'Authentication Required',
+      'Please log in to add items to your cart.',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
     );
-    if (existingItemIndex != -1) {
-      cartService.updateCartQty(
-        productId: product.id,
-        qty: cartItems[existingItemIndex].quantity + quantity,
-      );
-      cartItems[existingItemIndex].quantity += quantity;
+    return;
+  }
+
+  final existingItemIndex = cartItems.indexWhere(
+    (item) => item.product.id == product.id,
+  );
+
+  if (existingItemIndex != -1) {
+    // Already in local list — just update
+    final newQty = cartItems[existingItemIndex].quantity + quantity;
+    cartItems[existingItemIndex].quantity = newQty;
+    cartItems.refresh();
+    await cartService.updateCartQty(productId: product.id, qty: newQty);
+  } else {
+    // ✅ Check Supabase directly before inserting
+    final existingCart = await cartService.getCartItem(product.id);
+
+    if (existingCart != null) {
+      // Exists in DB but not in local list (e.g. after restart)
+      final newQty = (existingCart['quantity'] as int) + quantity;
+      await cartService.updateCartQty(productId: product.id, qty: newQty);
+      cartItems.add(CartItemModel(product: product, quantity: newQty));
     } else {
-      cartService.addToCart(product.id, quantity);
+      // Truly new item
+      await cartService.addToCart(product.id, quantity);
       cartItems.add(CartItemModel(product: product, quantity: quantity));
     }
-    _updateTotalPrice();
-    Get.dialog(DialogAddToCartSuccessWidget());
   }
+
+  _updateTotalPrice();
+  Get.dialog(DialogAddToCartSuccessWidget());
+}
 
   void removeFromCart(String productId) {
     cartItems.removeWhere(

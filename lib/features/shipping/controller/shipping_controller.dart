@@ -111,6 +111,12 @@ class ShippingController extends GetxController {
     isLoading(false);
   }
 
+  bool defaultAddress(){
+    final isDefault = addressLists.map((e)=> e.isDefault == true);
+    return isDefault.first;
+    
+  }
+
   @override
   void onClose() {
     addressDetail.dispose();
