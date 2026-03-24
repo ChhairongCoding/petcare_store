@@ -56,4 +56,13 @@ class ShippingService {
       rethrow; // let controller handle UI
     } 
   }
+
+  Future<void> removeAddress(String id)async{
+    final auth = getCurrentUserId();
+    try {
+      await _client.from("addresses").delete().eq('id', id).eq("user_id", auth.toString());
+    } catch (e) {
+      developer.log("$e");
+    }
+  }
 }

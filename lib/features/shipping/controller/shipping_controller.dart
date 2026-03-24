@@ -97,6 +97,15 @@ Future<void> addAdress({
     isLoading(false);
   }
 }
+
+ Future<void> removeAddress(int index) async{
+    isLoading(true);
+    String? id = addressLists[index].id;
+    if(id == null) return; 
+    _shippingService.removeAddress(id);
+    await getAddress();
+    isLoading(false);
+  }
   
   @override
   void onClose() {
