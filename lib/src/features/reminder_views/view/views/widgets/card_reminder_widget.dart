@@ -36,12 +36,8 @@ class CardReminderWidget extends StatelessWidget {
       child: Card(
         elevation: 2,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        color: reminder.isCompleted
-            ? Colors.green[50]
-            : theme.cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: reminder.isCompleted ? Colors.green[50] : theme.cardColor,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -54,7 +50,7 @@ class CardReminderWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: reminder.isCompleted
                           ? Colors.green[100]
-                          : theme.primaryColor.withOpacity(0.1),
+                          : theme.primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -141,11 +137,7 @@ class CardReminderWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 12),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 16,
-                      ),
+                      Icon(Icons.check_circle, color: Colors.green, size: 16),
                       const SizedBox(width: 4),
                       Text(
                         'Completed',

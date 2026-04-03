@@ -64,11 +64,11 @@ class _MyPetState extends State<MyPet> {
             child: Obx(() {
               final isBusy =
                   _controller.isLoading.value && _controller.pets.isEmpty;
-      
+
               if (isBusy) {
                 return Center(child: CircularProgressIndicator());
               }
-      
+
               return RefreshIndicator(
                 onRefresh: _controller.fetchPets,
                 child: _controller.pets.isEmpty
@@ -98,13 +98,13 @@ class _MyPetState extends State<MyPet> {
           end: Alignment.bottomRight,
           colors: [
             Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.8),
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -139,7 +139,7 @@ class _MyPetState extends State<MyPet> {
           Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
@@ -182,7 +182,7 @@ class _MyPetState extends State<MyPet> {
             blurRadius: 10,
             offset: Offset(0, 3),
           ),
-        ]
+        ],
       ),
       child: InkWell(
         onTap: () {
@@ -200,8 +200,7 @@ class _MyPetState extends State<MyPet> {
                 backgroundColor: Colors.grey,
                 icon: Icons.edit_rounded,
                 label: 'Edit',
-                borderRadius: BorderRadius.only(
-                ),
+                borderRadius: BorderRadius.only(),
                 padding: EdgeInsets.zero,
                 flex: 1,
               ),
@@ -248,7 +247,7 @@ class _MyPetState extends State<MyPet> {
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                  color: accentColor.withOpacity(0.3),
+                                  color: accentColor.withValues(alpha: 0.3),
                                   blurRadius: 8,
                                   offset: Offset(0, 4),
                                 ),
@@ -288,13 +287,15 @@ class _MyPetState extends State<MyPet> {
                                       gradient: LinearGradient(
                                         colors: [
                                           accentColor,
-                                          accentColor.withOpacity(0.7),
+                                          accentColor.withValues(alpha: 0.7),
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: accentColor.withOpacity(0.3),
+                                          color: accentColor.withValues(
+                                            alpha: 0.3,
+                                          ),
                                           blurRadius: 4,
                                           offset: Offset(0, 2),
                                         ),
@@ -487,6 +488,7 @@ class _MyPetState extends State<MyPet> {
       builder: (context) => AddPetBottomSheet(pet: pet),
     );
   }
+
   void _deletePet(BuildContext context, PetModel pet) {
     showDialog(
       context: context,

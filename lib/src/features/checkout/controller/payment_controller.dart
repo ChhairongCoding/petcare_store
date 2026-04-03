@@ -76,10 +76,13 @@ class PaymentController extends GetxController {
           .toList();
 
       // 2. Insert order into Supabase
+      // ✅ FIXED
       final response = await _supabase
           .from('orders')
           .insert({
-            'user_id': userId,
+            'user_id': userId, // ← app uses this
+            'buyer':
+                userId, // ← RLS policy was checking this (now fixed to user_id, but keep for consistency)
             'address_id': addressId,
             'payment_method': selectedPaymentMethod.value!.name,
             'status': OrderStatus.pending.name,

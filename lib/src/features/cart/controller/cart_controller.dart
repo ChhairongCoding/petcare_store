@@ -110,6 +110,7 @@ class CartController extends GetxController {
     cartService.clearCart();
     cartItems.clear();
     cartItems.refresh();
+    _updateTotalPrice();
     isLoading(false);
   }
 

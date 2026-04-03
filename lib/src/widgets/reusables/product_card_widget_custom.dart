@@ -8,28 +8,21 @@ import 'package:petcare_store/src/features/products/widget/product_detail_widget
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductCardWidgetCustom extends StatelessWidget {
-  const ProductCardWidgetCustom({
-    super.key,
-    
-    required this.products,
-  });
-
+  const ProductCardWidgetCustom({super.key, required this.products});
 
   final ProductModel products;
 
   @override
   Widget build(BuildContext context) {
-  final ProductController productController = Get.find<ProductController>();
+    final ProductController productController = Get.find<ProductController>();
     return Skeletonizer(
       enabled: productController.isFirstLoadRunning.value,
       child: GestureDetector(
         onTap: () => Get.to(() => ProductDetailWidget(), arguments: products),
         child: Container(
           width: MediaQuery.of(context).size.width / 2 - 32,
-         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12)
-         ),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +31,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
                 aspectRatio: 1,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                child: Stack(
+                  child: Stack(
                     children: [
                       CachedNetworkImage(
                         imageUrl: products.imagePath,
@@ -84,7 +77,10 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                 SizedBox(height: 4),
                                 Text(
                                   url.split('/').last,
-                                  style: TextStyle(color: Colors.grey[600], fontSize: 10),
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 10,
+                                  ),
                                   maxLines: 2,
                                 ),
                               ],
@@ -93,9 +89,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
                         ),
                         // Add debugging to see what's happening
                         cacheManager: null,
-                        httpHeaders: {
-                          'Cache-Control': 'no-cache',
-                        },
+                        httpHeaders: {'Cache-Control': 'no-cache'},
                       ),
                       Positioned(
                         top: 8,
@@ -103,7 +97,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -119,7 +113,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
               ),
               SizedBox(height: 12),
               Text(
-               products.name,
+                products.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(

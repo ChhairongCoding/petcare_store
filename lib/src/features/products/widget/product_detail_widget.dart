@@ -1,3 +1,4 @@
+import 'dart:io' as platform;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
   final ProductController productController = Get.find<ProductController>();
   final products = ProductController().products;
   int quantity = 1;
+  int _currentImageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -29,26 +31,102 @@ class _ProductDetailWidgetState extends State<ProductDetailWidget> {
         slivers: [
           Obx(
             () => SliverAppBar(
+              floating: true,
+              backgroundColor: Colors.white,
+              actionsPadding: EdgeInsets.only(right: 10),
+              leading: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  onPressed: () => Get.back(),
+                  icon: Icon(
+                    platform.Platform.isAndroid
+                        ? Icons.arrow_back
+                        : Icons.arrow_back_ios_new,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                ),
+              ),
               actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(HugeIcons.strokeRoundedShare01),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      HugeIcons.strokeRoundedShare01,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(HugeIcons.strokeRoundedFavourite),
+                SizedBox(width: 10),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      HugeIcons.strokeRoundedFavourite,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () => Get.toNamed(AppRoutes.cart),
-                  icon: Badge(
-                    label: Text(cartController.cartItems.length.toString()),
-                    child: Icon(HugeIcons.strokeRoundedShoppingCart02),
+                SizedBox(width: 10),
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    onPressed: () => Get.toNamed(AppRoutes.cart),
+                    icon: Badge(
+                      label: Text(cartController.cartItems.length.toString()),
+                      child: Icon(
+                        HugeIcons.strokeRoundedShoppingCart02,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
               ],
               expandedHeight: 390,
               flexibleSpace: FlexibleSpaceBar(
-                background: CachedNetworkImage(imageUrl: product.imagePath),
+                background: Stack(
+                  children: [
+                    PageView.builder(
+                      itemCount: 3, // Simulating 3 images for the product
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentImageIndex = index;
+                        });
+                      },
+                      itemBuilder: (context, index) {
+                        return CachedNetworkImage(
+                          imageUrl: product.imagePath,
+                          fit: BoxFit.contain,
+                        );
+                      },
+                    ),
+                    Positioned(
+                      bottom: 16,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          3,
+                          (index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: _currentImageIndex == index ? 24 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: _currentImageIndex == index
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
