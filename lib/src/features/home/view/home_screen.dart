@@ -133,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                       final isLoading =
                           productController.isFirstLoadRunning.value;
                       return SizedBox(
-                        height: 290,
+                        height: 260,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: isLoading
@@ -146,6 +146,60 @@ class HomeScreen extends StatelessWidget {
                             final product = isLoading
                                 ? ProductModel.fake()
                                 : productController.products[index];
+
+                            return ProductCardWidgetCustom(products: product);
+                          },
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+                Column(
+                  spacing: 12,
+                  children: [
+                    Row(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Hot New",
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.local_fire_department,
+                              color: Colors.orange,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        Text(
+                          "See All",
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                      ],
+                    ),
+                    Obx(() {
+                      final isLoading =
+                          productController.isFirstLoadRunning.value;
+                      // Display products in reverse to simulate "newest"
+                      final displayProducts = isLoading
+                          ? []
+                          : productController.products.reversed.toList();
+                      return SizedBox(
+                        height: 260,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: isLoading ? 5 : displayProducts.length,
+                          itemBuilder: (context, index) {
+                            final isLoading =
+                                productController.isFirstLoadRunning.value;
+
+                            final product = isLoading
+                                ? ProductModel.fake()
+                                : displayProducts[index];
 
                             return ProductCardWidgetCustom(products: product);
                           },
@@ -173,13 +227,16 @@ class HomeScreen extends StatelessWidget {
                     ),
 
                     Obx(() {
-                      final currentIsLoading = productController.isFirstLoadRunning.value;
+                      final currentIsLoading =
+                          productController.isFirstLoadRunning.value;
                       return Align(
                         alignment: Alignment.topLeft,
                         child: Wrap(
                           spacing: 20,
                           children: List.generate(
-                            currentIsLoading ? 5 : productController.products.length,
+                            currentIsLoading
+                                ? 5
+                                : productController.products.length,
                             (index) {
                               final product = currentIsLoading
                                   ? ProductModel.fake()

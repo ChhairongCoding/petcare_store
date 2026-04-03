@@ -26,7 +26,7 @@ class ProductDetailWidget extends StatelessWidget {
 
   Container _buildAppBar(ProductModel product) {
     return Container(
-      padding: EdgeInsets.all( 60),
+      padding: EdgeInsets.all(60),
       height: 500,
       width: double.infinity,
       child: Image.network(

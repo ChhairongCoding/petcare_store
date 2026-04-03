@@ -37,7 +37,9 @@ class MainScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -47,7 +49,7 @@ class MainScreen extends StatelessWidget {
         gap: 8,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         backgroundColor: Colors.transparent, // transparent to show container bg
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
         activeColor: Theme.of(context).colorScheme.onPrimary,
         tabBackgroundColor: Theme.of(context).colorScheme.primary,
         tabs: List.generate(
@@ -62,7 +64,7 @@ class MainScreen extends StatelessWidget {
           if (Supabase.instance.client.auth.currentSession != null) {
             mainController.changePage(index);
           } else {
-              providerLocal.isPage(index, false);
+            providerLocal.isPage(index, false);
           }
         },
       ),

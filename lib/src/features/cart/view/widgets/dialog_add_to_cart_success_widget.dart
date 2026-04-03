@@ -15,6 +15,7 @@ class _DialogAddToCartSuccessWidgetState extends State<DialogAddToCartSuccessWid
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -27,13 +28,16 @@ class _DialogAddToCartSuccessWidgetState extends State<DialogAddToCartSuccessWid
       CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
     );
     _animationController.forward();
-    Timer(const Duration(seconds: 2), () {
-      Get.back();
+    _timer = Timer(const Duration(seconds: 2), () {
+      if (mounted) {
+        Get.back();
+      }
     });
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
     _animationController.dispose();
     super.dispose();
   }

@@ -52,6 +52,7 @@ dependencies:
   fluttertoast: ^9.0.0
   dropdown_button2: ^3.0.0
   qr_flutter: ^4.1.0
+  timelines_plus: ^2.0.0
   # google_maps_flutter: ^2.13.1
 
 dev_dependencies:

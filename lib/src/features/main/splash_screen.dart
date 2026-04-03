@@ -25,8 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 3));
     // Get.offNamed(AppRoutes.mainScreen);
     // if (Get.put(LocalService()).getToken() != null) {
-      Get.offNamed(AppRoutes.mainScreen);
- 
+    Get.offNamed(AppRoutes.mainScreen);
   }
 
   @override
@@ -65,11 +64,13 @@ class _SplashScreenState extends State<SplashScreen> {
             Text(
               'Your pet\'s best friend',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 48),
-            // Loading indicator
+            // Loading indicatorx
             CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
                 Theme.of(context).colorScheme.primary,

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class PetModel {
   final String id;
   final String owner;
@@ -39,8 +37,12 @@ class PetModel {
       breed: map['breed'],
       age: map['age'],
       gender: map['gender'],
-      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
-      updatedAt: map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
+      createdAt: map['created_at'] != null
+          ? DateTime.parse(map['created_at'])
+          : null,
+      updatedAt: map['updated_at'] != null
+          ? DateTime.parse(map['updated_at'])
+          : null,
       avatar: map['avatar'],
       lat: map['lat'],
       long: map['long'],
