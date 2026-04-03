@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:petcare_store/features/my_pet/models/pet_model.dart';
 import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.dart';
+import 'package:petcare_store/src/features/my_pet/models/pet_model.dart';
 import 'package:petcare_store/src/features/reminder_views/controller/reminder_controller.dart';
-import 'package:petcare_store/widgets/text_form_field_widgets.dart';
+import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
 
 class RemindersAddForm extends StatefulWidget {
   const RemindersAddForm({super.key});

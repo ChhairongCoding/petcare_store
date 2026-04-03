@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:petcare_store/config/core/routes/app_routes.dart';
-import 'package:petcare_store/features/products/model/product_model.dart';
+import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
 import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
-import 'package:petcare_store/widgets/reusables/product_card_widget_custom.dart';
+import 'package:petcare_store/src/features/products/model/product_model.dart';
+import 'package:petcare_store/src/widgets/reusables/product_card_widget_custom.dart';
 
 class ProductDetailWidget extends StatefulWidget {
   const ProductDetailWidget({super.key});

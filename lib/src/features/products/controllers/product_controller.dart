@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:petcare_store/features/products/model/product_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../model/product_model.dart';
 import 'dart:developer' as developer;
 
 class ProductController extends GetxController {

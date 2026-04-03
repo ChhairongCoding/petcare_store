@@ -1,6 +1,6 @@
 import 'dart:developer' as developer;
 import 'package:get/get.dart';
-import 'package:petcare_store/features/reminder_views/models/reminder_model.dart';
+import 'package:petcare_store/src/features/reminder_views/models/reminder_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 

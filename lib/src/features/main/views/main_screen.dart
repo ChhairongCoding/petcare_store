@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:petcare_store/features/main/controller/main_controller.dart';
+import 'package:petcare_store/src/features/main/controller/main_controller.dart';
 // import 'package:petcare_store/services/local_service.dart';
-import 'package:petcare_store/util/provider_local.dart';
+import 'package:petcare_store/src/util/provider_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MainScreen extends StatelessWidget {

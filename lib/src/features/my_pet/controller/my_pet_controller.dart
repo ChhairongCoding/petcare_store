@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:petcare_store/features/my_pet/models/pet_model.dart';
+import 'package:petcare_store/src/features/my_pet/models/pet_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // import '../models/my_pet_entity.dart';

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:get/route_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:petcare_store/features/auth/controller/auth_controller.dart';
-import 'package:petcare_store/features/profile/models/profile_model.dart';
+import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
+import 'package:petcare_store/src/features/profile/models/profile_model.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});

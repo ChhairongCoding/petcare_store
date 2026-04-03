@@ -51,6 +51,7 @@ dependencies:
   geocoding: ^4.0.0
   fluttertoast: ^9.0.0
   dropdown_button2: ^3.0.0
+  qr_flutter: ^4.1.0
   # google_maps_flutter: ^2.13.1
 
 dev_dependencies:
@@ -62,6 +63,7 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - assets/images/
     - assets/icons/logo/app_logo.png
     - assets/icons/logo/ic_launcher.png
   fonts:

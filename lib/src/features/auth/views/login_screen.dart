@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:petcare_store/config/core/routes/app_routes.dart';
-import 'package:petcare_store/features/auth/controller/auth_controller.dart';
-import 'package:petcare_store/widgets/text_form_field_widgets.dart';
+import 'package:petcare_store/src/config/core/routes/app_routes.dart';
+import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
+import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

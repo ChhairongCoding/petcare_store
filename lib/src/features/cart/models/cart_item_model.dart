@@ -1,5 +1,4 @@
-
-import 'package:petcare_store/features/products/model/product_model.dart';
+import 'package:petcare_store/src/features/products/model/product_model.dart';
 
 class CartItemModel {
   final ProductModel product;

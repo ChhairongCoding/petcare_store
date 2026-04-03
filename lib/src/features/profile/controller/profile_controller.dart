@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:petcare_store/features/profile/models/profile_model.dart';
+import 'package:petcare_store/src/features/profile/models/profile_model.dart';
 // import 'package:petcare_store/services/auth_service.dart';
-import 'package:petcare_store/services/local_service.dart';
+import 'package:petcare_store/src/services/local_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
