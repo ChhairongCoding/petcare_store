@@ -10,6 +10,7 @@ import 'package:petcare_store/src/features/checkout/view/success_payment_screen.
 import 'package:petcare_store/src/features/main/splash_screen.dart';
 import 'package:petcare_store/src/features/main/views/main_screen.dart';
 import 'package:petcare_store/src/features/my_order/view/my_orders_screen.dart';
+import 'package:petcare_store/src/features/my_order/view/order_detail_screen.dart';
 import 'package:petcare_store/src/features/my_pet/views/my_pet_screen.dart';
 import 'package:petcare_store/src/features/my_pet/views/widgets/tracking_my_pet.dart';
 import 'package:petcare_store/src/features/notification/views/notification_screen.dart';
@@ -47,5 +48,6 @@ List<GetPage<dynamic>> appPages = [
   ),
   GetPage(name: AppRoutes.khqrPayment, page: () => const KhqrPaymentScreen()),
   GetPage(name: AppRoutes.abaPayment, page: () => const AbaPayScreen()),
+  GetPage(name: AppRoutes.orderDetail, page: () => const OrderDetailScreen()),
   GetPage(name: AppRoutes.productDetail, page: () => const ProductDetailPage()),
 ];
