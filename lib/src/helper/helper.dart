@@ -31,40 +31,39 @@ class Helper {
   //   onPicked(image);
   // }
 
- static Future<void> imgFromGallery2(Function(dynamic) onPicked) async {
-  try {
-    final picker = ImagePicker();
-    final XFile? imageP = await picker.pickImage(source: ImageSource.gallery);
-    if (imageP == null) return;
+  static Future<void> imgFromGallery2(Function(dynamic) onPicked) async {
+    try {
+      final picker = ImagePicker();
+      final XFile? imageP = await picker.pickImage(source: ImageSource.gallery);
+      if (imageP == null) return;
 
-    if (kIsWeb) {
-      Uint8List imageBytes = await imageP.readAsBytes();
-      onPicked(imageBytes);
-    } else {
-      onPicked(File(imageP.path));
+      if (kIsWeb) {
+        Uint8List imageBytes = await imageP.readAsBytes();
+        onPicked(imageBytes);
+      } else {
+        onPicked(File(imageP.path));
+      }
+    } catch (e) {
+      debugPrint("Image picker error: $e");
     }
-  } catch (e) {
-    debugPrint("Image picker error: $e");
   }
-}
 
-static Future<void> imgFromCamera(Function(dynamic) onPicked) async {
-  try {
-    final picker = ImagePicker();
-    final XFile? imageP = await picker.pickImage(source: ImageSource.camera);
-    if (imageP == null) return;
+  static Future<void> imgFromCamera(Function(dynamic) onPicked) async {
+    try {
+      final picker = ImagePicker();
+      final XFile? imageP = await picker.pickImage(source: ImageSource.camera);
+      if (imageP == null) return;
 
-    if (kIsWeb) {
-      Uint8List imageBytes = await imageP.readAsBytes();
-      onPicked(imageBytes);
-    } else {
-      onPicked(File(imageP.path));
+      if (kIsWeb) {
+        Uint8List imageBytes = await imageP.readAsBytes();
+        onPicked(imageBytes);
+      } else {
+        onPicked(File(imageP.path));
+      }
+    } catch (e) {
+      debugPrint("Camera picker error: $e");
     }
-  } catch (e) {
-    debugPrint("Camera picker error: $e");
   }
-}
-
 
   // String translate(BuildContext context, String key) {
   //   try {

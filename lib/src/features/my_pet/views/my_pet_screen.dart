@@ -55,23 +55,16 @@ class _MyPetState extends State<MyPet> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Skeletonizer(
-      enabled: _controller.isLoading.value,
-      child: Column(
-        children: [
-          _buildHeader(context),
-          Expanded(
-            child: Obx(() {
-              final isBusy =
-                  _controller.isLoading.value && _controller.pets.isEmpty;
-
-              if (isBusy) {
-                return Center(child: CircularProgressIndicator());
-              }
-
-              return RefreshIndicator(
+    return Obx(
+      () => Skeletonizer(
+        enabled: _controller.isLoading.value,
+        child: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: RefreshIndicator(
                 onRefresh: _controller.fetchPets,
-                child: _controller.pets.isEmpty
+                child: _controller.pets.isEmpty && !_controller.isLoading.value
                     ? ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         children: [
@@ -79,11 +72,27 @@ class _MyPetState extends State<MyPet> {
                           _buildEmptyState(context),
                         ],
                       )
-                    : _buildPetsList(context, _controller.pets),
-              );
-            }),
-          ),
-        ],
+                    : _buildPetsList(
+                        context,
+                        _controller.pets.isEmpty
+                            ? List.generate(
+                                3,
+                                (index) => PetModel(
+                                  id: 'skeleton_$index',
+                                  owner: '',
+                                  name: 'Pet Name Holder',
+                                  type: 'Dog',
+                                  breed: 'Golden Retriever',
+                                  age: 2,
+                                  gender: 'Male',
+                                ),
+                              )
+                            : _controller.pets,
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

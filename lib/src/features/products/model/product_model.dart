@@ -17,19 +17,19 @@ class ProductModel {
     this.rating,
   });
 
-factory ProductModel.fromJson(Map<String, dynamic> json) {
-  final bucketUrl = dotenv.env['bucketUrl']??'';
-  final rawPath = json['image_path'] ?? '';
+  factory ProductModel.fromJson(Map<String, dynamic> json) {
+    final bucketUrl = dotenv.env['bucketUrl'] ?? '';
+    final rawPath = json['image_path'] ?? '';
 
-  return ProductModel(
-    id: json['id']?.toString() ?? '',
-    name: json['name'] ?? 'Unknown',
-    price: (json['price'] as num?)?.toDouble() ?? 0.0,
-   imagePath: rawPath.startsWith('http') ? rawPath : '$bucketUrl$rawPath',
-    description: json['description'],
-    rating: json['rating'],
-  );
-}
+    return ProductModel(
+      id: json['id']?.toString() ?? '',
+      name: json['name'] ?? 'Unknown',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      imagePath: rawPath.startsWith('http') ? rawPath : '$bucketUrl$rawPath',
+      description: json['description'],
+      rating: json['rating'],
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {

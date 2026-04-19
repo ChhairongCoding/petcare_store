@@ -134,10 +134,8 @@ class MyPetController extends GetxController {
     try {
       isLoading(true);
       await _client.from('mypet').delete().eq('id', id);
-      // pets.removeWhere((existing) => existing.i == pet.id);
       errorMessage.value = "Pet deleted successfully";
-      fetchPets();
-      isLoading(false);
+      await fetchPets();
     } on PostgrestException catch (e, stack) {
       developer.log(
         'PostgREST error when deleting pet',
@@ -159,6 +157,8 @@ class MyPetController extends GetxController {
         stackTrace: stack,
       );
       Get.snackbar('Unable to delete pet', 'Please try again later.');
+    } finally {
+      isLoading(false);
     }
   }
 
