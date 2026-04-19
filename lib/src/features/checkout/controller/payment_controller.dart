@@ -68,9 +68,10 @@ class PaymentController extends GetxController {
             (item) => {
               'product_id': item.product.id,
               'product_name': item.product.name,
+              'variant_id': item.variantId,
               'quantity': item.quantity,
-              'unit_price': item.product.price,
-              'subtotal': item.product.price * item.quantity,
+              'unit_price': item.variant?.price ?? item.product.price,
+              'subtotal': item.totalPrice,
             },
           )
           .toList();
@@ -81,8 +82,7 @@ class PaymentController extends GetxController {
           .from('orders')
           .insert({
             'user_id': userId, // ← app uses this
-            'buyer':
-                userId, // ← RLS policy was checking this (now fixed to user_id, but keep for consistency)
+            'buyer': userId,
             'address_id': addressId,
             'payment_method': selectedPaymentMethod.value!.name,
             'status': OrderStatus.pending.name,
@@ -96,6 +96,26 @@ class PaymentController extends GetxController {
       currentOrderId.value = response['id'].toString();
       orderStatus.value = OrderStatus.pending;
       paymentConfirmed.value = false;
+
+      // Deduct stock for all items
+      final itemsToDeduct = List.from(cartController.cartItems);
+      for (final item in itemsToDeduct) {
+        if (item.variantId != null) {
+          try {
+            print('➔ ATTEMPTING TO CUT STOCK for variant ${item.variantId}');
+
+            await _supabase.rpc(
+              'decrement_stock',
+              params: {
+                'variant_id': item.variantId,
+                'quantity_to_subtract': item.quantity,
+              },
+            );
+          } catch (e) {
+            print('Error updating stock for variant ${item.variantId}: $e');
+          }
+        }
+      }
 
       // 3. Clear the cart
       cartController.removeAllItem();

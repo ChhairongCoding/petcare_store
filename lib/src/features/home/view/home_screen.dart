@@ -133,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                       final isLoading =
                           productController.isFirstLoadRunning.value;
                       return SizedBox(
-                        height: 260,
+                        height: 290,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: isLoading
@@ -189,7 +189,7 @@ class HomeScreen extends StatelessWidget {
                           ? []
                           : productController.products.reversed.toList();
                       return SizedBox(
-                        height: 260,
+                        height: 290,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: isLoading ? 5 : displayProducts.length,

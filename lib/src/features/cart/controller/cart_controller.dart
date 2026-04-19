@@ -6,6 +6,9 @@ import 'package:petcare_store/src/features/cart/view/widgets/dialog_add_to_cart_
 import 'package:petcare_store/src/features/products/model/product_model.dart';
 import 'dart:developer' as dev;
 
+import 'package:petcare_store/src/features/products/model/product_variant_model.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_snackbar_widget.dart';
+
 class CartController extends GetxController {
   final RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
   final CartService cartService = CartService();
@@ -20,7 +23,7 @@ class CartController extends GetxController {
     getAllProductCart();
   }
 
-  int countItemCart (){
+  int countItemCart() {
     return cartItems.length;
   }
 
@@ -33,70 +36,99 @@ class CartController extends GetxController {
 
   int get totalItems => cartItems.fold(0, (sum, item) => sum + item.quantity);
 
-  void addToCart(ProductModel product, {int quantity = 1}) async {
-  final userId = cartService.getCurrentUserId();
-  if (userId == null) {
-    Get.snackbar(
-      'Authentication Required',
-      'Please log in to add items to your cart.',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-    );
-    return;
-  }
-
-  final existingItemIndex = cartItems.indexWhere(
-    (item) => item.product.id == product.id,
-  );
-
-  if (existingItemIndex != -1) {
-    // Already in local list — just update
-    final newQty = cartItems[existingItemIndex].quantity + quantity;
-    cartItems[existingItemIndex].quantity = newQty;
-    cartItems.refresh();
-    await cartService.updateCartQty(productId: product.id, qty: newQty);
-  } else {
-    // ✅ Check Supabase directly before inserting
-    final existingCart = await cartService.getCartItem(product.id);
-
-    if (existingCart != null) {
-      // Exists in DB but not in local list (e.g. after restart)
-      final newQty = (existingCart['quantity'] as int) + quantity;
-      await cartService.updateCartQty(productId: product.id, qty: newQty);
-      cartItems.add(CartItemModel(product: product, quantity: newQty));
-    } else {
-      // Truly new item
-      await cartService.addToCart(product.id, quantity);
-      cartItems.add(CartItemModel(product: product, quantity: quantity));
+  void addToCart(
+    ProductModel product, {
+    int quantity = 1,
+    ProductVariantModel? variant,
+  }) async {
+    final userId = cartService.getCurrentUserId();
+    if (userId == null) {
+      CustomSnackbar.show(
+        title: 'Heads Up!',
+        message: 'Please log in to start adding items to your cart.',
+        type: SnackbarType.warning,
+      );
+      return;
     }
+
+    final variantId = variant?.id;
+
+    final existingItemIndex = cartItems.indexWhere(
+      (item) => item.product.id == product.id && item.variantId == variantId,
+    );
+
+    if (existingItemIndex != -1) {
+      final newQty = cartItems[existingItemIndex].quantity + quantity;
+      cartItems[existingItemIndex].quantity = newQty;
+      cartItems.refresh();
+      await cartService.updateCartQty(
+        productId: product.id,
+        qty: newQty,
+        variantId: variantId,
+      );
+    } else {
+      final existingCart = await cartService.getCartItem(
+        product.id,
+        variantId: variantId,
+      );
+
+      if (existingCart != null) {
+        final newQty = (existingCart['quantity'] as int) + quantity;
+        await cartService.updateCartQty(
+          productId: product.id,
+          qty: newQty,
+          variantId: variantId,
+        );
+        cartItems.add(
+          CartItemModel(
+            product: product,
+            quantity: newQty,
+            variantId: variantId,
+            variant: variant,
+          ),
+        );
+      } else {
+        await cartService.addToCart(product.id, quantity, variantId: variantId);
+        cartItems.add(
+          CartItemModel(
+            product: product,
+            quantity: quantity,
+            variantId: variantId,
+            variant: variant,
+          ),
+        );
+      }
+    }
+
+    _updateTotalPrice();
+    Get.dialog(DialogAddToCartSuccessWidget());
   }
 
-  _updateTotalPrice();
-  Get.dialog(DialogAddToCartSuccessWidget());
-}
-
-  void removeFromCart(String productId) {
+  void removeFromCart(String productId, {String? variantId}) {
     cartItems.removeWhere(
-      (item) => item.product.id == productId,
+      (item) => item.product.id == productId && item.variantId == variantId,
     ); // ✅ remove locally
     _updateTotalPrice(); // ✅ update total
-    cartService.removeFromCart(productId); // sync to supabase
+    cartService.removeFromCart(
+      productId,
+      variantId: variantId,
+    ); // sync to supabase
   }
 
-  void updateQuantity(String productId, int newQuantity) {
+  void updateQuantity(String productId, int newQuantity, {String? variantId}) {
     if (newQuantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(productId, variantId: variantId);
       return;
     }
 
     final itemIndex = cartItems.indexWhere(
-      (item) => item.product.id == productId,
+      (item) => item.product.id == productId && item.variantId == variantId,
     );
     if (itemIndex != -1) {
       cartItems[itemIndex].quantity = newQuantity;
       cartItems.refresh();
       _updateTotalPrice();
+      cartService.updateQuantity(productId, newQuantity, variantId: variantId);
     }
   }
 
@@ -114,12 +146,16 @@ class CartController extends GetxController {
     isLoading(false);
   }
 
-  bool isInCart(String productId) {
-    return cartItems.any((item) => item.product.id == productId);
+  bool isInCart(String productId, {String? variantId}) {
+    return cartItems.any(
+      (item) => item.product.id == productId && item.variantId == variantId,
+    );
   }
 
-  CartItemModel? getCartItem(String productId) {
-    return cartItems.firstWhereOrNull((item) => item.product.id == productId);
+  CartItemModel? getCartItem(String productId, {String? variantId}) {
+    return cartItems.firstWhereOrNull(
+      (item) => item.product.id == productId && item.variantId == variantId,
+    );
   }
 
   Future<void> getAllProductCart() async {
@@ -137,45 +173,76 @@ class CartController extends GetxController {
         return;
       }
 
-      /// Extract product IDs
-      final productIds = cartList.map((e) => e['product_id']).toList();
+      /// Extract product IDs and variant IDs
+      final productIds = cartList
+          .map((e) => e['product_id'])
+          .whereType<String>()
+          .toSet()
+          .toList();
+      final variantIds = cartList
+          .map((e) => e['product_variant_id'])
+          .whereType<String>()
+          .toSet()
+          .toList();
+
       dev.log("Product IDs to fetch: $productIds");
+      dev.log("Variant IDs to fetch: $variantIds");
 
       /// Get product detail from Supabase
-      final products = await cartService.client
+      final productsResponse = await cartService.client
           .from('products')
           .select()
-          .inFilter('id', productIds);
+          .filter('id', 'in', productIds);
 
-      dev.log("Products fetched: ${products.length}");
+      /// Get variant details from Supabase if any
+      List<ProductVariantModel> variantModels = [];
+      if (variantIds.isNotEmpty) {
+        final variantsResponse = await cartService.client
+            .from('product_variants')
+            .select('''
+              id, product_id, sku, price, stock_qty, is_active,
+              animal_types(name),
+              flavors(name),
+              weight_options(label, weight_kg)
+            ''')
+            .filter('id', 'in', variantIds);
+        variantModels = variantsResponse
+            .map<ProductVariantModel>((v) => ProductVariantModel.fromJson(v))
+            .toList();
+      }
+
+      dev.log("Products fetched: ${productsResponse.length}");
+      dev.log("Variants fetched: ${variantModels.length}");
 
       /// Convert to ProductModel list
-      final productModels = products
+      final productModels = productsResponse
           .map<ProductModel>((p) => ProductModel.fromJson(p))
           .toList();
 
-      dev.log("Product models created: ${productModels.length}");
-
-      /// Merge Cart + Product
+      /// Merge Cart + Product + Variant
       final cartItemsList = <CartItemModel>[];
 
       for (final cart in cartList) {
         final productId = cart['product_id'];
-        dev.log("Looking for product with ID: $productId");
+        final variantId = cart['product_variant_id'];
 
-        final product = productModels.firstWhere(
+        final product = productModels.firstWhereOrNull(
           (p) => p.id == productId,
-          orElse: () => throw Exception("Product not found for ID: $productId"),
         );
 
-        dev.log("Found product: ${product.name}");
+        if (product != null) {
+          final variant = variantModels.firstWhereOrNull(
+            (v) => v.id == variantId,
+          );
 
-        final cartItem = CartItemModel(
-          product: product,
-          quantity: cart['quantity'] ?? 0,
-        );
-
-        cartItemsList.add(cartItem);
+          final cartItem = CartItemModel(
+            product: product,
+            quantity: cart['quantity'] ?? 0,
+            variantId: variantId,
+            variant: variant,
+          );
+          cartItemsList.add(cartItem);
+        }
       }
 
       cartItems.value = cartItemsList;

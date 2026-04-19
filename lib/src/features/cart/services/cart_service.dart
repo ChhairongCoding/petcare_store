@@ -4,18 +4,25 @@ import 'dart:developer' as dev;
 class CartService {
   final client = Supabase.instance.client;
 
-  Future<Map<String, dynamic>?> getCartItem(String productId) async {
+  Future<Map<String, dynamic>?> getCartItem(String productId,
+      {String? variantId}) async {
     try {
       final userId = getCurrentUserId();
       if (userId == null) return null;
 
-      final response = await client
+      var query = client
           .from("carts")
           .select()
           .eq('user_id', userId)
-          .eq('product_id', productId)
-          .maybeSingle(); // ✅ Returns null if not found, no exception
+          .eq('product_id', productId);
 
+      if (variantId != null) {
+        query = query.eq('product_variant_id', variantId);
+      } else {
+        query = query.filter('product_variant_id', 'is', null);
+      }
+
+      final response = await query.maybeSingle();
       return response;
     } catch (e) {
       dev.log("Error getting cart item: $e");
@@ -36,14 +43,8 @@ class CartService {
         return [];
       }
 
-      final response = await client
-          .from("carts")
-          .select()
-          .eq('user_id', userId);
-
-      dev.log("Cart response: ${response.toString()}");
-      dev.log("Cart response type: ${response.runtimeType}");
-      dev.log("Cart response details: ${response.runtimeType} - ${'List'}");
+      final response =
+          await client.from("carts").select().eq('user_id', userId);
 
       final cartList = List<Map<String, dynamic>>.from(response);
       dev.log("Cart list processed: ${cartList.length} items");
@@ -54,7 +55,8 @@ class CartService {
     }
   }
 
-  Future<void> addToCart(String productId, int quantity) async {
+  Future<void> addToCart(String productId, int quantity,
+      {String? variantId}) async {
     try {
       final userId = getCurrentUserId();
       if (userId == null) {
@@ -66,6 +68,7 @@ class CartService {
         'user_id': userId,
         'product_id': productId,
         'quantity': quantity,
+        'product_variant_id': variantId,
         'added_at': DateTime.now().toIso8601String(),
       });
       dev.log("Added to cart successfully");
@@ -75,8 +78,9 @@ class CartService {
   }
 
   Future<void> updateCartQty({
-    required final productId,
+    required String productId,
     required int qty,
+    String? variantId,
   }) async {
     try {
       final userId = getCurrentUserId();
@@ -85,18 +89,26 @@ class CartService {
         return;
       }
 
-      await client
+      var query = client
           .from("carts")
           .update({'quantity': qty})
           .eq('user_id', userId)
           .eq('product_id', productId);
+
+      if (variantId != null) {
+        query = query.eq('product_variant_id', variantId);
+      } else {
+        query = query.filter('product_variant_id', 'is', null);
+      }
+
+      await query;
       dev.log("update cart");
     } catch (e) {
       dev.log("$e");
     }
   }
 
-  Future<void> removeFromCart(String productId) async {
+  Future<void> removeFromCart(String productId, {String? variantId}) async {
     try {
       final userId = getCurrentUserId();
       if (userId == null) {
@@ -104,18 +116,27 @@ class CartService {
         return;
       }
 
-      await client
+      var query = client
           .from("carts")
           .delete()
           .eq('user_id', userId)
           .eq('product_id', productId);
+
+      if (variantId != null) {
+        query = query.eq('product_variant_id', variantId);
+      } else {
+        query = query.filter('product_variant_id', 'is', null);
+      }
+
+      await query;
       dev.log("Removed from cart successfully");
     } catch (e) {
       dev.log("Error removing from cart: $e");
     }
   }
 
-  Future<void> updateQuantity(String productId, int quantity) async {
+  Future<void> updateQuantity(String productId, int quantity,
+      {String? variantId}) async {
     try {
       final userId = getCurrentUserId();
       if (userId == null) {
@@ -123,11 +144,19 @@ class CartService {
         return;
       }
 
-      await client
+      var query = client
           .from("carts")
           .update({'quantity': quantity})
           .eq('user_id', userId)
           .eq('product_id', productId);
+
+      if (variantId != null) {
+        query = query.eq('product_variant_id', variantId);
+      } else {
+        query = query.filter('product_variant_id', 'is', null);
+      }
+
+      await query;
       dev.log("Updated quantity successfully");
     } catch (e) {
       dev.log("Error updating quantity: $e");

@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
+import 'package:petcare_store/src/features/cart/models/cart_item_model.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -55,13 +56,11 @@ class _CartScreenState extends State<CartScreen> {
               scrollDirection: Axis.vertical,
               itemCount: cartController.cartItems.length,
               itemBuilder: (context, index) {
+                final item = cartController.cartItems[index];
                 return _buildCardCart(
-                  cartController.cartItems[index].product.imagePath,
-                  cartController.cartItems[index].product.name,
-                  cartController.cartItems[index].product.price,
-                  cartController.cartItems[index].quantity,
-                  index,
-                  cartController,
+                  item: item,
+                  index: index,
+                  cartController: cartController,
                 );
               },
             ),
@@ -70,76 +69,81 @@ class _CartScreenState extends State<CartScreen> {
 
   _buildButtonProcessToCheckout() {
     return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0, ),
-    child: Obx(()=> Column(
-      mainAxisSize: MainAxisSize.min,
-        spacing: 8,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Total:',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              Spacer(),
-              Text(
-                '\$${cartController.totalPrice.value.toStringAsFixed(2)}',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: cartController.totalItems == 0
-                        ? Colors.blueGrey
-                        : Get.theme.primaryColor,
-                  ),
-                  onPressed: () {
-                    if (cartController.totalItems > 0) {
-                      Get.toNamed('/processBuy', arguments: cartController);
-                    } else {
-                      Get.snackbar(
-                        'Cart Empty',
-                        'Please add items to your cart first',
-                      );
-                    }
-                  },
-                  label: Text('Process To Checkout'),
-                  icon: Icon(HugeIcons.strokeRoundedArrowRight04, size: 30),
-                  iconAlignment: IconAlignment.end,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Obx(
+        () => Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Total:',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),)
+                Spacer(),
+                Text(
+                  '\$${cartController.totalPrice.value.toStringAsFixed(2)}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: cartController.totalItems == 0
+                          ? Colors.blueGrey
+                          : Get.theme.primaryColor,
+                    ),
+                    onPressed: () {
+                      if (cartController.totalItems > 0) {
+                        Get.toNamed('/processBuy', arguments: cartController);
+                      } else {
+                        Get.snackbar(
+                          'Cart Empty',
+                          'Please add items to your cart first',
+                        );
+                      }
+                    },
+                    label: Text('Process To Checkout'),
+                    icon: Icon(HugeIcons.strokeRoundedArrowRight04, size: 30),
+                    iconAlignment: IconAlignment.end,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  _buildCardCart(
-    String image,
-    String name,
-    double price,
-    int quantity,
-    int index,
-    CartController cartController,
-    // String size,
-  ) {
+  _buildCardCart({
+    required CartItemModel item,
+    required int index,
+    required CartController cartController,
+  }) {
+    String variantInfo = [
+      if (item.variant?.animalType != null) item.variant!.animalType,
+      if (item.variant?.flavor != null) item.variant!.flavor,
+      if (item.variant?.weightLabel != null) item.variant!.weightLabel,
+    ].join(', ');
+
     return Slidable(
-      key: ValueKey(index),
+      key: ValueKey('${item.product.id}_${item.variantId}'),
       endActionPane: ActionPane(
         motion: ScrollMotion(),
         children: [
           SlidableAction(
             onPressed: (context) => cartController.removeFromCart(
-              cartController.cartItems[index].product.id,
+              item.product.id,
+              variantId: item.variantId,
             ),
             backgroundColor: Color(0xFFFE4A49),
             foregroundColor: Colors.white,
@@ -149,51 +153,62 @@ class _CartScreenState extends State<CartScreen> {
         ],
       ),
       child: Padding(
-        // ✅ Add padding
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
-              // ✅ Clip image
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                image,
-                height: 80,
-                width: 80,
-                fit: BoxFit.cover,
-                errorBuilder:
-                    (context, error, stackTrace) => // ✅ Error fallback
-                    Container(
+              child: (item.product.imagePath.isEmpty || item.product.imagePath.endsWith('/'))
+                  ? Container(
                       height: 80,
                       width: 80,
                       color: Colors.grey[200],
                       child: Icon(Icons.image_not_supported),
+                    )
+                  : Image.network(
+                      item.product.imagePath,
+                      height: 80,
+                      width: 80,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        height: 80,
+                        width: 80,
+                        color: Colors.grey[200],
+                        child: Icon(Icons.image_not_supported),
+                      ),
                     ),
-              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              // ✅ Use Expanded instead of fixed SizedBox
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    item.product.name,
                     style: Theme.of(context).textTheme.titleMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text('Size: M'),
+                  if (variantInfo.isNotEmpty)
+                    Text(
+                      variantInfo,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                    ),
                   Text(
-                    'Price: \$$price',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    'Price: \$${item.totalPrice}',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
                   ),
                 ],
               ),
             ),
             Row(
-              mainAxisSize: MainAxisSize.min, // ✅ Prevent Row from expanding
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   style: IconButton.styleFrom(
@@ -202,15 +217,16 @@ class _CartScreenState extends State<CartScreen> {
                     side: BorderSide(color: Colors.black54, width: 1),
                   ),
                   onPressed: () => cartController.updateQuantity(
-                    cartController.cartItems[index].product.id,
-                    quantity - 1,
+                    item.product.id,
+                    item.quantity - 1,
+                    variantId: item.variantId,
                   ),
                   icon: const Icon(HugeIcons.strokeRoundedRemove01),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: Text(
-                    quantity.toString(),
+                    item.quantity.toString(),
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
@@ -222,8 +238,9 @@ class _CartScreenState extends State<CartScreen> {
                     side: BorderSide(color: Colors.black54, width: 1),
                   ),
                   onPressed: () => cartController.updateQuantity(
-                    cartController.cartItems[index].product.id,
-                    quantity + 1,
+                    item.product.id,
+                    item.quantity + 1,
+                    variantId: item.variantId,
                   ),
                   icon: const Icon(
                     HugeIcons.strokeRoundedAdd01,

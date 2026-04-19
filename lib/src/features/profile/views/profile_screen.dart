@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/src/widgets/reusables/product_card_widget_custom.dart';
 
@@ -18,9 +20,7 @@ class ProfileScreen extends StatelessWidget {
       SliverAppBar(
         expandedHeight: 220,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        flexibleSpace: FlexibleSpaceBar(
-          background: _buildHeader(context),
-        ),
+        flexibleSpace: FlexibleSpaceBar(background: _buildHeader(context)),
       ),
       SliverToBoxAdapter(child: _buildFeature(context)),
     ],
@@ -67,17 +67,13 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           Text(
                             "Chhairong",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(color: Colors.white),
                           ),
                           Text(
                             "chchairong@gmail.com",
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
+                            style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(color: Colors.grey[200]),
                           ),
                         ],
@@ -139,17 +135,15 @@ class ProfileScreen extends StatelessWidget {
         children: [
           Text(
             title ?? "0",
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.white),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.white),
           ),
           Text(
             subtitle ?? "0",
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.white),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: Colors.white),
           ),
         ],
       ),
@@ -187,10 +181,9 @@ class ProfileScreen extends StatelessWidget {
                     Spacer(),
                     Text(
                       "See all",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(color: Colors.grey[600]),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -251,10 +244,9 @@ class ProfileScreen extends StatelessWidget {
                     Spacer(),
                     Text(
                       "See all",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(color: Colors.grey[600]),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -304,7 +296,16 @@ class ProfileScreen extends StatelessWidget {
     Color? color,
   ) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (title == "Pending" ||
+            title == "Confirmed" ||
+            title == "Completed" ||
+            title == "Concelled") {
+          Get.toNamed(AppRoutes.myorders);
+        } else {
+          return;
+        }
+      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -313,10 +314,9 @@ class ProfileScreen extends StatelessWidget {
           SizedBox(height: 8),
           Text(
             title,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Colors.grey[600]),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
           ),
         ],
       ),
@@ -328,17 +328,15 @@ class ProfileScreen extends StatelessWidget {
     return Column(
       children: [
         Text("Hot sales", style: Theme.of(context).textTheme.titleMedium),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Wrap(
-              children: List.generate(productController.products.length, (index) {
-                final product = productController.products[index];
-                return ProductCardWidgetCustom(
-              products: product,
-                );
-              }),
-            ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Wrap(
+            children: List.generate(productController.products.length, (index) {
+              final product = productController.products[index];
+              return ProductCardWidgetCustom(products: product);
+            }),
           ),
+        ),
       ],
     );
   }

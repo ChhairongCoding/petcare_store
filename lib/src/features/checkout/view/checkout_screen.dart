@@ -415,7 +415,19 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
             child: SizedBox(
               width: 68,
               height: 68,
-              child: Image.network(item.product.imagePath, fit: BoxFit.cover),
+              child: (item.product.imagePath.isEmpty || item.product.imagePath.endsWith('/'))
+                  ? Container(
+                      color: Colors.grey.shade100,
+                      child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                    )
+                  : Image.network(
+                      item.product.imagePath,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey.shade100,
+                        child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 12),
