@@ -21,6 +21,8 @@ class AppRoutes {
   static String successPayment = '/successPayment';
   static String khqrPayment = '/khqrPayment';
   static String abaPayment = '/abaPayment';
+  static String booking = '/booking';
+  static String myBookings = '/myBookings';
   static String orderDetail = '/orderDetail';
   static String productDetail = '/productDetail';
 }

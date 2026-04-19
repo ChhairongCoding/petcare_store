@@ -301,7 +301,16 @@ class ProfileScreen extends StatelessWidget {
             title == "Confirmed" ||
             title == "Completed" ||
             title == "Concelled") {
-          Get.toNamed(AppRoutes.myorders);
+          // Check if it's in the Booking section or Order section
+          // For simplicity, let's navigate based on icon or title for now
+          if (icon == HugeIcons.strokeRoundedTime02 || 
+              icon == HugeIcons.strokeRoundedCheckList || 
+              icon == HugeIcons.strokeRoundedCheckmarkBadge01 || 
+              icon == HugeIcons.strokeRoundedCancelCircle) {
+             Get.toNamed(AppRoutes.myBookings);
+          } else {
+             Get.toNamed(AppRoutes.myorders);
+          }
         } else {
           return;
         }
