@@ -15,7 +15,7 @@ class ProfileScreen extends GetView<ProfileController> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -33,12 +33,13 @@ class ProfileScreen extends GetView<ProfileController> {
         SliverToBoxAdapter(
           child: Column(
             children: [
-              const SizedBox(height: 60),
+              const SizedBox(height: 20),
               _buildStatsBar(context),
-              _buildMainFeatures(context),
-              _buildAccountSettings(context),
-              // _buildHotSales(context),
-              const SizedBox(height: 72),
+              const SizedBox(height: 20),
+              _buildActivitySection(context),
+              const SizedBox(height: 20),
+              _buildAccountSection(context),
+              const SizedBox(height: 80),
             ],
           ),
         ),
@@ -48,141 +49,217 @@ class ProfileScreen extends GetView<ProfileController> {
 
   Widget _buildSliverAppBar(BuildContext context) {
     final profile = controller.profile.value;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SliverAppBar(
-      expandedHeight: 240,
+      expandedHeight: 260,
       pinned: true,
       stretch: true,
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: colorScheme.primary,
+      elevation: 0,
       flexibleSpace: FlexibleSpaceBar(
         stretchModes: const [
           StretchMode.zoomBackground,
           StretchMode.blurBackground,
         ],
-        background: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        background: Container(
+          decoration: BoxDecoration(color: colorScheme.primary),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 16),
+                // Avatar with camera badge
+                Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey[200],
-                            backgroundImage: profile?.avatar != null
-                                ? CachedNetworkImageProvider(profile!.avatar!)
-                                : const CachedNetworkImageProvider(
-                                    "https://cdn.dribbble.com/userupload/16957240/file/original-953ea24eebfc40bb353251aa77abf1ee.jpg?resize=1504x1128&vertical=center",
-                                  ),
-                          ),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.5),
+                          width: 3,
                         ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 16,
-                            ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      profile?.name ?? "Guest User",
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 48,
+                        backgroundColor: Colors.grey[200],
+                        backgroundImage: profile?.avatar != null
+                            ? CachedNetworkImageProvider(profile!.avatar!)
+                            : const CachedNetworkImageProvider(
+                                "https://cdn.dribbble.com/userupload/16957240/file/original-953ea24eebfc40bb353251aa77abf1ee.jpg?resize=400x300&vertical=center",
+                              ),
                       ),
                     ),
-                    Text(
-                      profile?.email ?? "Sign in to see details",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
+                    Positioned(
+                      bottom: 2,
+                      right: 2,
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: colorScheme.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.15),
+                                blurRadius: 6,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 14),
+                Text(
+                  profile?.name ?? "Guest User",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.email_outlined,
+                      color: Colors.white.withValues(alpha: 0.7),
+                      size: 13,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      profile?.email ?? "Sign in to see details",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withValues(alpha: 0.78),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Member badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 0.7,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.star_rounded,
+                        color: const Color(0xFFFDAA3A),
+                        size: 14,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        "Gold Member",
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       actions: [
         IconButton(
-          icon: const HugeIcon(
-            icon: HugeIcons.strokeRoundedSettings01,
-            color: Colors.white,
-            size: 24,
+          icon: Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const HugeIcon(
+              icon: HugeIcons.strokeRoundedSettings01,
+              color: Colors.white,
+              size: 18,
+            ),
           ),
           onPressed: () => Get.toNamed(AppRoutes.settings),
         ),
+        const SizedBox(width: 4),
       ],
     );
   }
 
   Widget _buildStatsBar(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Transform.translate(
-      offset: const Offset(0, -30),
+      offset: const Offset(0, -24),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.07),
               blurRadius: 20,
-              offset: const Offset(0, 10),
+              offset: const Offset(0, 8),
             ),
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildStatItem(
-              context,
-              "5",
-              "Wishlist",
-              HugeIcons.strokeRoundedFavourite,
+            Expanded(
+              child: _buildStatItem(
+                context,
+                "5",
+                "Wishlist",
+                HugeIcons.strokeRoundedFavourite,
+                const Color(0xFFE17055),
+              ),
             ),
-            _buildDivider(),
-            _buildStatItem(
-              context,
-              "12",
-              "Coupons",
-              HugeIcons.strokeRoundedTicket01,
+            _buildStatDivider(),
+            Expanded(
+              child: _buildStatItem(
+                context,
+                "12",
+                "Coupons",
+                HugeIcons.strokeRoundedTicket01,
+                const Color(0xFF6C63FF),
+              ),
             ),
-            _buildDivider(),
-            _buildStatItem(
-              context,
-              "840",
-              "Points",
-              HugeIcons.strokeRoundedStar,
+            _buildStatDivider(),
+            Expanded(
+              child: _buildStatItem(
+                context,
+                "840",
+                "Points",
+                HugeIcons.strokeRoundedStar,
+                const Color(0xFFFDAA3A),
+              ),
             ),
           ],
         ),
@@ -195,111 +272,113 @@ class ProfileScreen extends GetView<ProfileController> {
     String value,
     String label,
     IconData icon,
+    Color color,
   ) {
     return InkWell(
       onTap: () {},
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 18),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatDivider() {
+    return Container(height: 40, width: 0.5, color: Colors.grey[200]);
+  }
+
+  Widget _buildActivitySection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+          _buildSectionHeader(context, "My Activities"),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildActivityItem(
+                  context,
+                  "Orders",
+                  HugeIcons.strokeRoundedShoppingBag01,
+                  Theme.of(context).colorScheme.primary,
+                  () => Get.toNamed(AppRoutes.myorders),
+                ),
+                _buildActivityItem(
+                  context,
+                  "Bookings",
+                  HugeIcons.strokeRoundedCalendar03,
+                  Theme.of(context).colorScheme.primary,
+                  () => Get.toNamed(AppRoutes.myBookings),
+                ),
+                _buildActivityItem(
+                  context,
+                  "My Pets",
+                  Icons.pets_outlined,
+                  Theme.of(context).colorScheme.primary,
+                  () => Get.toNamed(AppRoutes.mypet),
+                ),
+                _buildActivityItem(
+                  context,
+                  "Reviews",
+                  HugeIcons.strokeRoundedMessageEdit01,
+                  Theme.of(context).colorScheme.primary,
+                  () {},
+                ),
+              ],
             ),
           ),
-          Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildDivider() {
-    return Container(height: 30, width: 1, color: Colors.grey[200]);
-  }
-
-  Widget _buildMainFeatures(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        children: [
-          _buildSectionHeader(context, "My Activities", () {}),
-          _buildActivityGrid(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(
-    BuildContext context,
-    String title,
-    VoidCallback onSeeAll,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: onSeeAll,
-            child: Text(
-              "See All",
-              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActivityGrid(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildActivityItem(
-            context,
-            "Orders",
-            HugeIcons.strokeRoundedShoppingBag01,
-            () => Get.toNamed(AppRoutes.myorders),
-          ),
-          _buildActivityItem(
-            context,
-            "Bookings",
-            HugeIcons.strokeRoundedCalendar03,
-            () => Get.toNamed(AppRoutes.myBookings),
-          ),
-          _buildActivityItem(
-            context,
-            "My Pets",
-            Icons.pets_outlined,
-            () => Get.toNamed(AppRoutes.mypet),
-          ),
-          _buildActivityItem(
-            context,
-            "Reviews",
-            HugeIcons.strokeRoundedMessageEdit01,
-            () {},
-          ),
-        ],
-      ),
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
     );
   }
 
@@ -307,85 +386,102 @@ class ProfileScreen extends GetView<ProfileController> {
     BuildContext context,
     String label,
     IconData icon,
+    Color color,
     VoidCallback onTap,
   ) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Theme.of(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: Theme.of(
                 context,
-              ).colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
             ),
-            child: Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
-              size: 26,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildAccountSettings(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-      ),
+  Widget _buildAccountSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildMenuItem(
-            context,
-            "Personal Info",
-            HugeIcons.strokeRoundedUser,
-            () {},
-          ),
-          _buildMenuItem(
-            context,
-            "Address Book",
-            HugeIcons.strokeRoundedLocation01,
-            () => Get.toNamed(AppRoutes.shipping),
-          ),
-          // _buildMenuItem(
-          //   context,
-          //   "Payment Methods",
-          //   HugeIcons.strokeRoundedCreditCard,
-          //   () {},
-          // ),
-          _buildMenuItem(
-            context,
-            "Notification Settings",
-            HugeIcons.strokeRoundedNotification03,
-            () {},
-          ),
-          _buildMenuItem(
-            context,
-            "Help & Support",
-            HugeIcons.strokeRoundedHelpCircle,
-            () {},
-          ),
-          _buildMenuItem(
-            context,
-            "Logout",
-            HugeIcons.strokeRoundedLogout01,
-            () => _showLogoutDialog(context),
-            isDestructive: true,
+          _buildSectionHeader(context, "Account"),
+          const SizedBox(height: 12),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _buildMenuItem(
+                  context,
+                  title: "Personal Info",
+                  subtitle: "Name, phone, birthday",
+                  icon: HugeIcons.strokeRoundedUser,
+                  color: Theme.of(context).colorScheme.primary,
+                  onTap: () {},
+                ),
+                _buildMenuItem(
+                  context,
+                  title: "Address Book",
+                  subtitle: "Saved delivery addresses",
+                  icon: HugeIcons.strokeRoundedLocation01,
+                  color: Theme.of(context).colorScheme.primary,
+                  onTap: () => Get.toNamed(AppRoutes.shipping),
+                ),
+                _buildMenuItem(
+                  context,
+                  title: "Notifications",
+                  subtitle: "Alerts, push & email",
+                  icon: HugeIcons.strokeRoundedNotification03,
+                  color: Theme.of(context).colorScheme.primary,
+                  onTap: () {},
+                ),
+                _buildMenuItem(
+                  context,
+                  title: "Help & Support",
+                  subtitle: "FAQs, contact us",
+                  icon: HugeIcons.strokeRoundedHelpCircle,
+                  color: Theme.of(context).colorScheme.primary,
+                  onTap: () {},
+                ),
+                _buildMenuItem(
+                  context,
+                  title: "Logout",
+                  subtitle: "Sign out of your account",
+                  icon: HugeIcons.strokeRoundedLogout01,
+                  color: const Color(0xFFE17055),
+                  onTap: () => _showLogoutDialog(context),
+                  isDestructive: true,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -393,87 +489,100 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 
   Widget _buildMenuItem(
-    BuildContext context,
-    String title,
-    IconData icon,
-    VoidCallback onTap, {
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
     bool isDestructive = false,
   }) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isDestructive
-              ? Colors.red.withValues(alpha: 0.1)
-              : Colors.grey[100],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(
-          icon,
-          size: 20,
-          color: isDestructive ? Colors.red : Colors.grey[700],
-        ),
-      ),
-      title: Text(
-        title,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: isDestructive ? Colors.red : Colors.black87,
-        ),
-      ),
-      trailing: const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
+    return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isDestructive
+                          ? color
+                          : Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: isDestructive
+                  ? color.withValues(alpha: 0.5)
+                  : Colors.grey[350],
+              size: 20,
+            ),
+          ],
+        ),
+      ),
     );
   }
-
-  // Widget _buildHotSales(BuildContext context) {
-  //   final productController = Get.find<ProductController>();
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-  //         child: Text(
-  //           "Recommended for You",
-  //           style: Theme.of(
-  //             context,
-  //           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-  //         ),
-  //       ),
-  //       SizedBox(
-  //         height: 280,
-  //         child: ListView.builder(
-  //           padding: const EdgeInsets.symmetric(horizontal: 12),
-  //           scrollDirection: Axis.horizontal,
-  //           itemCount: productController.products.length,
-  //           itemBuilder: (context, index) {
-  //             final product = productController.products[index];
-  //             return Container(
-  //               width: 180,
-  //               margin: const EdgeInsets.symmetric(horizontal: 8),
-  //               child: ProductCardWidgetCustom(products: product),
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   void _showLogoutDialog(BuildContext context) {
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text("Logout"),
-        content: const Text("Are you sure you want to logout?"),
+        title: const Text(
+          "Sign out?",
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+        content: const Text(
+          "You'll need to sign in again to access your account.",
+        ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
           TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          FilledButton(
             onPressed: () {
               Get.back();
               controller.logout();
             },
-            child: const Text("Logout", style: TextStyle(color: Colors.red)),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFE17055),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text("Logout"),
           ),
         ],
       ),
