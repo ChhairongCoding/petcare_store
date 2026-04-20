@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 // import 'package:get/route_manager.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
+import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 import 'package:petcare_store/src/features/profile/models/profile_model.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -14,17 +15,28 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  final ProfileController _profileController = Get.find<ProfileController>();
+
   @override
   Widget build(BuildContext context) {
-    final profile = Get.arguments as ProfileModel;
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: _buildHeader(context, profile)),
-          SliverToBoxAdapter(child: _buildContent(context)),
-        ],
-      ),
-    );
+    return Obx(() {
+      final profile = _profileController.profile.value;
+      
+      if (profile == null) {
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _buildHeader(context, profile)),
+            SliverToBoxAdapter(child: _buildContent(context)),
+          ],
+        ),
+      );
+    });
   }
 
   // _buildBody(BuildContext context, ProfileModel profile) {

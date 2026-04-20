@@ -90,12 +90,14 @@ class BookingScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.05),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: Theme.of(
                             context,
-                          ).primaryColor.withOpacity(0.1),
+                          ).primaryColor.withValues(alpha: 0.1),
                         ),
                       ),
                       child: Column(
@@ -416,7 +418,7 @@ class BookingScreen extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, -5),
             ),
@@ -509,7 +511,7 @@ class BookingScreen extends StatelessWidget {
                       elevation: 4,
                       shadowColor: Theme.of(
                         context,
-                      ).primaryColor.withOpacity(0.4),
+                      ).primaryColor.withValues(alpha: 0.4),
                     ),
                     child: controller.isLoading.value
                         ? const SizedBox(
@@ -570,7 +572,9 @@ class BookingScreen extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -604,7 +608,7 @@ class BookingScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? Theme.of(context).primaryColor.withOpacity(0.12)
+              ? Theme.of(context).primaryColor.withValues(alpha: 0.12)
               : Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(

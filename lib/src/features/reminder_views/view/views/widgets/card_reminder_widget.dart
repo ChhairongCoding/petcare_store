@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/features/reminder_views/models/reminder_model.dart';
+import 'package:intl/intl.dart';
 
 class CardReminderWidget extends StatelessWidget {
   const CardReminderWidget({
@@ -19,166 +20,177 @@ class CardReminderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheduled = reminder.reminderDate?.toLocal();
     final theme = Theme.of(context);
+    final isDone = reminder.isCompleted;
 
-    return Slidable(
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        children: [
-          SlidableAction(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: Icons.delete,
-            label: 'Delete',
-            onPressed: (_) => onDelete(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Card(
-        elevation: 2,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: reminder.isCompleted ? Colors.green[50] : theme.cardColor,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Slidable(
+          endActionPane: ActionPane(
+            motion: const StretchMotion(),
+            extentRatio: 0.25,
             children: [
-              Row(
+              SlidableAction(
+                onPressed: (_) => onDelete(),
+                backgroundColor: const Color(0xFFFFEBEB),
+                foregroundColor: Colors.redAccent,
+                icon: HugeIcons.strokeRoundedDelete02,
+                label: 'Delete',
+              ),
+            ],
+          ),
+          child: InkWell(
+            onTap: onToggleComplete,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: reminder.isCompleted
-                          ? Colors.green[100]
-                          : theme.primaryColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      HugeIcons.strokeRoundedTimeSchedule,
-                      size: 24,
-                      color: reminder.isCompleted
-                          ? Colors.green[700]
-                          : theme.primaryColor,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
+                  _buildTypeIcon(context),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          reminder.title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            decoration: reminder.isCompleted
-                                ? TextDecoration.lineThrough
-                                : null,
-                          ),
-                        ),
-                        if (reminder.description != null &&
-                            reminder.description!.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              reminder.description!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey[600],
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        const SizedBox(height: 4),
                         Row(
                           children: [
-                            Icon(
-                              Icons.calendar_today,
-                              size: 16,
-                              color: Colors.grey[600],
+                            Expanded(
+                              child: Text(
+                                reminder.title,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: isDone ? Colors.grey : Colors.black87,
+                                  decoration: isDone ? TextDecoration.lineThrough : null,
+                                ),
+                              ),
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              scheduled != null
-                                  ? _formatDate(scheduled)
-                                  : 'No date set',
+                            _buildStatusBadge(context),
+                          ],
+                        ),
+                        if (reminder.description != null && reminder.description!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4, bottom: 8),
+                            child: Text(
+                              reminder.description!,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: Colors.grey[600],
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          )
+                        else
+                          const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            _buildInfoChip(
+                              context,
+                              HugeIcons.strokeRoundedCalendar03,
+                              scheduled != null ? DateFormat('MMM dd, yyyy').format(scheduled) : 'No date',
                             ),
                             const SizedBox(width: 12),
-                            Icon(
-                              Icons.access_time,
-                              size: 16,
-                              color: Colors.grey[600],
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              scheduled != null
-                                  ? _formatTime(scheduled)
-                                  : '--:--',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                            _buildInfoChip(
+                              context,
+                              HugeIcons.strokeRoundedClock01,
+                              scheduled != null ? DateFormat('hh:mm a').format(scheduled) : '--:--',
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                  Checkbox(
-                    value: reminder.isCompleted,
-                    onChanged: (value) => onToggleComplete(),
-                    activeColor: Colors.green,
-                  ),
                 ],
               ),
-              if (reminder.isCompleted)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Row(
-                    children: [
-                      Icon(Icons.check_circle, color: Colors.green, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Completed',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.green[700],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
-}
 
-String _formatTime(DateTime? dateTime) {
-  if (dateTime == null) return '--:--';
-  final hour = dateTime.hour % 12 == 0 ? 12 : dateTime.hour % 12;
-  final minute = dateTime.minute.toString().padLeft(2, '0');
-  final period = dateTime.hour >= 12 ? 'PM' : 'AM';
-  return '$hour:$minute $period';
-}
+  Widget _buildTypeIcon(BuildContext context) {
+    final type = (reminder.reminderType ?? '').toLowerCase();
+    IconData icon;
+    Color color;
 
-String _formatDate(DateTime dateTime) {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  return '${months[dateTime.month - 1]} ${dateTime.day}, ${dateTime.year}';
+    if (type.contains('vaccin')) {
+      icon = HugeIcons.strokeRoundedNote01; // Using verified icons
+      color = Colors.blue;
+    } else if (type.contains('groom')) {
+      icon = Icons.content_cut;
+      color = Colors.purple;
+    } else if (type.contains('food') || type.contains('eat')) {
+      icon = Icons.restaurant;
+      color = Colors.orange;
+    } else if (type.contains('walk')) {
+      icon = Icons.directions_walk;
+      color = Colors.green;
+    } else {
+      icon = HugeIcons.strokeRoundedNote01;
+      color = Theme.of(context).primaryColor;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: reminder.isCompleted ? Colors.grey[100] : color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Icon(
+        icon,
+        size: 26,
+        color: reminder.isCompleted ? Colors.grey : color,
+      ),
+    );
+  }
+
+  Widget _buildStatusBadge(BuildContext context) {
+    final isDone = reminder.isCompleted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: isDone ? Colors.green[50] : Colors.orange[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isDone ? Colors.green.withOpacity(0.2) : Colors.orange.withOpacity(0.2),
+        ),
+      ),
+      child: Text(
+        isDone ? 'COMPLETED' : 'UPCOMING',
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: isDone ? Colors.green[700] : Colors.orange[700],
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoChip(BuildContext context, IconData icon, String label) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: Colors.grey[400]),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey[500],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
 }

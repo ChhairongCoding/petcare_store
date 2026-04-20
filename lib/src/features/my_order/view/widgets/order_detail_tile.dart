@@ -5,16 +5,26 @@ import 'package:petcare_store/src/features/my_order/models/order.dart';
 class OrderDetailTile extends StatelessWidget {
   final Order order;
 
-  const OrderDetailTile({
-    super.key,
-    required this.order,
-  });
+  const OrderDetailTile({super.key, required this.order});
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
-    final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+    final hour = date.hour > 12
+        ? date.hour - 12
+        : (date.hour == 0 ? 12 : date.hour);
     final amPm = date.hour >= 12 ? 'PM' : 'AM';
     final minuteSt = date.minute.toString().padLeft(2, '0');
     return '${months[date.month - 1]} ${date.day}, ${date.year} - $hour:$minuteSt $amPm';
@@ -46,7 +56,7 @@ class OrderDetailTile extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade200, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -62,8 +72,11 @@ class OrderDetailTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.access_time_rounded,
-                      size: 16, color: Colors.grey.shade500),
+                  Icon(
+                    Icons.access_time_rounded,
+                    size: 16,
+                    color: Colors.grey.shade500,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     _formatDate(order.createdAt),
@@ -77,12 +90,15 @@ class OrderDetailTile extends StatelessWidget {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(order.status).withOpacity(0.08),
+                  color: _getStatusColor(order.status).withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: _getStatusColor(order.status).withOpacity(0.3),
+                    color: _getStatusColor(order.status).withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -98,9 +114,9 @@ class OrderDetailTile extends StatelessWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Order ID
           Text(
             'Order #${order.id.substring(0, 8).toUpperCase()}',
@@ -110,11 +126,13 @@ class OrderDetailTile extends StatelessWidget {
               color: Color(0xFF1A1A2E),
             ),
           ),
-          
+
           Divider(height: 32, color: Colors.grey.shade200, thickness: 1.2),
-          
+
           // Items List
-          ...order.items.take(2).map(
+          ...order.items
+              .take(2)
+              .map(
                 (item) => Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: Row(
@@ -123,14 +141,18 @@ class OrderDetailTile extends StatelessWidget {
                         width: 54,
                         height: 54,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withOpacity(0.06),
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.06),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: Theme.of(context).primaryColor.withOpacity(0.1),
-                          )
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.1),
+                          ),
                         ),
                         child: Icon(
-                          Icons.shopping_bag_outlined, 
+                          Icons.shopping_bag_outlined,
                           color: Theme.of(context).primaryColor,
                           size: 24,
                         ),
@@ -154,7 +176,10 @@ class OrderDetailTile extends StatelessWidget {
                             Row(
                               children: [
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.grey.shade100,
                                     borderRadius: BorderRadius.circular(4),
@@ -184,7 +209,7 @@ class OrderDetailTile extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
           if (order.items.length > 2)
             Padding(
               padding: const EdgeInsets.only(top: 2.0, bottom: 8.0),
@@ -199,9 +224,9 @@ class OrderDetailTile extends StatelessWidget {
                 ),
               ),
             ),
-            
+
           Divider(height: 24, color: Colors.grey.shade200, thickness: 1.2),
-          
+
           // Bottom Row: Total & Action Button
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,18 +262,21 @@ class OrderDetailTile extends StatelessWidget {
                   backgroundColor: Colors.white,
                   foregroundColor: Theme.of(context).primaryColor,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  side: BorderSide(color: Theme.of(context).primaryColor, width: 1.5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  side: BorderSide(
+                    color: Theme.of(context).primaryColor,
+                    width: 1.5,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: const Text(
                   'Details',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
                 ),
               ),
             ],

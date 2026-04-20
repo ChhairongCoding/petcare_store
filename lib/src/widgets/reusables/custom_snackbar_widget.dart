@@ -79,7 +79,7 @@ class CustomSnackbarWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: backgroundColor.withOpacity(0.3),
+                color: backgroundColor.withValues(alpha: 0.3),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -117,7 +117,9 @@ class CustomSnackbarWidget extends StatelessWidget {
           bottom: 0,
           left: 0,
           child: ClipRRect(
-            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20)),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+            ),
             child: Stack(
               children: [
                 _buildBubble(accentColor, 40, -10, -15),
@@ -137,7 +139,7 @@ class CustomSnackbarWidget extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 8,
                 ),
               ],
@@ -167,7 +169,7 @@ class CustomSnackbarWidget extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.4),
+        color: color.withValues(alpha: 0.4),
         shape: BoxShape.circle,
       ),
     );
