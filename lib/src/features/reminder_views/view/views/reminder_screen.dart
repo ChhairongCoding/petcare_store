@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/features/reminder_views/controller/reminder_controller.dart';
 import 'package:petcare_store/src/features/reminder_views/view/views/widgets/card_reminder_widget.dart';
 import 'package:petcare_store/src/features/reminder_views/view/views/widgets/reminders_add_form.dart';
@@ -19,47 +20,129 @@ class _ReminderScreenState extends State<ReminderScreen> {
   void initState() {
     super.initState();
     reminderController = Get.find<ReminderController>();
+    reminderController.fetchReminders();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = reminderController.isLoading.value;
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Reminders'),
-      ),
-      body: Skeletonizer(
-        enabled: isLoading,
-        child: _buildBody(context)),
-      floatingActionButton: _buildFloatingButton(),
+      backgroundColor: const Color(0xFFF8F9FA),
+      appBar: _buildAppBar(context),
+      body: Obx(() {
+        final isLoading = reminderController.isLoading.value;
+        return Skeletonizer(
+          enabled: isLoading,
+          child: Column(
+            children: [
+              _buildSummaryHeader(context),
+              Expanded(child: _buildReminderList()),
+            ],
+          ),
+        );
+      }),
     );
   }
 
-  Widget _buildFloatingButton() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 80),
-      child: FloatingActionButton.extended(
-        onPressed: _openAddReminderModal,
-        icon: const Icon(Icons.add),
-        label: const Text('Add reminder'),
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      title: Text(
+        'Pet Reminders',
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+          letterSpacing: -0.5,
+        ),
       ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Material(
+            color: Colors.grey.withValues(alpha: 0.1),
+            shape: const CircleBorder(),
+            child: IconButton(
+              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+              onPressed: _openAddReminderModal,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Expanded(child: _buildReminderList())],
+  Widget _buildSummaryHeader(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor.withValues(alpha: 0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Upcoming Tasks',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Obx(
+                  () => Text(
+                    '${reminderController.reminders.where((r) => !r.isCompleted).length} Active',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(
+              HugeIcons.strokeRoundedCalendar03,
+              color: Colors.white,
+              size: 32,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildReminderList() {
     return Obx(() {
-      if (reminderController.isLoading.value) {
+      if (reminderController.isLoading.value &&
+          reminderController.reminders.isEmpty) {
         return const Center(child: CircularProgressIndicator());
       }
 
@@ -77,24 +160,27 @@ class _ReminderScreenState extends State<ReminderScreen> {
           onRefresh: reminderController.fetchReminders,
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            children: const [SizedBox(height: 40), _EmptyState()],
+            children: const [SizedBox(height: 60), _EmptyState()],
           ),
         );
       }
 
       return RefreshIndicator(
         onRefresh: reminderController.fetchReminders,
-        child: ListView.separated(
+        child: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
           physics: const AlwaysScrollableScrollPhysics(),
           itemCount: reminders.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             final reminder = reminders[index];
-            return CardReminderWidget(
-              reminder: reminder,
-              onToggleComplete: () =>
-                  reminderController.toggleCompletion(reminder),
-              onDelete: () => reminderController.deleteReminder(reminder),
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: CardReminderWidget(
+                reminder: reminder,
+                onToggleComplete: () =>
+                    reminderController.toggleCompletion(reminder),
+                onDelete: () => reminderController.deleteReminder(reminder),
+              ),
             );
           },
         ),
@@ -103,50 +189,13 @@ class _ReminderScreenState extends State<ReminderScreen> {
   }
 
   void _openAddReminderModal() {
-    Get.bottomSheet(_addFormReminderModal(context), isScrollControlled: true);
-  }
-
-  Widget _addFormReminderModal(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          color: Theme.of(context).canvasColor,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Add New Reminder",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-              Divider(color: Colors.grey[600], thickness: 0.5),
-              const SizedBox(height: 8),
-              const RemindersAddForm(),
-            ],
-          ),
-        ),
-      ),
+    Get.bottomSheet(
+      const RemindersAddForm(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enterBottomSheetDuration: const Duration(milliseconds: 300),
     );
   }
-
-
 }
 
 class _ErrorState extends StatelessWidget {
@@ -158,21 +207,56 @@ class _ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.cloud_off, color: Colors.grey[600], size: 48),
-          const SizedBox(height: 12),
-          Text(
-            message,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: Colors.grey[700]),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: const Text('Try again')),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.error_outline,
+                color: Colors.red[400],
+                size: 48,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              message,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Colors.grey[800],
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Something went wrong while fetching your reminders. Please try again.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: onRetry,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[400],
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -183,24 +267,44 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(Icons.pets, color: Colors.grey[500], size: 72),
-        const SizedBox(height: 12),
-        Text(
-          'No reminders yet',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Tap the add button to schedule your first reminder.',
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(color: Colors.grey[600]),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 40),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(40),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              HugeIcons.strokeRoundedCalendar03,
+              size: 80,
+              color: Colors.grey[300],
+            ),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'Keep your pet healthy',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 48),
+            child: Text(
+              'Schedule vaccinations, appointments and grooming to get timely notifications.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.grey[600],
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

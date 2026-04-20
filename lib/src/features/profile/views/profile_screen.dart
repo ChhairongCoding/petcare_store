@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
-import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
-import 'package:petcare_store/src/widgets/reusables/product_card_widget_custom.dart';
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
@@ -65,15 +63,7 @@ class ProfileScreen extends GetView<ProfileController> {
           children: [
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.6),
-                  ],
-                ),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             SafeArea(
@@ -131,7 +121,7 @@ class ProfileScreen extends GetView<ProfileController> {
                     Text(
                       profile?.email ?? "Sign in to see details",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                     ),
                   ],
@@ -148,7 +138,7 @@ class ProfileScreen extends GetView<ProfileController> {
             color: Colors.white,
             size: 24,
           ),
-          onPressed: () {},
+          onPressed: () => Get.toNamed(AppRoutes.settings),
         ),
       ],
     );
@@ -165,7 +155,7 @@ class ProfileScreen extends GetView<ProfileController> {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -296,7 +286,12 @@ class ProfileScreen extends GetView<ProfileController> {
             HugeIcons.strokeRoundedCalendar03,
             () => Get.toNamed(AppRoutes.myBookings),
           ),
-          _buildActivityItem(context, "My Pets", Icons.pets_outlined, () {}),
+          _buildActivityItem(
+            context,
+            "My Pets",
+            Icons.pets_outlined,
+            () => Get.toNamed(AppRoutes.mypet),
+          ),
           _buildActivityItem(
             context,
             "Reviews",
@@ -322,7 +317,9 @@ class ProfileScreen extends GetView<ProfileController> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
@@ -406,7 +403,9 @@ class ProfileScreen extends GetView<ProfileController> {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isDestructive ? Colors.red.withOpacity(0.1) : Colors.grey[100],
+          color: isDestructive
+              ? Colors.red.withValues(alpha: 0.1)
+              : Colors.grey[100],
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(

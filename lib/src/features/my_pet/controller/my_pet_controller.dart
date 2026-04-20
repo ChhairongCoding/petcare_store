@@ -88,6 +88,7 @@ class MyPetController extends GetxController {
     String? long,
   }) async {
     isSubmitting(true);
+    errorMessage.value = null;
     try {
       // Ensure session
       final session = _client.auth.currentSession;
@@ -133,6 +134,7 @@ class MyPetController extends GetxController {
   Future<void> deletePet(String id) async {
     try {
       isLoading(true);
+      errorMessage.value = null;
       await _client.from('mypet').delete().eq('id', id);
       errorMessage.value = "Pet deleted successfully";
       await fetchPets();
@@ -276,6 +278,7 @@ class MyPetController extends GetxController {
   Future<void> updatePet(PetModel pet) async {
     try {
       isLoading(true);
+      errorMessage.value = null;
       await _client.from('mypet').update(pet.toMap()).eq('id', pet.id);
       // Update the local list
       final index = pets.indexWhere((p) => p.id == pet.id);

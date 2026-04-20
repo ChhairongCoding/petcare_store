@@ -14,6 +14,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.hintText,
     this.keyboardType,
     this.sizeHeight,
+    this.isRequired = true,
   });
 
   final String? label;
@@ -26,6 +27,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final String? hintText;
   final TextInputType? keyboardType;
   final double? sizeHeight;
+  final bool isRequired;
 
   @override
   State<TextFormFieldWidget> createState() => _TexFormtFieldWidgetState();
@@ -33,58 +35,73 @@ class TextFormFieldWidget extends StatefulWidget {
 
 class _TexFormtFieldWidgetState extends State<TextFormFieldWidget> {
   @override
-Widget build(BuildContext context) {
-  final isMultiline = widget.sizeHeight != null;
+  Widget build(BuildContext context) {
+    final isMultiline = widget.sizeHeight != null;
 
-  return SizedBox(
-    height: isMultiline ? widget.sizeHeight : null,
-    child: TextFormField(
-      controller: widget.controller,
-      obscureText: widget.obscureText ?? false,
-      keyboardType: widget.keyboardType,
-      textAlignVertical: TextAlignVertical.top,
-      maxLines: isMultiline ? null : 1,
-      expands: isMultiline,
-      decoration: InputDecoration(
-        label: (widget.label != null && widget.label!.isNotEmpty)
-            ? Text(widget.label!)
-            : null,
-        hintText: widget.hintText,
-        hintStyle: TextStyle(color: Theme.of(context).hintColor),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 12,   // fixed padding, NOT sizeHeight
-          horizontal: 12,
+    return SizedBox(
+      height: isMultiline ? widget.sizeHeight : null,
+      child: TextFormField(
+        controller: widget.controller,
+        obscureText: widget.obscureText ?? false,
+        keyboardType: widget.keyboardType,
+        textAlignVertical: TextAlignVertical.top,
+        maxLines: isMultiline ? null : 1,
+        expands: isMultiline,
+        decoration: InputDecoration(
+          label: (widget.label != null && widget.label!.isNotEmpty)
+              ? Text(widget.label!)
+              : null,
+          hintText: widget.hintText,
+          hintStyle: TextStyle(color: Theme.of(context).hintColor),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 12, // fixed padding, NOT sizeHeight
+            horizontal: 12,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              width: 0.5,
+              color: Theme.of(context).hintColor,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              width: 2,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(width: 0.5, color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(width: 2, color: Colors.red),
+          ),
+          prefixIcon: widget.prefixIcon != null
+              ? Icon(
+                  widget.prefixIcon,
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
+                  size: 20,
+                )
+              : null,
+          suffixIcon: widget.icon != null
+              ? IconButton(icon: Icon(widget.icon), onPressed: widget.onPressed)
+              : null,
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide:  BorderSide(width: 0.5,color: Theme.of(context).hintColor ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide:  BorderSide(width: 2, color:Theme.of(context).primaryColor),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(width: 0.5, color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(width: 2, color: Colors.red),
-        ),
-        suffixIcon: widget.icon != null
-            ? IconButton(icon: Icon(widget.icon), onPressed: widget.onPressed)
-            : null,
+        validator: (value) {
+          if (widget.isRequired) {
+            if (value == null || value.isEmpty) {
+              return "Enter ${widget.label}";
+            }
+          }
+          if (widget.validator != null) {
+            return widget.validator!(value);
+          }
+          return null;
+        },
       ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Enter ${widget.label}";
-        }
-        if (widget.validator != null) {
-          return widget.validator!(value);
-        }
-        return null;
-      },
-    ),
-  );
-}
+    );
+  }
 }

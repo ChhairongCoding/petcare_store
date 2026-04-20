@@ -39,7 +39,7 @@ class _MyPetState extends State<MyPet> {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: _buildBody(context),
-      floatingActionButton: _buildFloatingActionButton(context),
+      // floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
@@ -51,6 +51,19 @@ class _MyPetState extends State<MyPet> {
           context,
         ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Material(
+            color: Colors.grey.withValues(alpha: 0.1),
+            shape: const CircleBorder(),
+            child: IconButton(
+              icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+              onPressed: () => _addNewPet(context),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -452,23 +465,23 @@ class _MyPetState extends State<MyPet> {
     );
   }
 
-  Widget _buildFloatingActionButton(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 90),
-      child: FloatingActionButton.extended(
-        onPressed: () {
-          _addNewPet(context);
-        },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        icon: Icon(HugeIcons.strokeRoundedAdd01),
-        label: Text(
-          'Add Pet',
-          style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
-  }
+  // Widget _buildFloatingActionButton(BuildContext context) {
+  //   return Container(
+  //     margin: EdgeInsets.only(bottom: 90),
+  //     child: FloatingActionButton.extended(
+  //       onPressed: () {
+  //         _addNewPet(context);
+  //       },
+  //       backgroundColor: Theme.of(context).colorScheme.primary,
+  //       foregroundColor: Colors.white,
+  //       icon: Icon(HugeIcons.strokeRoundedAdd01),
+  //       label: Text(
+  //         'Add Pet',
+  //         style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Helper methods for navigation and actions
   void _navigateToPetDetails(BuildContext context, PetModel pet) {

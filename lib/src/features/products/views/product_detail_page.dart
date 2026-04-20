@@ -96,9 +96,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       if (category == 'Flavor' && v.flavor != value) return false;
       if (category == 'Size / Weight' && v.weightLabel != value) return false;
 
-      if (category != 'Animal Type' && _selectedAnimalType != null && v.animalType != _selectedAnimalType) return false;
-      if (category != 'Flavor' && _selectedFlavor != null && v.flavor != _selectedFlavor) return false;
-      if (category != 'Size / Weight' && _selectedWeight != null && v.weightLabel != _selectedWeight) return false;
+      if (category != 'Animal Type' &&
+          _selectedAnimalType != null &&
+          v.animalType != _selectedAnimalType)
+        return false;
+      if (category != 'Flavor' &&
+          _selectedFlavor != null &&
+          v.flavor != _selectedFlavor)
+        return false;
+      if (category != 'Size / Weight' &&
+          _selectedWeight != null &&
+          v.weightLabel != _selectedWeight)
+        return false;
 
       return v.stockQty > 0;
     });
@@ -182,7 +191,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       CircleAvatar(
                         backgroundColor: _showAppBarBg
                             ? Colors.grey.shade100
-                            : Colors.white.withOpacity(0.8),
+                            : Colors.white.withValues(alpha: 0.8),
                         child: IconButton(
                           onPressed: () => Get.back(),
                           icon: Icon(
@@ -198,7 +207,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       CircleAvatar(
                         backgroundColor: _showAppBarBg
                             ? Colors.grey.shade100
-                            : Colors.white.withOpacity(0.8),
+                            : Colors.white.withValues(alpha: 0.8),
                         child: IconButton(
                           onPressed: () {},
                           icon: const Icon(
@@ -211,7 +220,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       CircleAvatar(
                         backgroundColor: _showAppBarBg
                             ? Colors.grey.shade100
-                            : Colors.white.withOpacity(0.8),
+                            : Colors.white.withValues(alpha: 0.8),
                         child: IconButton(
                           onPressed: () {},
                           icon: const Icon(
@@ -224,7 +233,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       CircleAvatar(
                         backgroundColor: _showAppBarBg
                             ? Colors.grey.shade100
-                            : Colors.white.withOpacity(0.8),
+                            : Colors.white.withValues(alpha: 0.8),
                         child: IconButton(
                           onPressed: () => Get.toNamed(AppRoutes.cart),
                           icon: Badge(
@@ -542,7 +551,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 setState(() => _selectedAnimalType = val);
                 _updateSelectedVariant();
               },
-              isEnabled: (val) => isLoading ? true : _isItemEnabled('Animal Type', val),
+              isEnabled: (val) =>
+                  isLoading ? true : _isItemEnabled('Animal Type', val),
             ),
             buildSkeletonChipsWidget(
               context,
@@ -559,7 +569,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 setState(() => _selectedFlavor = val);
                 _updateSelectedVariant();
               },
-              isEnabled: (val) => isLoading ? true : _isItemEnabled('Flavor', val),
+              isEnabled: (val) =>
+                  isLoading ? true : _isItemEnabled('Flavor', val),
             ),
             buildSkeletonChipsWidget(
               context,
@@ -576,7 +587,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 setState(() => _selectedWeight = val);
                 _updateSelectedVariant();
               },
-              isEnabled: (val) => isLoading ? true : _isItemEnabled('Size / Weight', val),
+              isEnabled: (val) =>
+                  isLoading ? true : _isItemEnabled('Size / Weight', val),
             ),
             if (_selectedVariant != null)
               Container(
@@ -584,7 +596,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
-                  ).colorScheme.primary.withOpacity(0.08),
+                  ).colorScheme.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(

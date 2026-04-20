@@ -14,7 +14,10 @@ class MyBookingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: const Text('My Bookings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'My Bookings',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -35,22 +38,32 @@ class MyBookingsScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.calendar_today_outlined,
-                          size: 80, color: Colors.grey.shade300),
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: 80,
+                        color: Colors.grey.shade300,
+                      ),
                       const SizedBox(height: 16),
-                      Text('No bookings found',
-                          style: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 16)),
+                      Text(
+                        'No bookings found',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       ElevatedButton(
                         onPressed: () => Get.toNamed('/booking'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).primaryColor,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                        child: const Text('Book Now',
-                            style: TextStyle(color: Colors.white)),
+                        child: const Text(
+                          'Book Now',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
@@ -75,13 +88,20 @@ class MyBookingsScreen extends StatelessWidget {
   Widget _buildBookingCard(BuildContext context, Booking booking) {
     final dateStr = DateFormat('EEE, MMM dd, yyyy').format(booking.bookingDate);
     final timeStr = DateFormat('hh:mm a').format(booking.bookingDate);
-    
+
     Color statusColor;
     switch (booking.status.toLowerCase()) {
-      case 'confirmed': statusColor = Colors.green; break;
-      case 'cancelled': statusColor = Colors.red; break;
-      case 'pending': statusColor = Colors.orange; break;
-      default: statusColor = Colors.blue;
+      case 'confirmed':
+        statusColor = Colors.green;
+        break;
+      case 'cancelled':
+        statusColor = Colors.red;
+        break;
+      case 'pending':
+        statusColor = Colors.orange;
+        break;
+      default:
+        statusColor = Colors.blue;
     }
 
     return Container(
@@ -90,7 +110,11 @@ class MyBookingsScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Column(
@@ -103,10 +127,15 @@ class MyBookingsScreen extends StatelessWidget {
                   width: 60,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(Icons.pets, color: Theme.of(context).primaryColor),
+                  child: Icon(
+                    Icons.pets,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -115,25 +144,38 @@ class MyBookingsScreen extends StatelessWidget {
                     children: [
                       Text(
                         booking.service?.name ?? 'General Service',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         booking.package?.name ?? 'Standard Package',
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 13,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
+                    color: statusColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     booking.status.toUpperCase(),
-                    style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: statusColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -147,16 +189,36 @@ class MyBookingsScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.calendar_month_outlined, size: 16, color: Colors.grey.shade500),
+                    Icon(
+                      Icons.calendar_month_outlined,
+                      size: 16,
+                      color: Colors.grey.shade500,
+                    ),
                     const SizedBox(width: 6),
-                    Text(dateStr, style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
+                    Text(
+                      dateStr,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 13,
+                      ),
+                    ),
                   ],
                 ),
                 Row(
                   children: [
-                    Icon(Icons.access_time, size: 16, color: Colors.grey.shade500),
+                    Icon(
+                      Icons.access_time,
+                      size: 16,
+                      color: Colors.grey.shade500,
+                    ),
                     const SizedBox(width: 6),
-                    Text(timeStr, style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
+                    Text(
+                      timeStr,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 13,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -166,7 +228,13 @@ class MyBookingsScreen extends StatelessWidget {
             const Divider(height: 1),
             TextButton(
               onPressed: () => _showCancelDialog(context, booking.id),
-              child: const Text('Cancel Booking', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600)),
+              child: const Text(
+                'Cancel Booking',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ],
         ],
@@ -186,7 +254,10 @@ class MyBookingsScreen extends StatelessWidget {
               controller.cancelBooking(bookingId);
               Get.back();
             },
-            child: const Text('Yes, Cancel', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Yes, Cancel',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
