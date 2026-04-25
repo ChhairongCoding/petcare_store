@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 import 'package:petcare_store/src/features/profile/models/profile_model.dart';
@@ -138,7 +139,7 @@ class _SettingScreenState extends State<SettingScreen> {
               // Edit profile button
               GestureDetector(
                 onTap: () {
-                  // Navigate to edit profile
+                  Get.toNamed(AppRoutes.updateProfile);
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(

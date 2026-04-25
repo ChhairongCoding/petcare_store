@@ -439,14 +439,14 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
             child: Column(
               children: [
-                _buildMenuItem(
-                  context,
-                  title: "Personal Info",
-                  subtitle: "Name, phone, birthday",
-                  icon: HugeIcons.strokeRoundedUser,
-                  color: Theme.of(context).colorScheme.primary,
-                  onTap: () {},
-                ),
+                // _buildMenuItem(
+                //   context,
+                //   title: "Personal Info",
+                //   subtitle: "Name, phone, birthday",
+                //   icon: HugeIcons.strokeRoundedUser,
+                //   color: Theme.of(context).colorScheme.primary,
+                //   onTap: () {},
+                // ),
                 _buildMenuItem(
                   context,
                   title: "Address Book",

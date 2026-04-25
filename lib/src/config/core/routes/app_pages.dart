@@ -18,6 +18,7 @@ import 'package:petcare_store/src/features/my_pet/views/widgets/tracking_my_pet.
 import 'package:petcare_store/src/features/notification/views/notification_screen.dart';
 import 'package:petcare_store/src/features/products/views/product_detail_page.dart';
 import 'package:petcare_store/src/features/profile/views/profile_screen.dart';
+import 'package:petcare_store/src/features/setting/view/update_profile_screen.dart';
 import 'package:petcare_store/src/features/reminder_views/view/views/reminder_screen.dart';
 import 'package:petcare_store/src/features/setting/view/setting_screen.dart';
 import 'package:petcare_store/src/features/shipping/view/address_form_screen.dart';
@@ -54,4 +55,8 @@ List<GetPage<dynamic>> appPages = [
   GetPage(name: AppRoutes.myBookings, page: () => MyBookingsScreen()),
   GetPage(name: AppRoutes.orderDetail, page: () => const OrderDetailScreen()),
   GetPage(name: AppRoutes.productDetail, page: () => const ProductDetailPage()),
+  GetPage(
+    name: AppRoutes.updateProfile,
+    page: () => const UpdateProfileScreen(),
+  ),
 ];
