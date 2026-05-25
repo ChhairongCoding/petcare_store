@@ -54,7 +54,7 @@ List<GetPage<dynamic>> appPages = [
   GetPage(name: AppRoutes.booking, page: () => BookingScreen()),
   GetPage(name: AppRoutes.myBookings, page: () => MyBookingsScreen()),
   GetPage(name: AppRoutes.orderDetail, page: () => const OrderDetailScreen()),
-  GetPage(name: AppRoutes.productDetail, page: () => const ProductDetailPage()),
+  GetPage(name: AppRoutes.productDetail, page: () => ProductDetailPage()),
   GetPage(
     name: AppRoutes.updateProfile,
     page: () => const UpdateProfileScreen(),

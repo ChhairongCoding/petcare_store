@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
+import 'package:petcare_store/src/features/booking/controller/my_bookings_controller.dart';
+import 'package:petcare_store/src/features/my_order/controller/my_order_controller.dart';
+import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.dart';
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
+import 'package:petcare_store/src/features/profile/views/widgets/activity_item_widget.dart';
+import 'package:petcare_store/src/features/profile/views/widgets/menu_item_widget.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
 
   @override
+
   Widget build(BuildContext context) {
     if (!Get.isRegistered<ProfileController>()) {
       Get.put(ProfileController());
@@ -314,6 +320,9 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 
   Widget _buildActivitySection(BuildContext context) {
+    final myController = Get.find<MyOrderController>();
+    final myBookingController = Get.find<MyBookingsController>();
+    final myPetController = Get.find<MyPetController>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -337,33 +346,36 @@ class ProfileScreen extends GetView<ProfileController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildActivityItem(
+                buildActivityItem(
                   context,
-                  "Orders",
-                  HugeIcons.strokeRoundedShoppingBag01,
-                  Theme.of(context).colorScheme.primary,
-                  () => Get.toNamed(AppRoutes.myorders),
+                  label: "Orders",
+                  icon: HugeIcons.strokeRoundedShoppingBag01,
+                  color: Theme.of(context).colorScheme.primary,
+                  count: myController.orders.length.toString(),
+                  onTap: () => Get.toNamed(AppRoutes.myorders),
                 ),
-                _buildActivityItem(
+                buildActivityItem(
                   context,
-                  "Bookings",
-                  HugeIcons.strokeRoundedCalendar03,
-                  Theme.of(context).colorScheme.primary,
-                  () => Get.toNamed(AppRoutes.myBookings),
+                  label: "Bookings",
+                  icon: HugeIcons.strokeRoundedCalendar03,
+                  color: Theme.of(context).colorScheme.primary,
+                  count: myBookingController.bookings.length.toString(),
+                  onTap: () => Get.toNamed(AppRoutes.myBookings),
                 ),
-                _buildActivityItem(
+                buildActivityItem(
                   context,
-                  "My Pets",
-                  Icons.pets_outlined,
-                  Theme.of(context).colorScheme.primary,
-                  () => Get.toNamed(AppRoutes.mypet),
+                  label:  "My Pets",
+                  icon: Icons.pets_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                  count: myPetController.pets.length.toString(),
+                  onTap: () => Get.toNamed(AppRoutes.mypet),
                 ),
-                _buildActivityItem(
+                buildActivityItem(
                   context,
-                  "Reviews",
-                  HugeIcons.strokeRoundedMessageEdit01,
-                  Theme.of(context).colorScheme.primary,
-                  () {},
+                  label: "Reviews",
+                  icon: HugeIcons.strokeRoundedMessageEdit01,
+                  color: Theme.of(context).colorScheme.primary,
+                  onTap: () {},
                 ),
               ],
             ),
@@ -382,40 +394,7 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildActivityItem(
-    BuildContext context,
-    String label,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  
 
   Widget _buildAccountSection(BuildContext context) {
     return Padding(
@@ -447,7 +426,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 //   color: Theme.of(context).colorScheme.primary,
                 //   onTap: () {},
                 // ),
-                _buildMenuItem(
+                buildMenuItem(
                   context,
                   title: "Address Book",
                   subtitle: "Saved delivery addresses",
@@ -455,7 +434,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   color: Theme.of(context).colorScheme.primary,
                   onTap: () => Get.toNamed(AppRoutes.shipping),
                 ),
-                _buildMenuItem(
+                buildMenuItem(
                   context,
                   title: "Notifications",
                   subtitle: "Alerts, push & email",
@@ -463,7 +442,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   color: Theme.of(context).colorScheme.primary,
                   onTap: () {},
                 ),
-                _buildMenuItem(
+                buildMenuItem(
                   context,
                   title: "Help & Support",
                   subtitle: "FAQs, contact us",
@@ -471,7 +450,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   color: Theme.of(context).colorScheme.primary,
                   onTap: () {},
                 ),
-                _buildMenuItem(
+                buildMenuItem(
                   context,
                   title: "Logout",
                   subtitle: "Sign out of your account",
@@ -488,67 +467,6 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context, {
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-    bool isDestructive = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color, size: 20),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isDestructive
-                          ? color
-                          : Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: isDestructive
-                  ? color.withValues(alpha: 0.5)
-                  : Colors.grey[350],
-              size: 20,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _showLogoutDialog(BuildContext context) {
     Get.dialog(

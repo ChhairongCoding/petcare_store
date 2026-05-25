@@ -10,11 +10,19 @@ class ShippingScreen extends StatelessWidget {
   final bool isSelectMode = Get.arguments?['selectMode'] ?? false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
+    return ColoredBox
+    (
+      color: Theme.of(  context).scaffoldBackgroundColor,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: _buildAppBar(), body: SafeArea(child: _buildBody())),
+      ),
+    );
   }
 
   AppBar _buildAppBar() {
     return AppBar(
+      scrolledUnderElevation: 0,
       title: Text("Shipping Address"),
       actions: [
         IconButton(
@@ -26,6 +34,12 @@ class ShippingScreen extends StatelessWidget {
         ),
         SizedBox(width: 10),
       ],
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(1),
+        child: Container(
+          height: 1,
+          color: Colors.grey[200],
+        )),
     );
   }
 
@@ -83,7 +97,7 @@ class ShippingScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(address.name, style: Get.textTheme.titleMedium),
+                child: Text(address.fullName, style: Get.textTheme.titleMedium),
               ),
               address.isDefault == true
                   ? Container(

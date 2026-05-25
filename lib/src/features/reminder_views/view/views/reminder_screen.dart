@@ -30,8 +30,9 @@ class _ReminderScreenState extends State<ReminderScreen> {
       appBar: _buildAppBar(context),
       body: Obx(() {
         final isLoading = reminderController.isLoading.value;
+        final hasData = reminderController.reminders.isNotEmpty;
         return Skeletonizer(
-          enabled: isLoading,
+          enabled: isLoading && !hasData,
           child: Column(
             children: [
               _buildSummaryHeader(context),
@@ -44,7 +45,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
+  return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.transparent,

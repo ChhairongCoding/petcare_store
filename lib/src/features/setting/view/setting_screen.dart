@@ -27,7 +27,6 @@ class _SettingScreenState extends State<SettingScreen> {
       }
 
       return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
         body: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [

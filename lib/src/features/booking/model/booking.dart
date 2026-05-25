@@ -73,4 +73,18 @@ class Booking {
       'updated_at': updatedAt.toIso8601String(),
     };
   }
+
+  factory Booking.fake() {
+    return Booking(
+      id: 'fake',
+      serviceId: 'fake',
+      petId: 'fake',
+      userId: 'fake',
+      bookingDate: DateTime.now(),
+      status: 'pending',
+      totalPrice: 0.0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+  }
 }

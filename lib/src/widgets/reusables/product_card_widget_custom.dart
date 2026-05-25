@@ -8,20 +8,26 @@ import 'package:petcare_store/src/features/products/model/product_model.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProductCardWidgetCustom extends StatelessWidget {
-  const ProductCardWidgetCustom({super.key, required this.products});
+  const ProductCardWidgetCustom({
+    super.key,
+    required this.products,
+  });
 
   final ProductModel products;
 
   @override
   Widget build(BuildContext context) {
-    final ProductController productController = Get.find<ProductController>();
+    final ProductController productController =
+        Get.find<ProductController>();
+
     final screenWidth = MediaQuery.of(context).size.width;
 
     final crossAxisCount = screenWidth < 400
         ? 1
         : screenWidth < 700
-        ? 2
-        : 3;
+            ? 2
+            : 3;
+
     final cardWidth =
         (screenWidth - (16 * (crossAxisCount + 1))) / crossAxisCount;
 
@@ -31,15 +37,15 @@ class ProductCardWidgetCustom extends StatelessWidget {
         onTap: () => Get.toNamed(
           AppRoutes.productDetail,
           arguments: products,
-        ), // ✅ fixed
+        ),
         child: SizedBox(
           width: cardWidth,
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// IMAGE
                 AspectRatio(
                   aspectRatio: 1,
                   child: ClipRRect(
@@ -83,6 +89,8 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                   ),
                                 ),
                               ),
+            
+                        /// FAVORITE BUTTON
                         Positioned(
                           top: 8,
                           right: 8,
@@ -103,53 +111,65 @@ class ProductCardWidgetCustom extends StatelessWidget {
                     ),
                   ),
                 ),
-
+            
                 const SizedBox(height: 8),
-
+            
+                /// PRODUCT NAME
                 Text(
                   products.name,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                  ),
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
-
+            
                 const SizedBox(height: 4),
-
+            
+                /// RATING
                 Row(
                   children: [
                     Icon(
                       HugeIcons.strokeRoundedStar,
-                      color: Colors.amber[600],
+                      color: Colors.amber,
                       size: 14,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      "4.5",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                    Flexible(
+                      child: Text(
+                        "4.5",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                      ),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 4),
-
+            
+                const SizedBox(height: 6),
+            
+                /// PRICE + BUTTON
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(
+                    Expanded(
                       child: Text(
                         "\$${products.price}",
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w600,
+                                ),
                       ),
                     ),
+            
+                    const SizedBox(width: 8),
+            
                     Container(
                       width: 30,
                       height: 30,

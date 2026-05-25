@@ -25,7 +25,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final CartController cartController = Get.find<CartController>();
   final ProductController productController = Get.find<ProductController>();
   int quantity = 1;
-  int _currentImageIndex = 0;
+  int currentImageIndex = 0;
 
   late ScrollController _scrollController;
   bool _showAppBarBg = false;
@@ -134,7 +134,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             child: PageView.builder(
                               itemCount: 3,
                               onPageChanged: (index) =>
-                                  setState(() => _currentImageIndex = index),
+                                  setState(() => currentImageIndex = index),
                               itemBuilder: (context, index) {
                                 if (product.imagePath.isEmpty) {
                                   return Container(

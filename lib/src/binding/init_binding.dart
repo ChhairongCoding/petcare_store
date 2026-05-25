@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
 import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
+import 'package:petcare_store/src/features/booking/controller/booking_controller.dart';
+import 'package:petcare_store/src/features/booking/controller/my_bookings_controller.dart';
 import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
 import 'package:petcare_store/src/features/category/controller/category_controller.dart';
 import 'package:petcare_store/src/features/checkout/controller/payment_controller.dart';
 import 'package:petcare_store/src/features/home/controller/home_controller.dart';
 import 'package:petcare_store/src/features/main/controller/main_controller.dart';
+import 'package:petcare_store/src/features/my_order/controller/my_order_controller.dart';
 import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.dart';
@@ -33,6 +36,10 @@ class InitBinding extends Bindings {
     Get.put(CartController());
     Get.put(ShippingController());
     Get.put(PaymentController());
+    Get.put(MyOrderController());
+    Get.put(BookingController());
+    Get.put(MyBookingsController());
+    Get.put(MyOrderController());
 
     //provider
     Get.put(ProviderLocal());

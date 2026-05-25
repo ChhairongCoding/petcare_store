@@ -126,10 +126,7 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_outlined, color: Colors.black),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
+     
       centerTitle: true,
       title: const Text(
         'Checkout',
@@ -321,7 +318,7 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
         TextButton(
           onPressed: () {
             paymentController.reset();
-            Get.offAllNamed('/myorders');
+            Get.toNamed('/myorders');
           },
           child: Text(
             'View My Orders',
@@ -355,18 +352,32 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    shippingController.defaultAddress?.name?.toString() ?? '',
-                    style: Get.textTheme.titleSmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                   RichText(
+                     text: TextSpan(
+                        text: shippingController.defaultAddress?.fullName.toString() ?? 'Select your address',
+                        style: Get.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Get.theme.hintColor,
+                        ),
+                        children: [
+                          TextSpan(text: '\u00A0\u00A0'),
+                          TextSpan(
+                            text: shippingController.defaultAddress?.phoneNumber.toString() ?? '',
+                            style: Get.textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Get.theme.hintColor,
+                        ),
+                          ),
+                        ]
+                      
+                     )
+                    
+                   ),
                   Text(
                     shippingController.defaultAddress?.addressDetail
-                            ?.toString() ??
+                            .toString() ??
                         'Select your address',
-                    style: Get.textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey.shade600,
-                    ),
+                    style: Get.textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
@@ -873,7 +884,7 @@ class _CheckoutReceiptCard extends StatelessWidget {
               _receiptRow('Delivery', '2–3 business days'),
               if (address != null) ...[
                 const SizedBox(height: 12),
-                _receiptRow('Ship to', address?.name?.toString() ?? ''),
+                _receiptRow('Ship to', address?.addressDetail.toString() ?? '—'),
               ],
               const SizedBox(height: 16),
               _dottedDivider(),
@@ -920,16 +931,22 @@ class _CheckoutReceiptCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+        Flexible(
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+          ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: valueColor ?? const Color(0xFF1A1A2E),
+        Flexible(
+          flex: 1,
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: valueColor ?? const Color(0xFF1A1A2E),
+            ),
           ),
         ),
       ],
