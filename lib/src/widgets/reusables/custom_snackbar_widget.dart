@@ -11,19 +11,26 @@ class CustomSnackbar {
     SnackbarType type = SnackbarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
-    Get.showSnackbar(
-      GetSnackBar(
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.transparent,
-        duration: duration,
-        messageText: CustomSnackbarWidget(
-          title: title,
-          message: message,
-          type: type,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      ),
-    );
+    // Defer to next frame to ensure Overlay widget is available in the widget tree
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        Get.showSnackbar(
+          GetSnackBar(
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.transparent,
+            duration: duration,
+            messageText: CustomSnackbarWidget(
+              title: title,
+              message: message,
+              type: type,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          ),
+        );
+      } catch (_) {
+        // Silently ignore if overlay is not available yet
+      }
+    });
   }
 }
 

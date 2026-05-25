@@ -93,7 +93,7 @@ class _PaymentMethodSheetState extends State<_PaymentMethodSheet> {
                         // Save in controller before closing
                         Get.find<PaymentController>()
                             .selectPaymentMethod(method);
-                        Get.back(); // close sheet
+                        Get.back();
                         widget.onMethodConfirmed(method);
                       },
                       style: ElevatedButton.styleFrom(

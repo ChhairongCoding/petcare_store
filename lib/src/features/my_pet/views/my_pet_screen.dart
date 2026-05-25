@@ -68,9 +68,11 @@ class _MyPetState extends State<MyPet> {
   }
 
   Widget _buildBody(BuildContext context) {
+    final isLoading = _controller.isLoading.value;
+    final hasData = _controller.pets.isNotEmpty;
     return Obx(
       () => Skeletonizer(
-        enabled: _controller.isLoading.value,
+        enabled: isLoading && !hasData,
         child: Column(
           children: [
             _buildHeader(context),

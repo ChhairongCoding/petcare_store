@@ -20,9 +20,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final HomeController homeController = Get.put(HomeController());
-  final ProductController productController = Get.put(ProductController());
-  final CategoryController categoryController = Get.put(CategoryController());
+  final HomeController homeController = Get.find<HomeController>();
+  final ProductController productController = Get.find<ProductController>();
+  final CategoryController categoryController = Get.find<CategoryController>();
+  final BookingController bookingController = Get.find<BookingController>();
   late ScrollController _scrollController;
 
   @override
@@ -76,8 +77,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildBody(context, bool isLoading) {
-    final BookingController bookingController = Get.put(BookingController());
-
     return SliverToBoxAdapter(
       child: Skeletonizer(
         enabled: isLoading,
@@ -111,12 +110,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
 
+                /// Booking services with its own skeleton state
                 Obx(() {
-                  if (bookingController.isServicesLoading.value &&
-                      bookingController.services.isEmpty) {
-                    return const SizedBox(
+                  final isServicesLoading =
+                      bookingController.isServicesLoading.value;
+                  final services = bookingController.services;
+
+                  /// Show skeleton placeholders when services are loading
+                  if (isServicesLoading || services.isEmpty) {
+                    return SizedBox(
                       height: 60,
-                      child: Center(child: CircularProgressIndicator()),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: isServicesLoading ? 3 : services.length,
+                        itemBuilder: (context, index) {
+                          if (isServicesLoading) {
+                            return _buildServiceSkeletonItem(context);
+                          }
+                          final service = services[index];
+                          return _buildServiceItem(context, service);
+                        },
+                      ),
                     );
                   }
 
@@ -124,68 +138,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 60,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: bookingController.services.length,
+                      itemCount: services.length,
                       itemBuilder: (context, index) {
-                        final service = bookingController.services[index];
-                        return GestureDetector(
-                          onTap: () {
-                            bookingController.selectService(service.id);
-                            Get.toNamed(AppRoutes.booking);
-                          },
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 12),
-                              height: 55,
-                              width: 180,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                border: Border.all(color: Colors.grey.shade100),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.02),
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 24,
-                                      backgroundColor: Theme.of(
-                                        context,
-                                      ).primaryColor.withValues(alpha: 0.1),
-                                      child: Icon(
-                                        Icons.pets_rounded,
-                                        size: 20,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        service.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleSmall
-                                            ?.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
+                        final service = services[index];
+                        return _buildServiceItem(context, service);
                       },
                     ),
                   );
@@ -351,6 +307,100 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  /// Skeleton placeholder for a booking service item
+  Widget _buildServiceSkeletonItem(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 12),
+      height: 55,
+      width: 180,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade200,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Colors.grey.shade300,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Container(
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Actual booking service item
+  Widget _buildServiceItem(BuildContext context, dynamic service) {
+    return GestureDetector(
+      onTap: () {
+        bookingController.selectService(service.id);
+        Get.toNamed(AppRoutes.booking);
+      },
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          margin: const EdgeInsets.only(right: 12),
+          height: 55,
+          width: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade100),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Theme.of(context)
+                      .primaryColor
+                      .withValues(alpha: 0.1),
+                  child: Icon(
+                    Icons.pets_rounded,
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    service.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -10,7 +10,6 @@ class ShippingController extends GetxController {
   RxString addressText = "".obs;
   RxBool isLoading = false.obs;
   RxBool isGeocoding = false.obs;
-   
 
   RxList<ShippingModel> addressLists = <ShippingModel>[].obs;
 
@@ -55,26 +54,33 @@ class ShippingController extends GetxController {
     }
   }
 
-Future<void> getAddress() async {
-  try {
-    isLoading(true);
-    final list = await _shippingService.fetchAddress();
-    addressLists.clear();
-    await Future.delayed(Duration(milliseconds: 50)); // 👈 force Obx to see the clear
-    addressLists.addAll(list);
-  } catch (e) {
-    developer.log("$e");
-  } finally {
-    isLoading(false);
+  Future<void> getAddress() async {
+    try {
+      isLoading(true);
+      final list = await _shippingService.fetchAddress();
+      addressLists.clear();
+      await Future.delayed(
+        Duration(milliseconds: 50),
+      ); // 👈 force Obx to see the clear
+      addressLists.addAll(list);
+    } catch (e) {
+      developer.log("$e");
+    } finally {
+      isLoading(false);
+    }
   }
-}
 
   Future<void> addAdress({
     required String name,
     required String addressDetail,
     required double lat,
     required double lng,
-    required bool isDefault
+    required bool isDefault,
+    required String phoneNumber,
+    String? city,
+    String? streetAddress,
+    String? apartmentSuite,
+    int? labelAddress,
   }) async {
     try {
       isLoading(true);
@@ -83,24 +89,24 @@ Future<void> getAddress() async {
         addressDetail: addressDetail,
         lat: lat,
         lng: lng,
-        isDefault: isDefault
+        isDefault: isDefault,
+        phoneNumber: phoneNumber,
+        city: city,
+        streetAddress: streetAddress,
+        apartmentSuite: apartmentSuite,
+        labelAddress: labelAddress,
       );
       await getAddress();
-      // Use Navigator.pop instead of Get.back() to avoid snackbar conflict
-      Navigator.of(Get.context!).pop();
+
+
       await Future.delayed(const Duration(milliseconds: 300));
-      Get.snackbar(
-        "Success",
-        "Address saved!",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Navigator.of(Get.context!).pop();
     } catch (e) {
       Get.snackbar(
         "Error",
         "Something went wrong!",
         snackPosition: SnackPosition.BOTTOM,
       );
-      isLoading(false);
     } finally {
       isLoading(false);
     }
@@ -115,22 +121,21 @@ Future<void> getAddress() async {
     isLoading(false);
   }
 
-  bool checkAddressDefault(){
-    final isDefault = addressLists.map((e)=> e.isDefault == true);
-    return isDefault.first;
-    
+  bool checkAddressDefault() {
+    return addressLists.any((e) => e.isDefault == true);
   }
-  
-  ShippingModel? get defaultAddress => addressLists.firstWhereOrNull((e) => e.isDefault == true);
 
-Future<void> setDefault(String id) async {
-  try {
-    await _shippingService.setDefault(id);
-    await getAddress();
-  } catch (e) {
-    developer.log("$e");
+  ShippingModel? get defaultAddress =>
+      addressLists.firstWhereOrNull((e) => e.isDefault == true);
+
+  Future<void> setDefault(String id) async {
+    try {
+      await _shippingService.setDefault(id);
+      await getAddress();
+    } catch (e) {
+      developer.log("$e");
+    }
   }
-}
 
   @override
   void onClose() {

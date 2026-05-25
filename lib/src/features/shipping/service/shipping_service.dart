@@ -3,12 +3,17 @@ import 'package:petcare_store/src/features/shipping/model/shipping_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ShippingService {
-  final ShippingModel shippingModel = ShippingModel(
-    name: "",
-    addressDetail: "",
-    lat: '',
-    lng: '',
-    isDefault: false,
+final ShippingModel shippingModel = ShippingModel(
+fullName: "",
+addressDetail: "",
+lat: 0.0,
+lng: 0.0,
+isDefault: false,
+phoneNumber: '',
+city: '',
+streetAddress: '',
+labelAddress: 0,
+apartmentSuite: '',
   );
   final _client = Supabase.instance.client;
 
@@ -36,27 +41,37 @@ class ShippingService {
   }
 
   Future<void> addAdress({
-    required String name,
-    required String addressDetail,
-    required double lat,
-    required double lng,
-    required bool isDefault,
-  }) async {
-    final auth = getCurrentUserId();
-    try {
-      await _client.from("addresses").insert({
-        "user_id": auth,
-        "name": name,
-        "address_detail": addressDetail,
-        "latitude": lat,
-        "longitude": lng,
-        "default": isDefault,
-      });
-    } catch (e) {
-      developer.log("$e");
-      rethrow; // let controller handle UI
-    }
+  required String name,
+  required String addressDetail,
+  required double lat,
+  required double lng,
+  required bool isDefault,
+  required String phoneNumber,
+  String? city,
+  String? streetAddress,
+  String? apartmentSuite,
+  int? labelAddress,
+}) async {
+  final auth = getCurrentUserId();
+  try {
+    await _client.from("addresses").insert({
+      "user_id": auth,
+      "full_name": name,
+      "address_detail": addressDetail,
+      "latitude": lat.toString(),
+      "longitude": lng.toString(),
+      "default": isDefault,
+      "phone_number": phoneNumber,
+      "city": city,
+      "street_address": streetAddress,
+      "apartment_suite": apartmentSuite,
+      "label_address": labelAddress,
+    });
+  } catch (e) {
+    developer.log("$e");
+    rethrow;
   }
+}
 
   Future<void> removeAddress(String id) async {
     final auth = getCurrentUserId();
