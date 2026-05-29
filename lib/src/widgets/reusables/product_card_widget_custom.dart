@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
-import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
 import 'package:petcare_store/src/features/products/model/product_model.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:petcare_store/src/features/products/controllers/favorite_controller.dart';
 
 class ProductCardWidgetCustom extends StatelessWidget {
   const ProductCardWidgetCustom({
@@ -17,9 +16,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductController productController =
-        Get.find<ProductController>();
-
+    final favoriteController = Get.find<FavoriteController>();
     final screenWidth = MediaQuery.of(context).size.width;
 
     final crossAxisCount = screenWidth < 400
@@ -31,15 +28,23 @@ class ProductCardWidgetCustom extends StatelessWidget {
     final cardWidth =
         (screenWidth - (16 * (crossAxisCount + 1))) / crossAxisCount;
 
-    return Skeletonizer(
-      enabled: productController.isFirstLoadRunning.value,
-      child: GestureDetector(
-        onTap: () => Get.toNamed(
-          AppRoutes.productDetail,
-          arguments: products,
-        ),
-        child: SizedBox(
-          width: cardWidth,
+    return SizedBox(
+      width: cardWidth,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+
+          onTap: () {
+            print("Tapped Product");
+
+            Get.toNamed(
+              AppRoutes.productDetail,
+              arguments: products,
+              preventDuplicates: false,
+            );
+          },
+
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -68,7 +73,8 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                errorWidget: (context, url, error) => Container(
+                                errorWidget: (context, url, error) =>
+                                    Container(
                                   color: Colors.grey[200],
                                   child: Center(
                                     child: Icon(
@@ -89,21 +95,27 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                   ),
                                 ),
                               ),
-            
+
                         /// FAVORITE BUTTON
                         Positioned(
                           top: 8,
                           right: 8,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              HugeIcons.strokeRoundedFavourite,
-                              color: Colors.grey[600],
-                              size: 16,
+                          child: GestureDetector(
+                            onTap: () => favoriteController.toggleFavorite(products.id),
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.9),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Obx(() {
+                                final isFav = favoriteController.isFavorite(products.id);
+                                return Icon(
+                                  isFav ? Icons.favorite : HugeIcons.strokeRoundedFavourite,
+                                  color: isFav ? Colors.red : Colors.grey[600],
+                                  size: 16,
+                                );
+                              }),
                             ),
                           ),
                         ),
@@ -111,9 +123,9 @@ class ProductCardWidgetCustom extends StatelessWidget {
                     ),
                   ),
                 ),
-            
+
                 const SizedBox(height: 8),
-            
+
                 /// PRODUCT NAME
                 Text(
                   products.name,
@@ -124,9 +136,9 @@ class ProductCardWidgetCustom extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                 ),
-            
+
                 const SizedBox(height: 4),
-            
+
                 /// RATING
                 Row(
                   children: [
@@ -140,19 +152,17 @@ class ProductCardWidgetCustom extends StatelessWidget {
                       child: Text(
                         "4.5",
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
-                              color: Colors.grey[600],
-                            ),
+                        style:
+                            Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Colors.grey[600],
+                                ),
                       ),
                     ),
                   ],
                 ),
-            
+
                 const SizedBox(height: 6),
-            
+
                 /// PRICE + BUTTON
                 Row(
                   children: [
@@ -167,9 +177,9 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                 ),
                       ),
                     ),
-            
+
                     const SizedBox(width: 8),
-            
+
                     Container(
                       width: 30,
                       height: 30,

@@ -9,6 +9,7 @@ import 'package:petcare_store/src/features/home/controller/home_controller.dart'
 import 'package:petcare_store/src/features/main/controller/main_controller.dart';
 import 'package:petcare_store/src/features/my_order/controller/my_order_controller.dart';
 import 'package:petcare_store/src/features/products/controllers/product_controller.dart';
+import 'package:petcare_store/src/features/products/controllers/favorite_controller.dart';
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.dart';
 import 'package:petcare_store/src/features/reminder_views/controller/reminder_controller.dart';
@@ -31,6 +32,7 @@ class InitBinding extends Bindings {
     Get.put(ReminderController());
     Get.put(AuthController());
     Get.put(ProductController());
+    Get.put(FavoriteController());
     Get.put(MyPetController());
     Get.put(ProfileController());
     Get.put(CartController());

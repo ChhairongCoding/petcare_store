@@ -117,7 +117,7 @@ class ProductController extends GetxController {
     await firstLoad();
   }
 
-  Future<void> fetchVariants(String productId) async {
+  Future<List<ProductVariantModel>> fetchVariants(String productId) async {
     try {
       isVariantsLoading(true);
       selectedProductVariants.clear();
@@ -138,14 +138,16 @@ class ProductController extends GetxController {
           .toList();
 
       selectedProductVariants.assignAll(variants);
+      return variants;
     } catch (e) {
       developer.log('Error fetching variants: $e');
+      return [];
     } finally {
       isVariantsLoading(false);
     }
   }
 
-  Future<void> fetchRelatedProducts({
+  Future<List<ProductModel>> fetchRelatedProducts({
     required String excludeProductId,
     String? animalType,
     String? flavor,
@@ -173,8 +175,9 @@ class ProductController extends GetxController {
             .toList();
 
         if (matchingProductIds.isNotEmpty) {
-          await _fetchProductsByIds(matchingProductIds);
-          return; // Found variant-based related products
+          final fetched = await _fetchProductsByIds(matchingProductIds);
+          relatedProducts.assignAll(fetched);
+          return fetched;
         }
       }
 
@@ -190,21 +193,39 @@ class ProductController extends GetxController {
 
       final fetched = _mapProducts(fallback);
       relatedProducts.assignAll(fetched);
+      return fetched;
     } catch (e) {
       developer.log('Error fetching related products: $e');
+      return [];
     } finally {
       isRelatedLoading(false);
     }
   }
 
   // Helper to avoid repeating image URL logic
-  Future<void> _fetchProductsByIds(List<String> ids) async {
+  Future<List<ProductModel>> _fetchProductsByIds(List<String> ids) async {
     final response = await _client
         .from('products')
         .select()
         .inFilter('id', ids)
         .limit(6);
-    relatedProducts.assignAll(_mapProducts(response));
+    final fetched = _mapProducts(response);
+    relatedProducts.assignAll(fetched);
+    return fetched;
+  }
+
+  Future<List<ProductModel>> fetchProductsByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    try {
+      final response = await _client
+          .from('products')
+          .select()
+          .inFilter('id', ids);
+      return _mapProducts(response);
+    } catch (e) {
+      developer.log('Error fetching products by ids: $e');
+      return [];
+    }
   }
 
   List<ProductModel> _mapProducts(List<dynamic> response) {

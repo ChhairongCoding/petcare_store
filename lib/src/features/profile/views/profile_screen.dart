@@ -9,6 +9,7 @@ import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.d
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 import 'package:petcare_store/src/features/profile/views/widgets/activity_item_widget.dart';
 import 'package:petcare_store/src/features/profile/views/widgets/menu_item_widget.dart';
+import 'package:petcare_store/src/features/products/controllers/favorite_controller.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -239,13 +240,17 @@ class ProfileScreen extends GetView<ProfileController> {
         child: Row(
           children: [
             Expanded(
-              child: _buildStatItem(
-                context,
-                "5",
-                "Wishlist",
-                HugeIcons.strokeRoundedFavourite,
-                const Color(0xFFE17055),
-              ),
+              child: Obx(() {
+                final favController = Get.find<FavoriteController>();
+                return _buildStatItem(
+                  context,
+                  favController.favoriteIds.length.toString(),
+                  "Wishlist",
+                  HugeIcons.strokeRoundedFavourite,
+                  const Color(0xFFE17055),
+                  onTap: () => Get.toNamed(AppRoutes.wishlist),
+                );
+              }),
             ),
             _buildStatDivider(),
             Expanded(
@@ -278,10 +283,11 @@ class ProfileScreen extends GetView<ProfileController> {
     String value,
     String label,
     IconData icon,
-    Color color,
-  ) {
+    Color color, {
+    VoidCallback? onTap,
+  }) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
