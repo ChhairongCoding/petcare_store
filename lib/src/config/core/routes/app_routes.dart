@@ -26,4 +26,5 @@ class AppRoutes {
   static String orderDetail = '/orderDetail';
   static String productDetail = '/productDetail';
   static String updateProfile = '/updateProfile';
+  static String wishlist = '/wishlist';
 }

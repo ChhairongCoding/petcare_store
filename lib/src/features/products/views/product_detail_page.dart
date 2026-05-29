@@ -12,6 +12,8 @@ import 'package:petcare_store/src/features/products/views/widget/skeleton_chip_w
 import 'package:petcare_store/src/widgets/reusables/product_card_widget_custom.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:petcare_store/src/widgets/reusables/custom_snackbar_widget.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:petcare_store/src/features/products/controllers/favorite_controller.dart';
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({super.key});
@@ -35,26 +37,46 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   String? _selectedWeight;
   ProductVariantModel? _selectedVariant;
 
+  final RxList<ProductVariantModel> selectedProductVariants =
+      <ProductVariantModel>[].obs;
+  final RxList<ProductModel> relatedProducts = <ProductModel>[].obs;
+  final RxBool isRelatedLoading = false.obs;
+  final RxBool isVariantsLoading = false.obs;
+
   @override
   void initState() {
     super.initState();
 
+    _resetSelections();
+
     product = Get.arguments as ProductModel;
 
-    productController.fetchVariants(product.id).then((_) {
-      final variants = productController.selectedProductVariants;
+    isVariantsLoading(true);
+    productController.fetchVariants(product.id).then((variants) {
+      selectedProductVariants.assignAll(variants);
+      isVariantsLoading(false);
+
       final defaultAnimal = variants.isNotEmpty
           ? variants.first.animalType
           : null;
-      productController.fetchRelatedProducts(
-        excludeProductId: product.id,
-        animalType: defaultAnimal,
-      );
+
+      isRelatedLoading(true);
+      productController
+          .fetchRelatedProducts(
+            excludeProductId: product.id,
+            animalType: defaultAnimal,
+          )
+          .then((related) {
+            relatedProducts.assignAll(related);
+            isRelatedLoading(false);
+          });
     });
 
     _scrollController = ScrollController();
+
     _scrollController.addListener(() {
       final shouldShow = _scrollController.offset > 320;
+
       if (shouldShow != _showAppBarBg) {
         setState(() => _showAppBarBg = shouldShow);
       }
@@ -68,7 +90,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   void _updateSelectedVariant() {
-    final variants = productController.selectedProductVariants;
+    final variants = selectedProductVariants;
     try {
       _selectedVariant = variants.firstWhere(
         (v) =>
@@ -81,17 +103,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
     setState(() {});
 
-    productController.fetchRelatedProducts(
-      excludeProductId: product.id,
-      animalType: _selectedAnimalType,
-      flavor: _selectedFlavor,
-    );
+    isRelatedLoading(true);
+    productController
+        .fetchRelatedProducts(
+          excludeProductId: product.id,
+          animalType: _selectedAnimalType,
+          flavor: _selectedFlavor,
+        )
+        .then((related) {
+          relatedProducts.assignAll(related);
+          isRelatedLoading(false);
+        });
   }
 
   bool _isItemEnabled(String category, String value) {
-    if (productController.selectedProductVariants.isEmpty) return true;
+    if (selectedProductVariants.isEmpty) return true;
 
-    return productController.selectedProductVariants.any((v) {
+    return selectedProductVariants.any((v) {
       if (category == 'Animal Type' && v.animalType != value) return false;
       if (category == 'Flavor' && v.flavor != value) return false;
       if (category == 'Size / Weight' && v.weightLabel != value) return false;
@@ -113,6 +141,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     });
   }
 
+  void _resetSelections() {
+    quantity = 1;
+    currentImageIndex = 0;
+
+    _selectedAnimalType = null;
+    _selectedFlavor = null;
+    _selectedWeight = null;
+    _selectedVariant = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +158,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         children: [
           Obx(
             () => Skeletonizer(
-              enabled: productController.isVariantsLoading.value,
+              enabled: isVariantsLoading.value,
               child: SingleChildScrollView(
                 controller: _scrollController,
                 child: Column(
@@ -208,11 +246,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         backgroundColor: _showAppBarBg
                             ? Colors.grey.shade100
                             : Colors.white.withValues(alpha: 0.8),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            HugeIcons.strokeRoundedShare01,
-                            color: Colors.black,
+                        child: Builder(
+                          builder: (buttonContext) => IconButton(
+                            onPressed: () {
+                              final box =
+                                  buttonContext.findRenderObject()
+                                      as RenderBox?;
+                              final shareRect = box != null
+                                  ? box.localToGlobal(Offset.zero) & box.size
+                                  : null;
+                              Share.share(
+                                'Check out ${product.name} on PetCare Store for \$${(_selectedVariant?.price ?? product.price).toStringAsFixed(2)}!\n\n${product.description ?? ""}',
+                                subject: 'PetCare Store - ${product.name}',
+                                sharePositionOrigin: shareRect,
+                              );
+                            },
+                            icon: const Icon(
+                              HugeIcons.strokeRoundedShare01,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),
@@ -221,13 +273,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         backgroundColor: _showAppBarBg
                             ? Colors.grey.shade100
                             : Colors.white.withValues(alpha: 0.8),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            HugeIcons.strokeRoundedFavourite,
-                            color: Colors.black,
-                          ),
-                        ),
+                        child: Obx(() {
+                          final favController = Get.find<FavoriteController>();
+                          final isFav = favController.isFavorite(product.id);
+                          return IconButton(
+                            onPressed: () =>
+                                favController.toggleFavorite(product.id),
+                            icon: Icon(
+                              isFav
+                                  ? Icons.favorite
+                                  : HugeIcons.strokeRoundedFavourite,
+                              color: isFav ? Colors.red : Colors.black,
+                            ),
+                          );
+                        }),
                       ),
                       const SizedBox(width: 8),
                       CircleAvatar(
@@ -261,7 +320,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           child: ElevatedButton.icon(
             onPressed: () {
               if (_selectedVariant?.stockQty == 0) return;
-              if (productController.selectedProductVariants.isNotEmpty &&
+              if (selectedProductVariants.isNotEmpty &&
                   _selectedVariant == null) {
                 CustomSnackbar.show(
                   title: 'Wait a Sec!',
@@ -484,8 +543,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         ),
 
         Obx(() {
-          final isLoading = productController.isRelatedLoading.value;
-          final related = productController.relatedProducts;
+          final isLoading = isRelatedLoading.value;
+          final related = relatedProducts;
 
           if (!isLoading && related.isEmpty) {
             return Padding(
@@ -526,8 +585,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   Widget _buildVariantSection(BuildContext context) {
     return Obx(() {
-      final isLoading = productController.isVariantsLoading.value;
-      final variants = productController.selectedProductVariants;
+      final isLoading = isVariantsLoading.value;
+      final variants = selectedProductVariants;
 
       if (!isLoading && variants.isEmpty) return const SizedBox.shrink();
 
