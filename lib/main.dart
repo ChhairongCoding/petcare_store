@@ -7,11 +7,14 @@ import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/config/theme/app_theme.dart';
 // import 'package:petcare_store/services/local_service.dart';
 // import 'package:petcare_store/util/provider_local.dart';
+import 'package:petcare_store/src/notification/notification_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await NotificationService.initialize();
+
   try {
     await Supabase.initialize(
       url: dotenv.get("supabaseUrl"),

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/src/features/cart/models/cart_item_model.dart';
 import 'package:petcare_store/src/features/cart/services/cart_service.dart';

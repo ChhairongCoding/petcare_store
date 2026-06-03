@@ -13,7 +13,7 @@ class _CartBannerSliderState extends State<CartBannerSlider> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   Timer? _timer;
-  bool _isUserScrolling = false;
+  bool isUserScrolling = false;
 
   final List<Map<String, String>> _banners = [
     {
@@ -78,10 +78,10 @@ class _CartBannerSliderState extends State<CartBannerSlider> {
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
           if (notification is ScrollStartNotification) {
-            _isUserScrolling = true;
+            isUserScrolling = true;
             _timer?.cancel();
           } else if (notification is ScrollEndNotification) {
-            _isUserScrolling = false;
+            isUserScrolling = false;
             _startAutoScroll();
           }
           return false;
@@ -141,33 +141,33 @@ class _CartBannerSliderState extends State<CartBannerSlider> {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(color: Colors.white),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(color: Colors.white),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   description,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.grey[200]),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[200]),
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

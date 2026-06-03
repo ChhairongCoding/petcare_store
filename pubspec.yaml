@@ -54,6 +54,7 @@ dependencies:
   qr_flutter: ^4.1.0
   timelines_plus: ^2.0.0
   share_plus: ^10.1.0
+  flutter_local_notifications: ^21.0.0
   # google_maps_flutter: ^2.13.1
 
 dev_dependencies:

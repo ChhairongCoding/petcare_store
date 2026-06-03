@@ -209,7 +209,7 @@ class Helper {
   // }
 
   // Simple alert dialog with one positive action (and optional cancel)
-  static Future<void> _showAlertDialog(
+  static Future<void> showAlertDialog(
     BuildContext context, {
     required String title,
     required String content,
@@ -244,7 +244,7 @@ class Helper {
     );
   }
 
-  static Future<void> _showSimpleDialog(
+  static Future<void> showSimpleDialog(
     BuildContext context,
     String title,
     String message,

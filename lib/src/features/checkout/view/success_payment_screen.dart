@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/src/features/checkout/controller/payment_controller.dart';
+import 'package:petcare_store/src/notification/notification_controller.dart';
 
 class SuccessPaymentScreen extends StatefulWidget {
   const SuccessPaymentScreen({super.key});
@@ -48,7 +49,13 @@ class _SuccessPaymentScreenState extends State<SuccessPaymentScreen>
 
     _fadeController.forward();
     Future.delayed(const Duration(milliseconds: 150), () {
-      if (mounted) _checkController.forward();
+      if (mounted) {
+        _checkController.forward();
+        NotificationController().showNotification(
+          title: "Payment Successful",
+          body: "Your payment was processed successfully. Thank you for your purchase!",
+        );
+      }
     });
   }
 
