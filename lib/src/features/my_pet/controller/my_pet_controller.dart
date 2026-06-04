@@ -194,7 +194,11 @@ class MyPetController extends GetxController {
       return null;
     }
     final user = session.user;
-    return _uploadAvatarFromBytes(data, ownerId: user.id, extensionHint: extensionHint);
+    return _uploadAvatarFromBytes(
+      data,
+      ownerId: user.id,
+      extensionHint: extensionHint,
+    );
   }
 
   Future<String?> _uploadAvatarFromBytes(
@@ -227,7 +231,7 @@ class MyPetController extends GetxController {
     return 'pets/$ownerId/$timestamp$sanitizedExt';
   }
 
-  String _fileExtension(String path) {
+  String fileExtension(String path) {
     final dotIndex = path.lastIndexOf('.');
     if (dotIndex == -1) return '.jpg';
     return path.substring(dotIndex).toLowerCase();
@@ -301,7 +305,11 @@ class MyPetController extends GetxController {
       );
       Get.snackbar('Network error', 'Check your connection and try again.');
     } catch (e, stack) {
-      developer.log('Unexpected error when updating pet', error: e, stackTrace: stack);
+      developer.log(
+        'Unexpected error when updating pet',
+        error: e,
+        stackTrace: stack,
+      );
       Get.snackbar('Unable to update pet', 'Please try again later.');
     }
   }

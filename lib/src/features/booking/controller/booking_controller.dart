@@ -56,9 +56,6 @@ class BookingController extends GetxController {
     if (package != null && package.price != null) total += package.price!;
 
     totalPrice.value = total;
-    print(
-      '➔ Price Update: Service(${service?.price}) + Package(${package?.price}) = ${totalPrice.value}',
-    );
   }
 
   Future<void> fetchServices() async {
@@ -74,7 +71,6 @@ class BookingController extends GetxController {
         selectedServiceId.value = services.first.id;
       }
       calculateTotalPrice();
-    } catch (e) {
     } finally {
       isServicesLoading(false);
     }
@@ -97,7 +93,6 @@ class BookingController extends GetxController {
         selectedPackageId.value = packages.first.id;
       }
       calculateTotalPrice();
-    } catch (e) {
     } finally {
       isPackagesLoading(false);
     }
@@ -185,7 +180,7 @@ class BookingController extends GetxController {
             minute,
           );
         } catch (e) {
-          print('Error parsing time: $e');
+          debugPrint(e.toString());
         }
       }
 
@@ -264,7 +259,6 @@ class BookingController extends GetxController {
         barrierDismissible: false,
       );
     } catch (e) {
-      print(' BOOKING FAILED: $e');
       Get.snackbar(
         'Error',
         'Could not complete booking. Please check your data.',

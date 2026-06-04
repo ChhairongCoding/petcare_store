@@ -91,8 +91,9 @@ class _PaymentMethodSheetState extends State<_PaymentMethodSheet> {
                       onPressed: () {
                         final method = _selected!;
                         // Save in controller before closing
-                        Get.find<PaymentController>()
-                            .selectPaymentMethod(method);
+                        Get.find<PaymentController>().selectPaymentMethod(
+                          method,
+                        );
                         Get.back();
                         widget.onMethodConfirmed(method);
                       },
@@ -165,20 +166,24 @@ class _PaymentTile extends StatelessWidget {
                 ],
         ),
         child: ListTile(
-          leading: Image.asset(image, width: 28,
-              errorBuilder: (_, __, ___) =>
-                  const Icon(Icons.payment, size: 28)),
+          leading: Image.asset(
+            image,
+            width: 28,
+            errorBuilder: (_, __, ___) => const Icon(Icons.payment, size: 28),
+          ),
           title: Text(
             label,
             style: TextStyle(
-              fontWeight:
-                  isSelected ? FontWeight.bold : FontWeight.normal,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               color: isSelected ? Colors.green.shade800 : Colors.black87,
             ),
           ),
           trailing: isSelected
-              ? Icon(Icons.check_circle_rounded,
-                  color: Colors.green.shade600, size: 22)
+              ? Icon(
+                  Icons.check_circle_rounded,
+                  color: Colors.green.shade600,
+                  size: 22,
+                )
               : null,
         ),
       ),

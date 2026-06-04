@@ -152,42 +152,42 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
                     ),
 
                     const SizedBox(height: 32),
-                    _buildSectionHeader(
-                      context,
-                      'Location (Optional)',
-                      HugeIcons.strokeRoundedLocation01,
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormFieldWidget(
-                            label: "Latitude",
-                            controller: latitudeController,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            prefixIcon: HugeIcons.strokeRoundedPinLocation01,
-                            isRequired: false,
-                            validator: (v) => null,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: TextFormFieldWidget(
-                            label: "Longitude",
-                            controller: longitudeController,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            prefixIcon: HugeIcons.strokeRoundedPinLocation01,
-                            isRequired: false,
-                            validator: (v) => null,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 40),
+                    // _buildSectionHeader(
+                    //   context,
+                    //   'Location (Optional)',
+                    //   HugeIcons.strokeRoundedLocation01,
+                    // ),
+                    // const SizedBox(height: 16),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: TextFormFieldWidget(
+                    //         label: "Latitude",
+                    //         controller: latitudeController,
+                    //         keyboardType: const TextInputType.numberWithOptions(
+                    //           decimal: true,
+                    //         ),
+                    //         prefixIcon: HugeIcons.strokeRoundedPinLocation01,
+                    //         isRequired: false,
+                    //         validator: (v) => null,
+                    //       ),
+                    //     ),
+                    //     const SizedBox(width: 16),
+                    //     Expanded(
+                    //       child: TextFormFieldWidget(
+                    //         label: "Longitude",
+                    //         controller: longitudeController,
+                    //         keyboardType: const TextInputType.numberWithOptions(
+                    //           decimal: true,
+                    //         ),
+                    //         prefixIcon: HugeIcons.strokeRoundedPinLocation01,
+                    //         isRequired: false,
+                    //         validator: (v) => null,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -347,26 +347,26 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.pop(context),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                side: BorderSide(color: Colors.grey[300]!),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
+          // Expanded(
+          //   child: OutlinedButton(
+          //     onPressed: () => Navigator.pop(context),
+          //     style: OutlinedButton.styleFrom(
+          //       padding: const EdgeInsets.symmetric(vertical: 16),
+          //       side: BorderSide(color: Colors.grey[300]!),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(16),
+          //       ),
+          //     ),
+          //     child: const Text(
+          //       'Cancel',
+          //       style: TextStyle(
+          //         color: Colors.black87,
+          //         fontWeight: FontWeight.bold,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(width: 16),
           Expanded(
             flex: 2,
             child: Obx(() {

@@ -5,6 +5,7 @@ import 'package:petcare_store/src/features/cart/controller/cart_controller.dart'
 import 'package:petcare_store/src/features/checkout/controller/payment_controller.dart';
 import 'package:petcare_store/src/features/checkout/view/widget/modal_bottom_sheet_payment_widget.dart';
 import 'package:petcare_store/src/features/shipping/controller/shipping_controller.dart';
+import 'package:petcare_store/src/notification/notification_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 
@@ -103,7 +104,13 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
     _fadeController.forward();
     if (step == 2) {
       Future.delayed(const Duration(milliseconds: 150), () {
-        if (mounted) _checkController.forward(from: 0);
+        if (mounted) {
+          _checkController.forward(from: 0);
+          NotificationController().showNotification(
+            title: "Order Placed Successfully",
+            body: "Your order has been placed successfully. Thank you for shopping with us!",
+          );
+        }
       });
     }
   }

@@ -446,7 +446,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   subtitle: "Alerts, push & email",
                   icon: HugeIcons.strokeRoundedNotification03,
                   color: Theme.of(context).colorScheme.primary,
-                  onTap: () {},
+                  onTap: () => Get.toNamed(AppRoutes.notificationScreen),
                 ),
                 buildMenuItem(
                   context,
