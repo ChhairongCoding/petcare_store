@@ -6,6 +6,7 @@ import 'package:marquee/marquee.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
 import 'package:petcare_store/src/features/shipping/controller/shipping_controller.dart';
+import 'package:petcare_store/src/features/notification/controller/notification_page_controller.dart';
 
 class AppBarWidget extends StatelessWidget {
   const AppBarWidget({super.key});
@@ -14,6 +15,7 @@ class AppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.find<CartController>();
     final ShippingController shippingController = Get.find();
+    final NotificationPageController notificationPageController = Get.find<NotificationPageController>();
   
 
     return SliverAppBar(
@@ -73,14 +75,21 @@ class AppBarWidget extends StatelessWidget {
       actions: [
         CircleAvatar(
           backgroundColor: Colors.white,
-          child: IconButton(
-            icon: Icon(
-              HugeIcons.strokeRoundedNotification02,
-              size: 26,
-              color: Colors.grey[700],
-            ),
-            onPressed: () {},
-          ),
+          child: Obx(() {
+            final unread = notificationPageController.unreadCount;
+            return Badge(
+              isLabelVisible: unread > 0,
+              label: Text(unread.toString()),
+              child: IconButton(
+                icon: Icon(
+                  HugeIcons.strokeRoundedNotification02,
+                  size: 26,
+                  color: Colors.grey[700],
+                ),
+                onPressed: () => Get.toNamed(AppRoutes.notificationScreen),
+              ),
+            );
+          }),
         ),
         SizedBox(width: 8),
         CircleAvatar(

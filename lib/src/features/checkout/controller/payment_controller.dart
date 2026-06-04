@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
@@ -102,8 +103,6 @@ class PaymentController extends GetxController {
       for (final item in itemsToDeduct) {
         if (item.variantId != null) {
           try {
-            print('➔ ATTEMPTING TO CUT STOCK for variant ${item.variantId}');
-
             await _supabase.rpc(
               'decrement_stock',
               params: {
@@ -112,7 +111,7 @@ class PaymentController extends GetxController {
               },
             );
           } catch (e) {
-            print('Error updating stock for variant ${item.variantId}: $e');
+            debugPrint(e.toString());
           }
         }
       }

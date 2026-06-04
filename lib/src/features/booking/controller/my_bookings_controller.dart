@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/src/features/booking/model/booking.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,14 +24,18 @@ class MyBookingsController extends GetxController {
       // Using explicit relationship names to resolve ambiguity
       final response = await supabase
           .from('bookings')
-          .select('*, services(*), packages!bookings_package_id_fkey(*), mypet(*)')
+          .select(
+            '*, services(*), packages!bookings_package_id_fkey(*), mypet(*)',
+          )
           .eq('user_id', userId)
           .order('booking_date', ascending: false);
 
-      final List<Booking> loadedBookings = (response as List).map((data) => Booking.fromJson(data)).toList();
+      final List<Booking> loadedBookings = (response as List)
+          .map((data) => Booking.fromJson(data))
+          .toList();
       bookings.assignAll(loadedBookings);
     } catch (e) {
-      print('Error fetching bookings: $e');
+      debugPrint(e.toString());
     } finally {
       isLoading(false);
     }
@@ -42,7 +47,7 @@ class MyBookingsController extends GetxController {
           .from('bookings')
           .update({'status': 'cancelled'})
           .eq('id', bookingId);
-      
+
       // Update local state
       final index = bookings.indexWhere((b) => b.id == bookingId);
       if (index != -1) {
@@ -64,7 +69,7 @@ class MyBookingsController extends GetxController {
         );
       }
     } catch (e) {
-      print('Error cancelling booking: $e');
+      debugPrint(e.toString());
     }
   }
 }
