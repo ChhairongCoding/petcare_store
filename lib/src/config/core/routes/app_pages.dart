@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
+import 'package:petcare_store/src/config/core/routes/auth_middleware.dart';
 import 'package:petcare_store/src/features/auth/views/login_screen.dart';
 import 'package:petcare_store/src/features/auth/views/signup_screen.dart';
 import 'package:petcare_store/src/features/booking/view/booking_screen.dart';
@@ -35,31 +36,104 @@ List<GetPage<dynamic>> appPages = [
 
   GetPage(name: AppRoutes.mainScreen, page: () => MainScreen()),
   GetPage(name: AppRoutes.homeScreen, page: () => MainScreen()),
-  GetPage(name: AppRoutes.mypet, page: () => MyPet()),
+  GetPage(
+    name: AppRoutes.mypet,
+    page: () => MyPet(),
+    middlewares: [AuthMiddleware()],
+  ),
   GetPage(name: AppRoutes.shopScreen, page: () => ShopScreen()),
-  GetPage(name: AppRoutes.reminderScreen, page: () => ReminderScreen()),
-  GetPage(name: AppRoutes.profileScreen, page: () => ProfileScreen()),
-  GetPage(name: AppRoutes.notificationScreen, page: () => NotificationScreen()),
-  GetPage(name: AppRoutes.myorders, page: () => MyOrdersScreen()),
-  GetPage(name: AppRoutes.settings, page: () => SettingScreen()),
-  GetPage(name: AppRoutes.cart, page: () => CartScreen()),
-  GetPage(name: AppRoutes.trackingPet, page: () => TrackingMyPet()),
-  GetPage(name: AppRoutes.processBuy, page: () => ProcessBuyScreen()),
-  GetPage(name: AppRoutes.shipping, page: () => ShippingScreen()),
-  GetPage(name: AppRoutes.addressForm, page: () => AddressFormScreen()),
+  GetPage(
+    name: AppRoutes.reminderScreen,
+    page: () => ReminderScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.profileScreen,
+    page: () => ProfileScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.notificationScreen,
+    page: () => NotificationScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.myorders,
+    page: () => MyOrdersScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.settings,
+    page: () => SettingScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.cart,
+    page: () => CartScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.trackingPet,
+    page: () => TrackingMyPet(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.processBuy,
+    page: () => ProcessBuyScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.shipping,
+    page: () => ShippingScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.addressForm,
+    page: () => AddressFormScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
   GetPage(
     name: AppRoutes.successPayment,
     page: () => const SuccessPaymentScreen(),
+    middlewares: [AuthMiddleware()],
   ),
-  GetPage(name: AppRoutes.khqrPayment, page: () => const KhqrPaymentScreen()),
-  GetPage(name: AppRoutes.abaPayment, page: () => const AbaPayScreen()),
-  GetPage(name: AppRoutes.booking, page: () => BookingScreen()),
-  GetPage(name: AppRoutes.myBookings, page: () => MyBookingsScreen()),
-  GetPage(name: AppRoutes.orderDetail, page: () => const OrderDetailScreen()),
-  GetPage(name: AppRoutes.productDetail, page: () => ProductDetailPage(key: UniqueKey())),
+  GetPage(
+    name: AppRoutes.khqrPayment,
+    page: () => const KhqrPaymentScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.abaPayment,
+    page: () => const AbaPayScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.booking,
+    page: () => BookingScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.myBookings,
+    page: () => MyBookingsScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.orderDetail,
+    page: () => const OrderDetailScreen(),
+    middlewares: [AuthMiddleware()],
+  ),
+  GetPage(
+    name: AppRoutes.productDetail,
+    page: () => ProductDetailPage(key: UniqueKey()),
+  ),
   GetPage(
     name: AppRoutes.updateProfile,
     page: () => const UpdateProfileScreen(),
+    middlewares: [AuthMiddleware()],
   ),
-  GetPage(name: AppRoutes.wishlist, page: () => const WishlistPage()),
+  GetPage(
+    name: AppRoutes.wishlist,
+    page: () => const WishlistPage(),
+    middlewares: [AuthMiddleware()],
+  ),
 ];

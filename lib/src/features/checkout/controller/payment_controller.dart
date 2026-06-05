@@ -77,8 +77,6 @@ class PaymentController extends GetxController {
           )
           .toList();
 
-      // 2. Insert order into Supabase
-      // ✅ FIXED
       final response = await _supabase
           .from('orders')
           .insert({

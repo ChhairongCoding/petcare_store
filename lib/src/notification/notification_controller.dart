@@ -43,6 +43,7 @@ class NotificationController {
             "General Notifications",
             importance: Importance.max,
             priority: Priority.high,
+            largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
           );
 
       const DarwinNotificationDetails darwinNotificationDetails =
