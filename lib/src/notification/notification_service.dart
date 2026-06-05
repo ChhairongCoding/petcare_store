@@ -8,7 +8,7 @@ class NotificationService {
     try {
       print("🔔 [NotificationService] Initializing notifications...");
       const AndroidInitializationSettings androidSettings =
-          AndroidInitializationSettings('@mipmap/ic_launcher');
+          AndroidInitializationSettings('ic_launcher');
 
       const DarwinInitializationSettings iosSettings =
           DarwinInitializationSettings(
@@ -23,18 +23,17 @@ class NotificationService {
       );
 
       bool? initialized = await notifications.initialize(settings: settings);
-      print("🔔 [NotificationService] Plugin initialization result: $initialized");
+      print(
+        "🔔 [NotificationService] Plugin initialization result: $initialized",
+      );
 
       // Explicitly request permissions on iOS
       print("🔔 [NotificationService] Requesting iOS permissions...");
       bool? granted = await notifications
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(
-            alert: true,
-            badge: true,
-            sound: true,
-          );
+            IOSFlutterLocalNotificationsPlugin
+          >()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
       print("🔔 [NotificationService] iOS permission request result: $granted");
     } catch (e, stack) {
       print("🔔 [NotificationService] Initialization error: $e\n$stack");

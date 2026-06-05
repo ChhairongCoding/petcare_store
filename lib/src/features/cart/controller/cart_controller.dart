@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/cart/models/cart_item_model.dart';
 import 'package:petcare_store/src/features/cart/services/cart_service.dart';
 import 'package:petcare_store/src/features/cart/view/widgets/dialog_add_to_cart_success_widget.dart';
@@ -6,7 +7,6 @@ import 'package:petcare_store/src/features/products/model/product_model.dart';
 import 'dart:developer' as dev;
 
 import 'package:petcare_store/src/features/products/model/product_variant_model.dart';
-import 'package:petcare_store/src/widgets/reusables/custom_snackbar_widget.dart';
 
 class CartController extends GetxController {
   final RxList<CartItemModel> cartItems = <CartItemModel>[].obs;
@@ -42,11 +42,7 @@ class CartController extends GetxController {
   }) async {
     final userId = cartService.getCurrentUserId();
     if (userId == null) {
-      CustomSnackbar.show(
-        title: 'Heads Up!',
-        message: 'Please log in to start adding items to your cart.',
-        type: SnackbarType.warning,
-      );
+      Get.toNamed(AppRoutes.login);
       return;
     }
 
