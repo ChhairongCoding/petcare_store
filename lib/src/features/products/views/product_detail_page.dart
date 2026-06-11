@@ -524,7 +524,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
             const Spacer(),
             GestureDetector(
-              onTap: () => print("Tapped"),
+              onTap: () => debugPrint("Tapped"),
               child: Text(
                 "18 Questions",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(

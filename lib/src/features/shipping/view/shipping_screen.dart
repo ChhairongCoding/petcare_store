@@ -4,10 +4,24 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:petcare_store/src/features/shipping/controller/shipping_controller.dart';
 import 'package:petcare_store/src/features/shipping/model/shipping_model.dart';
 
-class ShippingScreen extends StatelessWidget {
-  ShippingScreen({super.key});
+class ShippingScreen extends StatefulWidget {
+  const ShippingScreen({super.key});
+
+  @override
+  State<ShippingScreen> createState() => _ShippingScreenState();
+}
+
+class _ShippingScreenState extends State<ShippingScreen> {
   final ShippingController shippingController = Get.find();
+
   final bool isSelectMode = Get.arguments?['selectMode'] ?? false;
+
+  @override
+  initState() {
+    super.initState();
+    shippingController.getAddress();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ColoredBox

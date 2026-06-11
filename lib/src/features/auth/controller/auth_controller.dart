@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/services/local_service.dart';
@@ -9,7 +10,11 @@ class AuthController extends GetxController {
   RxBool isLoading = false.obs;
   final _supabaseClient = Supabase.instance.client;
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     isLoading.value = true;
     try {
       if (password.isEmpty || email.isEmpty) return false;
@@ -23,10 +28,29 @@ class AuthController extends GetxController {
         isLoading.value = false;
         return true;
       } else {
-        developer.log('Login failed: No session returned');
         isLoading.value = false;
         return false;
       }
+    } on AuthException catch (e) {
+      if (!context.mounted) return false;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Login failed'),
+            content: Text(e.message),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          );
+        },
+      );
+      isLoading.value = false;
+      developer.log('Error logging in: ${e.message}');
+      return false;
     } catch (e) {
       isLoading.value = false;
       developer.log('Error logging in: $e');

@@ -119,7 +119,7 @@ class UpdateProfileScreen extends StatelessWidget {
                           border: Border.all(color: _green, width: 2.5),
                           boxShadow: [
                             BoxShadow(
-                              color: _green.withOpacity(0.15),
+                              color: _green.withValues(alpha: 0.15),
                               blurRadius: 20,
                               offset: const Offset(0, 6),
                             ),
@@ -153,7 +153,7 @@ class UpdateProfileScreen extends StatelessWidget {
                               border: Border.all(color: Colors.white, width: 2),
                               boxShadow: [
                                 BoxShadow(
-                                  color: _yellow.withOpacity(0.4),
+                                  color: _yellow.withValues(alpha: 0.4),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),

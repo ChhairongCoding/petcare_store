@@ -31,8 +31,6 @@ class MyOrderController extends GetxController {
           .toList();
 
       orders.assignAll(loadedOrders);
-    } catch (e) {
-      print('Error fetching orders: $e');
     } finally {
       isLoading.value = false;
     }
