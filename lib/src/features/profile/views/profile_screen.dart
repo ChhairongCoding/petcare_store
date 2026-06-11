@@ -59,6 +59,7 @@ class ProfileScreen extends GetView<ProfileController> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       expandedHeight: 260,
       pinned: true,
       stretch: true,

@@ -21,6 +21,7 @@ class AppBarWidget extends StatelessWidget {
     return SliverAppBar(
       elevation: 0,
       floating: false,
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
       systemOverlayStyle: SystemUiOverlayStyle(

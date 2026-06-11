@@ -45,6 +45,7 @@ class _MyPetState extends State<MyPet> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       title: Text(
         'My Pets',
         style: Theme.of(
@@ -221,8 +222,9 @@ class _MyPetState extends State<MyPet> {
             children: [
               SlidableAction(
                 onPressed: (context) => _editPet(context, pet),
-                backgroundColor: Colors.grey,
+                backgroundColor: Colors.grey[200]!,
                 icon: Icons.edit_rounded,
+                foregroundColor: Colors.black,
                 label: 'Edit',
                 borderRadius: BorderRadius.only(),
                 padding: EdgeInsets.zero,
@@ -230,8 +232,8 @@ class _MyPetState extends State<MyPet> {
               ),
               SlidableAction(
                 onPressed: (context) => _deletePet(context, pet),
-                backgroundColor: Colors.redAccent,
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.red[100]!,
+                foregroundColor: Colors.red,
                 icon: Icons.delete_rounded,
                 label: 'Delete',
                 borderRadius: BorderRadius.only(

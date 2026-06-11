@@ -45,7 +45,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-  return AppBar(
+    return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.transparent,

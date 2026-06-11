@@ -187,12 +187,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CachedNetworkImage(
-                          height: 24,
-                          width: 24,
-                          imageUrl:
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png",
-                        ),
+                        Image.asset("assets/images/google.png", height: 24),
                         SizedBox(width: 12),
                         Text(
                           "Continue with Google",

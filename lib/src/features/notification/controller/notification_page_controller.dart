@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:petcare_store/src/features/notification/models/notification_model.dart';
+import 'dart:developer' as dev;
 
 class NotificationPageController extends GetxController {
   final RxList<NotificationModel> notifications = <NotificationModel>[].obs;
   final RxString activeFilter = 'all'.obs;
-  
+
   static const String _storageKey = 'in_app_notifications_list';
 
   @override
@@ -23,7 +24,10 @@ class NotificationPageController extends GetxController {
       if (jsonStr != null && jsonStr.isNotEmpty) {
         final List<dynamic> decodedList = json.decode(jsonStr);
         final List<NotificationModel> loadedList = decodedList
-            .map((item) => NotificationModel.fromMap(Map<String, dynamic>.from(item)))
+            .map(
+              (item) =>
+                  NotificationModel.fromMap(Map<String, dynamic>.from(item)),
+            )
             .toList();
         // Sort by timestamp descending
         loadedList.sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -33,7 +37,9 @@ class NotificationPageController extends GetxController {
         _loadMockNotifications();
       }
     } catch (e) {
-      print("🔔 [NotificationPageController] Error loading notifications: $e");
+      dev.log(
+        "🔔 [NotificationPageController] Error loading notifications: $e",
+      );
     }
   }
 
@@ -41,11 +47,12 @@ class NotificationPageController extends GetxController {
   Future<void> _saveNotifications() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final List<Map<String, dynamic>> mapList =
-          notifications.map((item) => item.toMap()).toList();
+      final List<Map<String, dynamic>> mapList = notifications
+          .map((item) => item.toMap())
+          .toList();
       await prefs.setString(_storageKey, json.encode(mapList));
     } catch (e) {
-      print("🔔 [NotificationPageController] Error saving notifications: $e");
+      dev.log("🔔 [NotificationPageController] Error saving notifications: $e");
     }
   }
 
@@ -55,7 +62,8 @@ class NotificationPageController extends GetxController {
       NotificationModel(
         id: 'mock_welcome',
         title: 'Welcome to PetCare Store! 🐾',
-        body: 'Find high-quality products and book premium grooming services for your pets.',
+        body:
+            'Find high-quality products and book premium grooming services for your pets.',
         timestamp: now.subtract(const Duration(hours: 2)),
         type: 'general',
         isRead: false,
@@ -63,7 +71,8 @@ class NotificationPageController extends GetxController {
       NotificationModel(
         id: 'mock_promo',
         title: 'Special Promo: 20% Off! 🏷️',
-        body: 'Get 20% off on all grooming products this week. Use code PETLOVER20 at checkout.',
+        body:
+            'Get 20% off on all grooming products this week. Use code PETLOVER20 at checkout.',
         timestamp: now.subtract(const Duration(days: 1)),
         type: 'promo',
         isRead: false,
@@ -71,7 +80,8 @@ class NotificationPageController extends GetxController {
       NotificationModel(
         id: 'mock_reminder',
         title: 'Vaccination Reminder 💉',
-        body: 'Keep your pets healthy. Schedule their yearly vaccinations today through our booking tab.',
+        body:
+            'Keep your pets healthy. Schedule their yearly vaccinations today through our booking tab.',
         timestamp: now.subtract(const Duration(days: 2)),
         type: 'reminder',
         isRead: true,

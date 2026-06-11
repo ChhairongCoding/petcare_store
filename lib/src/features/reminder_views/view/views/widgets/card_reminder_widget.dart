@@ -28,7 +28,7 @@ class CardReminderWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -70,14 +70,17 @@ class CardReminderWidget extends StatelessWidget {
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: isDone ? Colors.grey : Colors.black87,
-                                  decoration: isDone ? TextDecoration.lineThrough : null,
+                                  decoration: isDone
+                                      ? TextDecoration.lineThrough
+                                      : null,
                                 ),
                               ),
                             ),
                             _buildStatusBadge(context),
                           ],
                         ),
-                        if (reminder.description != null && reminder.description!.isNotEmpty)
+                        if (reminder.description != null &&
+                            reminder.description!.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 4, bottom: 8),
                             child: Text(
@@ -96,13 +99,17 @@ class CardReminderWidget extends StatelessWidget {
                             _buildInfoChip(
                               context,
                               HugeIcons.strokeRoundedCalendar03,
-                              scheduled != null ? DateFormat('MMM dd, yyyy').format(scheduled) : 'No date',
+                              scheduled != null
+                                  ? DateFormat('MMM dd, yyyy').format(scheduled)
+                                  : 'No date',
                             ),
                             const SizedBox(width: 12),
                             _buildInfoChip(
                               context,
                               HugeIcons.strokeRoundedClock01,
-                              scheduled != null ? DateFormat('hh:mm a').format(scheduled) : '--:--',
+                              scheduled != null
+                                  ? DateFormat('hh:mm a').format(scheduled)
+                                  : '--:--',
                             ),
                           ],
                         ),
@@ -143,7 +150,9 @@ class CardReminderWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: reminder.isCompleted ? Colors.grey[100] : color.withOpacity(0.12),
+        color: reminder.isCompleted
+            ? Colors.grey[100]
+            : color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(
@@ -162,7 +171,9 @@ class CardReminderWidget extends StatelessWidget {
         color: isDone ? Colors.green[50] : Colors.orange[50],
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isDone ? Colors.green.withOpacity(0.2) : Colors.orange.withOpacity(0.2),
+          color: isDone
+              ? Colors.green.withValues(alpha: 0.2)
+              : Colors.orange.withValues(alpha: 0.2),
         ),
       ),
       child: Text(
