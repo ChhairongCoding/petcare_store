@@ -1,6 +1,7 @@
 class Service {
   final String id;
   final String name;
+  final String image;
   final String? description;
   final double price;
   final int durationMinutes;
@@ -10,6 +11,7 @@ class Service {
   Service({
     required this.id,
     required this.name,
+    required this.image,
     this.description,
     required this.price,
     required this.durationMinutes,
@@ -21,6 +23,7 @@ class Service {
     return Service(
       id: json['id'],
       name: json['name'],
+      image: json['image'],
       description: json['description'],
       price: double.parse(json['price'].toString()),
       durationMinutes: json['duration_minutes'],
@@ -33,6 +36,7 @@ class Service {
     return {
       'id': id,
       'name': name,
+      'image': image,
       'description': description,
       'price': price,
       'duration_minutes': durationMinutes,

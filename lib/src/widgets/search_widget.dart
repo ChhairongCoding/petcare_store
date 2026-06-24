@@ -134,14 +134,12 @@ class CustomSearchDelegate extends SearchDelegate<String> {
           crossAxisCount: 2,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.65,
         ),
         itemCount: products.length,
         itemBuilder: (context, index) {
           final product = products[index];
-          return ProductCardWidgetCustom(
-            products: product,
-          );
+          return ProductCardWidgetCustom(products: product);
         },
       ),
     );

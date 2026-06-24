@@ -18,6 +18,7 @@ class MyPetController extends GetxController {
   final RxnString errorMessage = RxnString();
 
   late final String _bucketName;
+  String? _fetchedUserId;
 
   MyPetController() {
     _bucketName = _resolveBucketName();
@@ -34,11 +35,17 @@ class MyPetController extends GetxController {
     if (user == null) {
       errorMessage.value = 'Please login to manage your pets.';
       pets.clear();
+      _fetchedUserId = null;
       return;
     }
 
+    final isNewUser = _fetchedUserId != user.id;
+
     try {
-      isLoading(true);
+      if (isNewUser) {
+        isLoading(true);
+        pets.clear();
+      }
       errorMessage.value = null;
 
       final response = await _client
@@ -50,7 +57,7 @@ class MyPetController extends GetxController {
       final fetched = response.map((item) => PetModel.fromMap(item)).toList();
 
       pets.assignAll(fetched);
-      isLoading(false);
+      _fetchedUserId = user.id;
     } on PostgrestException catch (e, stack) {
       developer.log(
         'PostgREST error when fetching pets',

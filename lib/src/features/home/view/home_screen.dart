@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           spacing: 20,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             SearchWidget(),
             CartBannerSlider(),
 
@@ -118,35 +118,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   /// Show skeleton placeholders when services are loading
                   if (isServicesLoading || services.isEmpty) {
-                    return SizedBox(
-                      height: 60,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: isServicesLoading ? 3 : services.length,
-                        itemBuilder: (context, index) {
-                          if (isServicesLoading) {
-                            return _buildServiceSkeletonItem(context);
-                          }
-                          final service = services[index];
-                          return _buildServiceItem(context, service);
-                        },
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Row(
+                        children: List.generate(
+                          4,
+                          (index) => Padding(
+                            padding: const EdgeInsets.only(right: 16),
+                            child: _buildServiceSkeletonItem(context),
+                          ),
+                        ),
                       ),
                     );
                   }
 
-                  return SizedBox(
-                    height: 60,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: services.length,
-                      itemBuilder: (context, index) {
-                        final service = services[index];
-                        return _buildServiceItem(context, service);
-                      },
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: services.map((service) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: _buildServiceItem(context, service),
+                        );
+                      }).toList(),
                     ),
                   );
                 }),
-
+                SizedBox(height: 10),
                 Column(
                   spacing: 12,
                   children: [
@@ -312,95 +312,95 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  IconData _getServiceIcon(String imageKey) {
+    final lowerKey = imageKey.toLowerCase();
+    if (lowerKey.contains('groom') || lowerKey.contains('cut')) {
+      return Icons.content_cut_rounded;
+    } else if (lowerKey.contains('vet') ||
+        lowerKey.contains('clinic') ||
+        lowerKey.contains('medical') ||
+        lowerKey.contains('hospital')) {
+      return Icons.local_hospital_rounded;
+    } else if (lowerKey.contains('board') ||
+        lowerKey.contains('hotel') ||
+        lowerKey.contains('stay')) {
+      return Icons.hotel_rounded;
+    } else if (lowerKey.contains('train') || lowerKey.contains('school')) {
+      return Icons.school_rounded;
+    } else if (lowerKey.contains('spa') ||
+        lowerKey.contains('bath') ||
+        lowerKey.contains('wash')) {
+      return Icons.spa_rounded;
+    }
+    return Icons.pets_rounded;
+  }
+
   /// Skeleton placeholder for a booking service item
   Widget _buildServiceSkeletonItem(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      height: 55,
-      width: 180,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Colors.grey.shade200,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundColor: Colors.grey.shade300,
+    return SizedBox(
+      width: 76,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(radius: 30, backgroundColor: Colors.grey.shade200),
+          const SizedBox(height: 8),
+          Container(
+            width: 50,
+            height: 10,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(4),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Container(
-                height: 12,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   /// Actual booking service item
   Widget _buildServiceItem(BuildContext context, dynamic service) {
+    final icon = _getServiceIcon(service.image);
+    final bgColor = Theme.of(context).primaryColor.withValues(alpha: 0.1);
+    final iconColor = Theme.of(context).primaryColor;
+
     return GestureDetector(
       onTap: () {
         bookingController.selectService(service.id);
         Get.toNamed(AppRoutes.booking);
       },
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          margin: const EdgeInsets.only(right: 12),
-          height: 55,
-          width: 180,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
-            border: Border.all(color: Colors.grey.shade100),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
+      child: SizedBox(
+        width: 76,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: bgColor,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: iconColor.withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Theme.of(context)
-                      .primaryColor
-                      .withValues(alpha: 0.1),
-                  child: Icon(
-                    Icons.pets_rounded,
-                    size: 20,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    service.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+              child: Icon(icon, size: 28, color: iconColor),
             ),
-          ),
+            const SizedBox(height: 8),
+            Text(
+              service.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );

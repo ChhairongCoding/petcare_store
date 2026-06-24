@@ -71,6 +71,8 @@ class BookingController extends GetxController {
         selectedServiceId.value = services.first.id;
       }
       calculateTotalPrice();
+    } catch (e) {
+      debugPrint('Error fetching services: $e');
     } finally {
       isServicesLoading(false);
     }
@@ -93,6 +95,8 @@ class BookingController extends GetxController {
         selectedPackageId.value = packages.first.id;
       }
       calculateTotalPrice();
+    } catch (e) {
+      debugPrint('Error fetching packages: $e');
     } finally {
       isPackagesLoading(false);
     }
