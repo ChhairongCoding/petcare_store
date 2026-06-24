@@ -295,8 +295,8 @@ class _SettingScreenState extends State<SettingScreen> {
           _settingsCard(context, [
             _settingTile(
               context,
-              title: "Delete Account",
-              subtitle: "Remove your account",
+              title: "Logout",
+              subtitle: "Sign out of your account",
               icon: HugeIcons.strokeRoundedLogout01,
               iconColor: const Color(0xFFE17055),
               titleColor: const Color(0xFFE17055),

@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
+import 'package:petcare_store/src/features/profile/models/profile_model.dart';
 
 // ── Controller ───────────────────────────────────────────────────────────────
 
 class UpdateProfileController extends GetxController {
   final formKey = GlobalKey<FormState>();
-  final nameController = TextEditingController(text: 'Sarah Anderson');
-  final emailController = TextEditingController(text: 'sarah@example.com');
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
 
   final isSaving = false.obs;
+  final ProfileController _profileController = Get.find<ProfileController>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    final profile = _profileController.profile.value;
+    if (profile != null) {
+      nameController.text = profile.name ?? '';
+      emailController.text = profile.email ?? '';
+    }
+  }
 
   @override
   void onClose() {
@@ -20,30 +34,26 @@ class UpdateProfileController extends GetxController {
   Future<void> saveProfile() async {
     if (!formKey.currentState!.validate()) return;
 
-    isSaving.value = true;
-    await Future.delayed(const Duration(milliseconds: 1200));
-    isSaving.value = false;
+    final profile = _profileController.profile.value;
+    if (profile == null) return;
 
-    Get.snackbar(
-      '',
-      '',
-      titleText: const SizedBox.shrink(),
-      messageText: const Text(
-        'Profile updated successfully',
-        style: TextStyle(
-          color: Colors.white,
-          fontFamily: 'Poppins',
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: const Color(0xFF2F7C5B),
-      borderRadius: 14,
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 28),
-      duration: const Duration(seconds: 2),
-      icon: const Icon(Icons.check_circle_outline_rounded, color: Colors.white),
-    );
+    try {
+      isSaving.value = true;
+      final updatedProfile = ProfileModel(
+        id: profile.id,
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        avatar: profile.avatar,
+        createdAt: profile.createdAt,
+      );
+
+      await _profileController.updateProfile(updatedProfile);
+      Get.back();
+    } catch (e) {
+      debugPrint('Error saving profile: $e');
+    } finally {
+      isSaving.value = false;
+    }
   }
 
   void pickPhoto() {
@@ -109,66 +119,87 @@ class UpdateProfileScreen extends StatelessWidget {
 
                 // ── Avatar ──────────────────────────────────────
                 Center(
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 104,
-                        height: 104,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: _green, width: 2.5),
-                          boxShadow: [
-                            BoxShadow(
-                              color: _green.withValues(alpha: 0.15),
-                              blurRadius: 20,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+                  child: Obx(() {
+                    final profile = controller._profileController.profile.value;
+                    final avatarUrl = profile?.avatar;
+                    final name = profile?.name ?? '';
+                    final initials = name.isNotEmpty
+                        ? name
+                            .trim()
+                            .split(' ')
+                            .map((l) => l.isNotEmpty ? l[0].toUpperCase() : '')
+                            .join()
+                        : 'U';
+                    final displayInitials = initials.length > 2
+                        ? initials.substring(0, 2)
+                        : initials;
+
+                    return Stack(
+                      children: [
+                        Container(
+                          width: 104,
+                          height: 104,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: _green, width: 2.5),
+                            boxShadow: [
+                              BoxShadow(
+                                color: _green.withValues(alpha: 0.15),
+                                blurRadius: 20,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: const Color(0xFFE8F3EE),
+                            backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
+                                ? CachedNetworkImageProvider(avatarUrl)
+                                : null,
+                            child: avatarUrl == null || avatarUrl.isEmpty
+                                ? Text(
+                                    displayInitials.isEmpty ? 'U' : displayInitials,
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w600,
+                                      color: _green,
+                                    ),
+                                  )
+                                : null,
+                          ),
                         ),
-                        child: const CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Color(0xFFE8F3EE),
-                          child: Text(
-                            'SA',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 28,
-                              fontWeight: FontWeight.w600,
-                              color: _green,
+                        Positioned(
+                          bottom: 2,
+                          right: 2,
+                          child: GestureDetector(
+                            onTap: controller.pickPhoto,
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                color: _yellow,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: _yellow.withValues(alpha: 0.4),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                size: 15,
+                                color: Colors.black,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 2,
-                        right: 2,
-                        child: GestureDetector(
-                          onTap: controller.pickPhoto,
-                          child: Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              color: _yellow,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: _yellow.withValues(alpha: 0.4),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt_rounded,
-                              size: 15,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                 ),
 
                 const SizedBox(height: 8),

@@ -41,7 +41,7 @@ class _AddressFormScreenState extends State<AddressFormScreen>
 
     _pinAnim = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2500),
+      duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
     _pinOffset = Tween<double>(
@@ -130,11 +130,6 @@ class _AddressFormScreenState extends State<AddressFormScreen>
       elevation: 0,
       backgroundColor: theme.scaffoldBackgroundColor,
       title: Text('Add Address'),
-
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(0.5),
-        child: Container(height: 0.5, color: theme.dividerColor),
-      ),
     );
   }
 
@@ -178,48 +173,36 @@ class _AddressFormScreenState extends State<AddressFormScreen>
             ],
           ),
 
+          // Ground shadow beneath the pin
           AnimatedBuilder(
             animation: _pinOffset,
-            builder: (_, __) {
-              return Transform.translate(
-                offset: Offset(0, _isMoving ? -16 : _pinOffset.value),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 46,
-                      height: 46,
-                      decoration: BoxDecoration(
-                        color: colors.primary,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                          bottomRight: Radius.circular(24),
-                          bottomLeft: Radius.circular(24),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
-                            blurRadius: 12,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.location_on,
-                        color: colors.onPrimary,
-                        size: 24,
-                      ),
-                    ),
+            builder: (context, _) {
+              final shadowWidth = _isMoving
+                  ? 8.0
+                  : 16.0 - (_pinOffset.value / 2);
+              final shadowHeight = _isMoving
+                  ? 2.5
+                  : 4.0 - (_pinOffset.value / 4);
+              final shadowOpacity = _isMoving
+                  ? 0.15
+                  : 0.3 + (_pinOffset.value / 40);
 
-                    Container(
-                      width: 12,
-                      height: 4,
-                      margin: const EdgeInsets.only(top: 3),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(4),
+              return Container(
+                width: shadowWidth,
+                height: shadowHeight,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(
+                    shadowOpacity.clamp(0.0, 1.0),
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.elliptical(shadowWidth / 2, shadowHeight / 2),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(
+                        shadowOpacity.clamp(0.0, 1.0),
                       ),
+                      blurRadius: 4,
                     ),
                   ],
                 ),
@@ -227,20 +210,68 @@ class _AddressFormScreenState extends State<AddressFormScreen>
             },
           ),
 
+          // Target Dot at exact center of the map
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: colors.primary, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.primary.withOpacity(0.3),
+                  blurRadius: 4,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          ),
+
+          // Floating Pin pointing precisely to target dot
+          AnimatedBuilder(
+            animation: _pinOffset,
+            builder: (_, __) {
+              final verticalOffset = _isMoving ? -16.0 : _pinOffset.value;
+              return Transform.translate(
+                offset: Offset(0, -22 + verticalOffset),
+                child: SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: Icon(
+                    Icons.location_on_rounded,
+                    color: colors.primary,
+                    size: 44,
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // GPS Reset Button to return map to default center location
           Positioned(
             bottom: 14,
             right: 14,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                _mapController.move(const LatLng(11.54954, 104.87377), 15);
+              },
               child: Container(
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                   border: Border.all(width: 0.5, color: theme.dividerColor),
                 ),
-                child: Icon(Icons.gps_fixed, size: 16, color: colors.primary),
+                child: Icon(Icons.gps_fixed, size: 18, color: colors.primary),
               ),
             ),
           ),
@@ -258,7 +289,7 @@ class _AddressFormScreenState extends State<AddressFormScreen>
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(width: 0.5, color: theme.dividerColor),
+        border: Border.all(width: 0.1, color: theme.dividerColor),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,7 +387,7 @@ class _AddressFormScreenState extends State<AddressFormScreen>
                         : Colors.transparent,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      width: 0.5,
+                      width: 0.1,
                       color: active ? colors.primary : theme.dividerColor,
                     ),
                   ),
@@ -503,7 +534,7 @@ class _AddressFormScreenState extends State<AddressFormScreen>
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(width: 0.5, color: theme.dividerColor),
+        border: Border.all(width: 0.2, color: theme.dividerColor),
       ),
       child: Row(
         children: [
@@ -562,16 +593,6 @@ class _AddressFormScreenState extends State<AddressFormScreen>
                     labelAddress: _selectedLabel.index,
                   );
                 },
-          icon: ctrl.isLoading.value
-              ? SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: colors.onPrimary,
-                  ),
-                )
-              : const Icon(Icons.check, size: 18),
           label: const Text('Confirm address'),
           style: ElevatedButton.styleFrom(
             backgroundColor: colors.primary,
@@ -623,14 +644,18 @@ class _AddressFormScreenState extends State<AddressFormScreen>
         hintStyle: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(width: 0.5, color: theme.dividerColor),
+          borderSide: BorderSide(width: 0.1, color: theme.dividerColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(width: 0.1, color: theme.dividerColor),
         ),
       ),
     );
   }
 
   Widget _buildDivider(ThemeData theme) {
-    return Divider(height: 1, thickness: 0.5, color: theme.dividerColor);
+    return Divider(height: 1, thickness: 0.1, color: theme.dividerColor);
   }
 
   (String, IconData) _labelInfo(AddressLabel label) {

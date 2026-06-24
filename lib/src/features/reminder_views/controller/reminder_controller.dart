@@ -11,6 +11,7 @@ class ReminderController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxBool isSubmitting = false.obs;
   final Rxn<String> errorMessage = Rxn<String>();
+  String? _fetchedUserId;
 
   @override
   void onInit() {
@@ -23,11 +24,17 @@ class ReminderController extends GetxController {
     if (user == null) {
       errorMessage.value = 'User is not authenticated.';
       reminders.clear();
+      _fetchedUserId = null;
       return;
     }
 
+    final isNewUser = _fetchedUserId != user.id;
+
     try {
-      isLoading(true);
+      if (isNewUser) {
+        isLoading(true);
+        reminders.clear();
+      }
       errorMessage.value = null;
 
       final List<dynamic> response = await _client
@@ -42,6 +49,7 @@ class ReminderController extends GetxController {
           .toList();
 
       reminders.assignAll(fetched);
+      _fetchedUserId = user.id;
     } on PostgrestException catch (e, stack) {
       developer.log('PostgREST fetch error', error: e, stackTrace: stack);
       errorMessage.value = e.message;

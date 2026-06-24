@@ -1,8 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 // import 'package:petcare_store/config/core/routes/app_routes.dart';
-
+import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
 import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -13,16 +12,25 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController cfPasswordController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController cfPasswordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final AuthController controller = Get.find<AuthController>();
+
   bool isObscure = true;
+  bool isObscureCf = true;
 
   void tappedOpsecured() {
     setState(() {
       isObscure = !isObscure;
+    });
+  }
+
+  void tappedOpsecuredCf() {
+    setState(() {
+      isObscureCf = !isObscureCf;
     });
   }
 
@@ -110,10 +118,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: passwordController,
                   label: "Password",
                   hintText: "Password",
-                  // obscureText: isObscure,
-                  // icon: isObscure ? Icons.visibility_off : Icons.visibility,
-                  // onPressed: tappedOpsecured,
-                  // prefixIcon: Icons.lock,
+                  obscureText: isObscure,
+                  icon: isObscure ? Icons.visibility_off : Icons.visibility,
+                  onPressed: tappedOpsecured,
+                  prefixIcon: Icons.lock,
                 ),
                 SizedBox(height: 16),
 
@@ -121,29 +129,64 @@ class _SignupScreenState extends State<SignupScreen> {
                   label: "Confirm Password",
                   hintText: "Confirm Password",
                   controller: cfPasswordController,
+                  obscureText: isObscureCf,
+                  icon: isObscureCf ? Icons.visibility_off : Icons.visibility,
+                  onPressed: tappedOpsecuredCf,
+                  prefixIcon: Icons.lock,
+                  validator: (value) {
+                    if (value != passwordController.text) {
+                      return "Passwords do not match";
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 40),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                Obx(
+                  () => SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () {
+                              if (_formKey.currentState!.validate()) {
+                                Get.snackbar(
+                                  "Form Validated",
+                                  "Sign Up form validated successfully! Ready for backend integration.",
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Theme.of(
+                                    context,
+                                  ).primaryColor.withValues(alpha: 0.9),
+                                  colorText: Colors.white,
+                                );
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 4,
                       ),
-                      elevation: 4,
-                    ),
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                      child: controller.isLoading.value
+                          ? const SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                   ),
                 ),

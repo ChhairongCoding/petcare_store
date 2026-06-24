@@ -69,47 +69,49 @@ class _MyPetState extends State<MyPet> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final isLoading = _controller.isLoading.value;
-    final hasData = _controller.pets.isNotEmpty;
     return Obx(
-      () => Skeletonizer(
-        enabled: isLoading && !hasData,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _controller.fetchPets,
-                child: _controller.pets.isEmpty && !_controller.isLoading.value
-                    ? ListView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        children: [
-                          SizedBox(height: 120),
-                          _buildEmptyState(context),
-                        ],
-                      )
-                    : _buildPetsList(
-                        context,
-                        _controller.pets.isEmpty
-                            ? List.generate(
-                                3,
-                                (index) => PetModel(
-                                  id: 'skeleton_$index',
-                                  owner: '',
-                                  name: 'Pet Name Holder',
-                                  type: 'Dog',
-                                  breed: 'Golden Retriever',
-                                  age: 2,
-                                  gender: 'Male',
-                                ),
-                              )
-                            : _controller.pets,
-                      ),
+      () {
+        final isLoading = _controller.isLoading.value;
+        final hasData = _controller.pets.isNotEmpty;
+        return Skeletonizer(
+          enabled: isLoading && !hasData,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _controller.fetchPets,
+                  child: _controller.pets.isEmpty && !_controller.isLoading.value
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: [
+                            SizedBox(height: 120),
+                            _buildEmptyState(context),
+                          ],
+                        )
+                      : _buildPetsList(
+                          context,
+                          _controller.pets.isEmpty
+                              ? List.generate(
+                                  3,
+                                  (index) => PetModel(
+                                    id: 'skeleton_$index',
+                                    owner: '',
+                                    name: 'Pet Name Holder',
+                                    type: 'Dog',
+                                    breed: 'Golden Retriever',
+                                    age: 2,
+                                    gender: 'Male',
+                                  ),
+                                )
+                              : _controller.pets,
+                        ),
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 

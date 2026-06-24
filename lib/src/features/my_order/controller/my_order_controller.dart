@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:petcare_store/src/features/my_order/models/order.dart';
@@ -31,6 +32,8 @@ class MyOrderController extends GetxController {
           .toList();
 
       orders.assignAll(loadedOrders);
+    } catch (e) {
+      debugPrint('Error fetching orders: $e');
     } finally {
       isLoading.value = false;
     }

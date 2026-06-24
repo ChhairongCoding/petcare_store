@@ -7,10 +7,7 @@ import 'package:petcare_store/src/features/products/model/product_model.dart';
 import 'package:petcare_store/src/features/products/controllers/favorite_controller.dart';
 
 class ProductCardWidgetCustom extends StatelessWidget {
-  const ProductCardWidgetCustom({
-    super.key,
-    required this.products,
-  });
+  const ProductCardWidgetCustom({super.key, required this.products});
 
   final ProductModel products;
 
@@ -22,8 +19,8 @@ class ProductCardWidgetCustom extends StatelessWidget {
     final crossAxisCount = screenWidth < 400
         ? 1
         : screenWidth < 700
-            ? 2
-            : 3;
+        ? 2
+        : 3;
 
     final cardWidth =
         (screenWidth - (16 * (crossAxisCount + 1))) / crossAxisCount;
@@ -73,8 +70,7 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    Container(
+                                errorWidget: (context, url, error) => Container(
                                   color: Colors.grey[200],
                                   child: Center(
                                     child: Icon(
@@ -101,7 +97,8 @@ class ProductCardWidgetCustom extends StatelessWidget {
                           top: 8,
                           right: 8,
                           child: GestureDetector(
-                            onTap: () => favoriteController.toggleFavorite(products.id),
+                            onTap: () =>
+                                favoriteController.toggleFavorite(products.id),
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
@@ -109,9 +106,13 @@ class ProductCardWidgetCustom extends StatelessWidget {
                                 shape: BoxShape.circle,
                               ),
                               child: Obx(() {
-                                final isFav = favoriteController.isFavorite(products.id);
+                                final isFav = favoriteController.isFavorite(
+                                  products.id,
+                                );
                                 return Icon(
-                                  isFav ? Icons.favorite : HugeIcons.strokeRoundedFavourite,
+                                  isFav
+                                      ? Icons.favorite
+                                      : HugeIcons.strokeRoundedFavourite,
                                   color: isFav ? Colors.red : Colors.grey[600],
                                   size: 16,
                                 );
@@ -132,9 +133,9 @@ class ProductCardWidgetCustom extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
 
                 const SizedBox(height: 4),
@@ -152,10 +153,9 @@ class ProductCardWidgetCustom extends StatelessWidget {
                       child: Text(
                         "4.5",
                         overflow: TextOverflow.ellipsis,
-                        style:
-                            Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ),
                   ],
@@ -170,30 +170,38 @@ class ProductCardWidgetCustom extends StatelessWidget {
                       child: Text(
                         "\$${products.price}",
                         overflow: TextOverflow.ellipsis,
-                        style:
-                            Theme.of(context).textTheme.titleSmall?.copyWith(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
 
                     const SizedBox(width: 8),
 
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2F7C5B),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: const Icon(
-                          HugeIcons.strokeRoundedAdd01,
-                          color: Colors.white,
-                          size: 14,
+                    GestureDetector(
+                      onTap: () {
+                        if (products.id != 'fake') {
+                          Get.toNamed(
+                            AppRoutes.productDetail,
+                            arguments: products,
+                            preventDuplicates: false,
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2F7C5B),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            HugeIcons.strokeRoundedAdd01,
+                            color: Colors.white,
+                            size: 14,
+                          ),
                         ),
                       ),
                     ),
