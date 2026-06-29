@@ -135,121 +135,139 @@ class _CartScreenState extends State<CartScreen> {
       if (item.variant?.weightLabel != null) item.variant!.weightLabel,
     ].join(', ');
 
-    return Slidable(
-      key: ValueKey('${item.product.id}_${item.variantId}'),
-      endActionPane: ActionPane(
-        motion: ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) => cartController.removeFromCart(
-              item.product.id,
-              variantId: item.variantId,
-            ),
-            backgroundColor: Colors.redAccent.withValues(alpha: 0.3),
-            foregroundColor: Colors.redAccent,
-            icon: Icons.delete,
-            label: 'Delete',
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: (item.product.imagePath.isEmpty || item.product.imagePath.endsWith('/'))
-                  ? Container(
-                      height: 80,
-                      width: 80,
-                      color: Colors.grey[200],
-                      child: Icon(Icons.image_not_supported),
-                    )
-                  : Image.network(
-                      item.product.imagePath,
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        height: 80,
-                        width: 80,
-                        color: Colors.grey[200],
-                        child: Icon(Icons.image_not_supported),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Slidable(
+          key: ValueKey('${item.product.id}_${item.variantId}'),
+          endActionPane: ActionPane(
+            motion: const StretchMotion(),
+            extentRatio: 0.20,
+            children: [
+              SlidableAction(
+                onPressed: (context) => cartController.removeFromCart(
+                  item.product.id,
+                  variantId: item.variantId,
+                ),
+                backgroundColor: const Color(0xFFFFEBEB),
+                foregroundColor: Colors.redAccent,
+                icon: Icons.delete,
+                label: 'Delete',
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: (item.product.imagePath.isEmpty || item.product.imagePath.endsWith('/'))
+                      ? Container(
+                          height: 80,
+                          width: 80,
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.image_not_supported),
+                        )
+                      : Image.network(
+                          item.product.imagePath,
+                          height: 80,
+                          width: 80,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            height: 80,
+                            width: 80,
+                            color: Colors.grey[200],
+                            child: const Icon(Icons.image_not_supported),
+                          ),
+                        ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.product.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (variantInfo.isNotEmpty)
+                        Text(
+                          variantInfo,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                        ),
+                      Text(
+                        'Price: \$${item.totalPrice}',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      style: IconButton.styleFrom(
+                        iconSize: 14,
+                        minimumSize: const Size(18, 18),
+                        side: const BorderSide(color: Colors.black54, width: 1),
+                      ),
+                      onPressed: () => cartController.updateQuantity(
+                        item.product.id,
+                        item.quantity - 1,
+                        variantId: item.variantId,
+                      ),
+                      icon: const Icon(HugeIcons.strokeRoundedRemove01),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        item.quantity.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.product.name,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (variantInfo.isNotEmpty)
-                    Text(
-                      variantInfo,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                    IconButton(
+                      style: IconButton.styleFrom(
+                        iconSize: 14,
+                        minimumSize: const Size(18, 18),
+                        backgroundColor: Colors.black,
+                        side: const BorderSide(color: Colors.black54, width: 1),
+                      ),
+                      onPressed: () => cartController.updateQuantity(
+                        item.product.id,
+                        item.quantity + 1,
+                        variantId: item.variantId,
+                      ),
+                      icon: const Icon(
+                        HugeIcons.strokeRoundedAdd01,
+                        color: Colors.white,
+                      ),
                     ),
-                  Text(
-                    'Price: \$${item.totalPrice}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  style: IconButton.styleFrom(
-                    iconSize: 14,
-                    minimumSize: Size(18, 18),
-                    side: BorderSide(color: Colors.black54, width: 1),
-                  ),
-                  onPressed: () => cartController.updateQuantity(
-                    item.product.id,
-                    item.quantity - 1,
-                    variantId: item.variantId,
-                  ),
-                  icon: const Icon(HugeIcons.strokeRoundedRemove01),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Text(
-                    item.quantity.toString(),
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-                IconButton(
-                  style: IconButton.styleFrom(
-                    iconSize: 14,
-                    minimumSize: Size(18, 18),
-                    backgroundColor: Colors.black,
-                    side: BorderSide(color: Colors.black54, width: 1),
-                  ),
-                  onPressed: () => cartController.updateQuantity(
-                    item.product.id,
-                    item.quantity + 1,
-                    variantId: item.variantId,
-                  ),
-                  icon: const Icon(
-                    HugeIcons.strokeRoundedAdd01,
-                    color: Colors.white,
-                  ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -191,16 +191,16 @@ class _AddressFormScreenState extends State<AddressFormScreen>
                 width: shadowWidth,
                 height: shadowHeight,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(
-                    shadowOpacity.clamp(0.0, 1.0),
+                  color: Colors.black.withValues(
+                    alpha: shadowOpacity.clamp(0.0, 1.0),
                   ),
                   borderRadius: BorderRadius.all(
                     Radius.elliptical(shadowWidth / 2, shadowHeight / 2),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(
-                        shadowOpacity.clamp(0.0, 1.0),
+                      color: Colors.black.withValues(
+                        alpha: shadowOpacity.clamp(0.0, 1.0),
                       ),
                       blurRadius: 4,
                     ),
@@ -220,7 +220,7 @@ class _AddressFormScreenState extends State<AddressFormScreen>
               border: Border.all(color: colors.primary, width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: colors.primary.withOpacity(0.3),
+                  color: colors.primary.withValues(alpha: 0.3),
                   blurRadius: 4,
                   spreadRadius: 1,
                 ),
@@ -264,7 +264,7 @@ class _AddressFormScreenState extends State<AddressFormScreen>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
