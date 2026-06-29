@@ -8,6 +8,7 @@ import 'package:petcare_store/src/features/shipping/controller/shipping_controll
 import 'package:petcare_store/src/notification/notification_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timelines_plus/timelines_plus.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 // ── Step model (mirrors BuyNowPage) ────────────────────────────────────────
 class _StepModel {
@@ -294,32 +295,14 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
         const SizedBox(height: 28),
 
         // Continue Shopping button
-        SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              paymentController.reset();
-              Get.offAllNamed('/');
-            },
-            icon: const Icon(Icons.storefront_outlined, color: Colors.white),
-            label: const Text(
-              'Continue Shopping',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                letterSpacing: 0.5,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade600,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              elevation: 0,
-            ),
-          ),
+        CustomButton(
+          onPressed: () {
+            paymentController.reset();
+            Get.offAllNamed('/');
+          },
+          label: 'Continue Shopping',
+          icon: const Icon(Icons.storefront_outlined, color: Colors.white),
+          backgroundColor: Colors.green.shade600,
         ),
         const SizedBox(height: 12),
         TextButton(
@@ -645,135 +628,110 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Obx(
-        () => ElevatedButton(
-          onPressed: paymentController.isLoading.value
-              ? null
-              : () async {
-                  if (_currentStep == 0) {
-                    // Step 0 → open payment method sheet
-                    Get.bottomSheet(
-                      modalBottomSheetPaymentWidget(
-                        onMethodConfirmed: (method) async {
-                          if (method == PaymentMethod.cashOnDelivery) {
-                            // COD: place order then go to receipt step
-                            final success = await paymentController.placeOrder(
-                              cartController: _controller,
-                              userId: Supabase
-                                  .instance.client.auth.currentUser!.id,
-                              addressId:
-                                  _selectedAddress?.id?.toString() ?? '',
-                              totalPrice: _controller.totalPrice.value,
-                            );
-                            if (!mounted) return;
-                            if (!success) {
-                              final msg = paymentController
-                                      .errorMessage.value.isNotEmpty
-                                  ? paymentController.errorMessage.value
-                                  : 'Could not place order. Please try again.';
-                              Get.snackbar(
-                                'Order Failed',
-                                msg,
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.red.shade600,
-                                colorText: Colors.white,
-                                margin: const EdgeInsets.all(16),
-                                borderRadius: 12,
-                                duration: const Duration(seconds: 4),
-                                icon: const Icon(Icons.error_outline,
-                                    color: Colors.white),
-                              );
-                              return;
-                            }
-                            // Success → show inline confirmation receipt
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (mounted) _goToStep(2);
-                            });
-                          } else {
-                            // KHQR / ABA → go to payment detail step
-                            _goToStep(1);
-                          }
-                        },
-                      ),
-                      isScrollControlled: true,
-                    );
-                  } else if (_currentStep == 1) {
-                    // Step 1 → only KHQR / ABA reach here
-                    final success = await paymentController.placeOrder(
-                      cartController: _controller,
-                      userId: Supabase.instance.client.auth.currentUser!.id,
-                      addressId: _selectedAddress?.id?.toString() ?? '',
-                      totalPrice: _controller.totalPrice.value,
-                    );
-
-                    if (!mounted) return;
-
-                    if (!success) {
-                      final msg =
-                          paymentController.errorMessage.value.isNotEmpty
-                              ? paymentController.errorMessage.value
-                              : 'Could not place order. Please try again.';
-                      Get.snackbar(
-                        'Order Failed',
-                        msg,
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.red.shade600,
-                        colorText: Colors.white,
-                        margin: const EdgeInsets.all(16),
-                        borderRadius: 12,
-                        duration: const Duration(seconds: 4),
-                        icon: const Icon(Icons.error_outline,
-                            color: Colors.white),
+        () => CustomButton(
+          onPressed: () async {
+            if (_currentStep == 0) {
+              // Step 0 → open payment method sheet
+              Get.bottomSheet(
+                modalBottomSheetPaymentWidget(
+                  onMethodConfirmed: (method) async {
+                    if (method == PaymentMethod.cashOnDelivery) {
+                      // COD: place order then go to receipt step
+                      final success = await paymentController.placeOrder(
+                        cartController: _controller,
+                        userId: Supabase
+                            .instance.client.auth.currentUser!.id,
+                        addressId:
+                            _selectedAddress?.id?.toString() ?? '',
+                        totalPrice: _controller.totalPrice.value,
                       );
-                      return;
-                    }
-
-                    final method =
-                        paymentController.selectedPaymentMethod.value;
-
-                    if (method == PaymentMethod.khqr) {
-                      paymentController.subscribeToOrderStatus(
-                          paymentController.currentOrderId.value);
                       if (!mounted) return;
-                      Get.toNamed('/khqrPayment', arguments: {
-                        'amount':
-                            _controller.totalPrice.value.toStringAsFixed(2),
+                      if (!success) {
+                        final msg = paymentController
+                                .errorMessage.value.isNotEmpty
+                            ? paymentController.errorMessage.value
+                            : 'Could not place order. Please try again.';
+                        Get.snackbar(
+                          'Order Failed',
+                          msg,
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red.shade600,
+                          colorText: Colors.white,
+                          margin: const EdgeInsets.all(16),
+                          borderRadius: 12,
+                          duration: const Duration(seconds: 4),
+                          icon: const Icon(Icons.error_outline,
+                              color: Colors.white),
+                        );
+                        return;
+                      }
+                      // Success → show inline confirmation receipt
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) _goToStep(2);
                       });
-                    } else if (method == PaymentMethod.abaPay) {
-                      paymentController.subscribeToOrderStatus(
-                          paymentController.currentOrderId.value);
-                      if (!mounted) return;
-                      Get.toNamed('/abaPayment', arguments: {
-                        'amount':
-                            _controller.totalPrice.value.toStringAsFixed(2),
-                      });
+                    } else {
+                      // KHQR / ABA → go to payment detail step
+                      _goToStep(1);
                     }
-                  }
-                },
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(double.infinity, 52),
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 0,
-          ),
-          child: paymentController.isLoading.value
-              ? const SizedBox(
-                  width: 22,
-                  height: 22,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-              : Text(
-                  _currentStep == 0 ? 'SELECT PAYMENT' : 'CONFIRM PAYMENT',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
+                  },
                 ),
+                isScrollControlled: true,
+              );
+            } else if (_currentStep == 1) {
+              // Step 1 → only KHQR / ABA reach here
+              final success = await paymentController.placeOrder(
+                cartController: _controller,
+                userId: Supabase.instance.client.auth.currentUser!.id,
+                addressId: _selectedAddress?.id?.toString() ?? '',
+                totalPrice: _controller.totalPrice.value,
+              );
+
+              if (!mounted) return;
+
+              if (!success) {
+                final msg =
+                    paymentController.errorMessage.value.isNotEmpty
+                        ? paymentController.errorMessage.value
+                        : 'Could not place order. Please try again.';
+                Get.snackbar(
+                  'Order Failed',
+                  msg,
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red.shade600,
+                  colorText: Colors.white,
+                  margin: const EdgeInsets.all(16),
+                  borderRadius: 12,
+                  duration: const Duration(seconds: 4),
+                  icon: const Icon(Icons.error_outline,
+                      color: Colors.white),
+                );
+                return;
+              }
+
+              final method =
+                  paymentController.selectedPaymentMethod.value;
+
+              if (method == PaymentMethod.khqr) {
+                paymentController.subscribeToOrderStatus(
+                    paymentController.currentOrderId.value);
+                if (!mounted) return;
+                Get.toNamed('/khqrPayment', arguments: {
+                  'amount':
+                      _controller.totalPrice.value.toStringAsFixed(2),
+                });
+              } else if (method == PaymentMethod.abaPay) {
+                paymentController.subscribeToOrderStatus(
+                    paymentController.currentOrderId.value);
+                if (!mounted) return;
+                Get.toNamed('/abaPayment', arguments: {
+                  'amount':
+                      _controller.totalPrice.value.toStringAsFixed(2),
+                });
+              }
+            }
+          },
+          label: _currentStep == 0 ? 'SELECT PAYMENT' : 'CONFIRM PAYMENT',
+          isLoading: paymentController.isLoading.value,
         ),
       ),
     );

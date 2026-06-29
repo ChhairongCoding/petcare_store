@@ -1,4 +1,3 @@
-import 'dart:io' as platform;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +9,7 @@ import 'package:petcare_store/src/features/products/model/product_model.dart';
 import 'package:petcare_store/src/features/products/model/product_variant_model.dart';
 import 'package:petcare_store/src/features/products/views/widget/skeleton_chip_widget.dart';
 import 'package:petcare_store/src/widgets/reusables/product_card_widget_custom.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:petcare_store/src/widgets/reusables/custom_snackbar_widget.dart';
 import 'package:share_plus/share_plus.dart';
@@ -47,9 +47,26 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   void initState() {
     super.initState();
 
+    _scrollController = ScrollController()
+      ..addListener(() {
+        final shouldShow = _scrollController.offset > 320;
+
+        if (shouldShow != _showAppBarBg) {
+          setState(() => _showAppBarBg = shouldShow);
+        }
+      });
+
     _resetSelections();
 
-    product = Get.arguments as ProductModel;
+    final args = Get.arguments;
+    if (args == null || args is! ProductModel) {
+      product = ProductModel.fake();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed(AppRoutes.mainScreen);
+      });
+      return;
+    }
+    product = args;
 
     isVariantsLoading(true);
     productController.fetchVariants(product.id).then((variants) {
@@ -70,16 +87,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             relatedProducts.assignAll(related);
             isRelatedLoading(false);
           });
-    });
-
-    _scrollController = ScrollController();
-
-    _scrollController.addListener(() {
-      final shouldShow = _scrollController.offset > 320;
-
-      if (shouldShow != _showAppBarBg) {
-        setState(() => _showAppBarBg = shouldShow);
-      }
     });
   }
 
@@ -233,7 +240,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         child: IconButton(
                           onPressed: () => Get.back(),
                           icon: Icon(
-                            platform.Platform.isAndroid
+                            Theme.of(context).platform == TargetPlatform.android
                                 ? Icons.arrow_back
                                 : Icons.arrow_back_ios_new,
                             color: Colors.black,
@@ -316,8 +323,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ElevatedButton.icon(
+          padding: const EdgeInsets.all(16.0),
+          child: CustomButton(
             onPressed: () {
               if (_selectedVariant?.stockQty == 0) return;
               if (selectedProductVariants.isNotEmpty &&
@@ -336,17 +343,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 variant: _selectedVariant,
               );
             },
-            icon: const Icon(Icons.shopping_cart),
-            label: const Text('Add to Cart'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _selectedVariant?.stockQty != 0
-                  ? Get.theme.primaryColor
-                  : Colors.grey,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+            icon: const Icon(Icons.shopping_cart, color: Colors.white),
+            label: 'Add to Cart',
+            backgroundColor: _selectedVariant?.stockQty != 0
+                ? Get.theme.primaryColor
+                : Colors.grey,
           ),
         ),
       ),

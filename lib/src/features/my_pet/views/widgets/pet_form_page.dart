@@ -9,6 +9,7 @@ import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.d
 import 'package:petcare_store/src/features/my_pet/models/pet_model.dart';
 import 'package:petcare_store/src/helper/helper.dart';
 import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class AddPetBottomSheet extends StatefulWidget {
   const AddPetBottomSheet({super.key, this.pet});
@@ -369,41 +370,12 @@ class AddPetBottomSheetState extends State<AddPetBottomSheet> {
           // const SizedBox(width: 16),
           Expanded(
             flex: 2,
-            child: Obx(() {
-              final isSaving = _petController.isSubmitting.value;
-              return ElevatedButton(
-                onPressed: isSaving ? null : _handleSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 4,
-                  shadowColor: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.35),
-                ),
-                child: isSaving
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        widget.pet != null
-                            ? 'Update Changes'
-                            : 'Create Pet Profile',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-              );
-            }),
+            child: Obx(() => CustomButton(
+              onPressed: _handleSubmit,
+              label: widget.pet != null ? 'Update Changes' : 'Create Pet Profile',
+              isLoading: _petController.isSubmitting.value,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            )),
           ),
         ],
       ),

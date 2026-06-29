@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 // import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
 import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -142,52 +143,20 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(height: 40),
                 Obx(
-                  () => SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: controller.isLoading.value
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                Get.snackbar(
-                                  "Form Validated",
-                                  "Sign Up form validated successfully! Ready for backend integration.",
-                                  snackPosition: SnackPosition.BOTTOM,
-                                  backgroundColor: Theme.of(
-                                    context,
-                                  ).primaryColor.withValues(alpha: 0.9),
-                                  colorText: Colors.white,
-                                );
-                              }
-                            },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                      ),
-                      child: controller.isLoading.value
-                          ? const SizedBox(
-                              height: 24,
-                              width: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
-                                ),
-                              ),
-                            )
-                          : const Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                    ),
+                  () => CustomButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Get.snackbar(
+                          "Form Validated",
+                          "Sign Up form validated successfully! Ready for backend integration.",
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.9),
+                          colorText: Colors.white,
+                        );
+                      }
+                    },
+                    label: 'Sign Up',
+                    isLoading: controller.isLoading.value,
                   ),
                 ),
                 SizedBox(height: 32),
@@ -217,7 +186,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     height: 50,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.shade300,

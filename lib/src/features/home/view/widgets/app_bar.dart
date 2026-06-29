@@ -15,12 +15,12 @@ class AppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final CartController cartController = Get.find<CartController>();
     final ShippingController shippingController = Get.find();
-    final NotificationPageController notificationPageController = Get.find<NotificationPageController>();
-  
+    final NotificationPageController notificationPageController =
+        Get.find<NotificationPageController>();
 
     return SliverAppBar(
       elevation: 0,
-      floating: false,
+      centerTitle: false,
       automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
@@ -28,48 +28,53 @@ class AppBarWidget extends StatelessWidget {
         statusBarColor: Colors.white,
         statusBarBrightness: Brightness.light,
       ),
-      flexibleSpace: FlexibleSpaceBar(
-        titlePadding: EdgeInsets.all(12),
-        title: GestureDetector(
-          onTap: (){ 
-            Get.toNamed("/shipping");
-          },
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                HugeIcons.strokeRoundedPinLocation01,
-                size: 32,
-                color: Colors.red,
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Location",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
+      title: GestureDetector(
+        onTap: () {
+          Get.toNamed("/shipping");
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              HugeIcons.strokeRoundedPinLocation01,
+              size: 26,
+              color: Colors.red,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Location",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 10,
+                      color: Colors.grey[600],
                     ),
-                    SizedBox(
-                      height: 20,
-                      width: 120,
-                      child: Marquee(
-                        text: shippingController.defaultAddress?.addressDetail ?? 'No address',
-                        style: Theme.of(context).textTheme.titleSmall,
-                        scrollAxis: Axis.horizontal,
-                        velocity: 30.0,
-                        blankSpace: 20.0,
-                        pauseAfterRound: Duration(seconds: 3),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 18,
+                    width: 140,
+                    child: Marquee(
+                      text:
+                          shippingController.defaultAddress?.addressDetail ??
+                          'No address',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
                       ),
+                      scrollAxis: Axis.horizontal,
+                      velocity: 30.0,
+                      blankSpace: 20.0,
+                      pauseAfterRound: const Duration(seconds: 3),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
 

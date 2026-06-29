@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:petcare_store/src/features/shipping/controller/shipping_controller.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 enum AddressLabel { home, office, other }
 
@@ -573,37 +574,26 @@ class _AddressFormScreenState extends State<AddressFormScreen>
     return Obx(() {
       final ctrl = Get.find<ShippingController>();
 
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: ctrl.isLoading.value
-              ? null
-              : () {
-                  if (!_formKey.currentState!.validate()) return;
-                  ctrl.addAdress(
-                    name: _nameCtrl.text,
-                    addressDetail: ctrl.addressText.value,
-                    lat: _selectedLocation.latitude,
-                    lng: _selectedLocation.longitude,
-                    isDefault: false,
-                    phoneNumber: _phoneCtrl.text,
-                    city: _cityCtrl.text,
-                    streetAddress: _streetCtrl.text,
-                    apartmentSuite: _aptCtrl.text,
-                    labelAddress: _selectedLabel.index,
-                  );
-                },
-          label: const Text('Confirm address'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colors.primary,
-            foregroundColor: colors.onPrimary,
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
+      return CustomButton(
+        onPressed: () {
+          if (!_formKey.currentState!.validate()) return;
+          ctrl.addAdress(
+            name: _nameCtrl.text,
+            addressDetail: ctrl.addressText.value,
+            lat: _selectedLocation.latitude,
+            lng: _selectedLocation.longitude,
+            isDefault: false,
+            phoneNumber: _phoneCtrl.text,
+            city: _cityCtrl.text,
+            streetAddress: _streetCtrl.text,
+            apartmentSuite: _aptCtrl.text,
+            labelAddress: _selectedLabel.index,
+          );
+        },
+        label: 'Confirm address',
+        isLoading: ctrl.isLoading.value,
+        backgroundColor: colors.primary,
+        foregroundColor: colors.onPrimary,
       );
     });
   }

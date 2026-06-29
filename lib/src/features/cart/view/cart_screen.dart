@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/features/cart/controller/cart_controller.dart';
 import 'package:petcare_store/src/features/cart/models/cart_item_model.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -95,12 +96,7 @@ class _CartScreenState extends State<CartScreen> {
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: cartController.totalItems == 0
-                          ? Colors.blueGrey
-                          : Get.theme.primaryColor,
-                    ),
+                  child: CustomButton(
                     onPressed: () {
                       if (cartController.totalItems > 0) {
                         Get.toNamed('/processBuy', arguments: cartController);
@@ -111,9 +107,12 @@ class _CartScreenState extends State<CartScreen> {
                         );
                       }
                     },
-                    label: Text('Process To Checkout'),
-                    icon: Icon(HugeIcons.strokeRoundedArrowRight04, size: 30),
+                    label: 'Process To Checkout',
+                    icon: const Icon(HugeIcons.strokeRoundedArrowRight04, size: 24, color: Colors.white),
                     iconAlignment: IconAlignment.end,
+                    backgroundColor: cartController.totalItems == 0
+                        ? Colors.blueGrey
+                        : Get.theme.primaryColor,
                   ),
                 ),
               ],

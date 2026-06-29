@@ -188,7 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? ProductModel.fake()
                                 : productController.products[index];
 
-                            return ProductCardWidgetCustom(products: product);
+                            return ProductCardWidgetCustom(
+                              products: product,
+                              width: 150,
+                            );
                           },
                         ),
                       );
@@ -248,7 +251,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? ProductModel.fake()
                                 : displayProducts[index];
 
-                            return ProductCardWidgetCustom(products: product);
+                            return ProductCardWidgetCustom(
+                              products: product,
+                              width: 150,
+                            );
                           },
                         ),
                       );
@@ -302,6 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }),
+                    SizedBox(height: 20),
                   ],
                 ),
               ],

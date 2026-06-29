@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:petcare_store/src/features/booking/controller/booking_controller.dart';
 import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class BookingScreen extends StatelessWidget {
   final BookingController controller = Get.put(BookingController());
@@ -495,41 +496,10 @@ class BookingScreen extends StatelessWidget {
                 );
               }),
               Obx(
-                () => SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : controller.confirmBooking,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 4,
-                      shadowColor: Theme.of(
-                        context,
-                      ).primaryColor.withValues(alpha: 0.4),
-                    ),
-                    child: controller.isLoading.value
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Text(
-                            'Confirm Booking',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ),
+                () => CustomButton(
+                  onPressed: controller.confirmBooking,
+                  label: 'Confirm Booking',
+                  isLoading: controller.isLoading.value,
                 ),
               ),
             ],

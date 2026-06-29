@@ -5,6 +5,7 @@ import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.d
 import 'package:petcare_store/src/features/reminder_views/controller/reminder_controller.dart';
 import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class RemindersAddForm extends StatefulWidget {
   const RemindersAddForm({super.key});
@@ -457,40 +458,11 @@ class _RemindersAddFormState extends State<RemindersAddForm> {
           const SizedBox(width: 16),
           Expanded(
             flex: 2,
-            child: Obx(() {
-              final isSubmitting = _reminderController.isSubmitting.value;
-              return ElevatedButton(
-                onPressed: isSubmitting ? null : _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.white,
-                  elevation: 2,
-                  shadowColor: Theme.of(
-                    context,
-                  ).primaryColor.withValues(alpha: 0.4),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: isSubmitting
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        'Create Reminder',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-              );
-            }),
+            child: Obx(() => CustomButton(
+              onPressed: _submitForm,
+              label: 'Create Reminder',
+              isLoading: _reminderController.isSubmitting.value,
+            )),
           ),
         ],
       ),

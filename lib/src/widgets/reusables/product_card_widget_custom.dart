@@ -7,9 +7,14 @@ import 'package:petcare_store/src/features/products/model/product_model.dart';
 import 'package:petcare_store/src/features/products/controllers/favorite_controller.dart';
 
 class ProductCardWidgetCustom extends StatelessWidget {
-  const ProductCardWidgetCustom({super.key, required this.products});
+  const ProductCardWidgetCustom({
+    super.key,
+    required this.products,
+    this.width,
+  });
 
   final ProductModel products;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +27,8 @@ class ProductCardWidgetCustom extends StatelessWidget {
         ? 2
         : 3;
 
-    final cardWidth =
-        (screenWidth - (16 * (crossAxisCount + 1))) / crossAxisCount;
+    final cardWidth = width ??
+        ((screenWidth - (16 * (crossAxisCount + 1))) / crossAxisCount);
 
     return SizedBox(
       width: cardWidth,

@@ -4,6 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/notification/controller/notification_page_controller.dart';
 import 'package:petcare_store/src/features/notification/models/notification_model.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class NotificationScreen extends GetView<NotificationPageController> {
   const NotificationScreen({super.key});
@@ -524,21 +525,14 @@ class NotificationScreen extends GetView<NotificationPageController> {
             ),
           ),
           const SizedBox(height: 32),
-          FilledButton.icon(
+          CustomButton(
             onPressed: () {
               Get.until((route) => Get.currentRoute == AppRoutes.mainScreen);
             },
-            icon: const Icon(HugeIcons.strokeRoundedShoppingBag01, size: 18),
-            label: const Text("Explore Pet Care Shop"),
-            style: FilledButton.styleFrom(
-              backgroundColor: colorScheme.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 2,
-            ),
+            icon: const Icon(HugeIcons.strokeRoundedShoppingBag01, size: 18, color: Colors.white),
+            label: "Explore Pet Care Shop",
+            backgroundColor: colorScheme.primary,
+            foregroundColor: Colors.white,
           ),
         ],
       ),

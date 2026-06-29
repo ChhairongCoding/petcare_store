@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
 import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -100,29 +101,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                child: controller.isLoading.value
-                    ? CircularProgressIndicator.adaptive(
-                        strokeWidth: 3,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        backgroundColor: Colors.white,
-                      )
-                    : Text("Login"),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    bool success = await controller.login(
-                      emailController.text,
-                      passwordController.text,
-                      context,
-                    );
-                    if (success) {
-                      Get.offNamed(AppRoutes.mainScreen);
-                    }
+            CustomButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  bool success = await controller.login(
+                    emailController.text,
+                    passwordController.text,
+                    context,
+                  );
+                  if (success) {
+                    Get.offNamed(AppRoutes.mainScreen);
                   }
-                },
-              ),
+                }
+              },
+              label: 'Login',
+              isLoading: controller.isLoading.value,
             ),
             SizedBox(height: 32),
             Row(
@@ -141,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 50,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey, width: 0.5),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

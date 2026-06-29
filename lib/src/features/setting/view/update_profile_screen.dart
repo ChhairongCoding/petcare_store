@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:petcare_store/src/features/profile/controller/profile_controller.dart';
 import 'package:petcare_store/src/features/profile/models/profile_model.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_button.dart';
 
 // ── Controller ───────────────────────────────────────────────────────────────
 
@@ -277,40 +278,11 @@ class UpdateProfileScreen extends StatelessWidget {
 
                 // ── Save Button ─────────────────────────────────
                 Obx(
-                  () => SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: controller.isSaving.value
-                          ? null
-                          : controller.saveProfile,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _green,
-                        foregroundColor: Colors.white,
-                        disabledBackgroundColor: _green.withValues(alpha: 0.6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: controller.isSaving.value
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text(
-                              'Save Changes',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                    ),
+                  () => CustomButton(
+                    onPressed: controller.saveProfile,
+                    label: 'Save Changes',
+                    isLoading: controller.isSaving.value,
+                    backgroundColor: _green,
                   ),
                 ),
 
