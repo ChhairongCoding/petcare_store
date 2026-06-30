@@ -287,7 +287,7 @@ class UpdateProfileScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _green,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: _green.withOpacity(0.6),
+                        disabledBackgroundColor: _green.withValues(alpha: 0.6),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
