@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:petcare_store/src/config/core/routes/app_routes.dart';
 // import 'package:petcare_store/config/core/routes/app_routes.dart';
 import 'package:petcare_store/src/features/auth/controller/auth_controller.dart';
 import 'package:petcare_store/src/widgets/text_form_field_widgets.dart';
@@ -52,10 +53,36 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _body());
+    return Scaffold(
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundColor: Colors.grey.shade200,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Get.back();
+                } else {
+                  Get.offAllNamed(AppRoutes.mainScreen);
+                }
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                size: 20,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: _buildBody(context),
+    );
   }
 
-  _body() {
+  _buildBody(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.0),
       child: Center(

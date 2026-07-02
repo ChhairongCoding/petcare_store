@@ -43,7 +43,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _buildBody(context));
+    return Scaffold(
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundColor: Colors.grey.shade200,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Get.back();
+                } else {
+                  Get.offAllNamed(AppRoutes.mainScreen);
+                }
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                size: 20,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: _buildBody(context),
+    );
   }
 
   _buildBody(BuildContext context) => SizedBox(
@@ -54,7 +80,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 60),
             Image.asset('assets/icons/logo/ic_launcher.png', height: 100),
             SizedBox(height: 20),
             Text('Login', style: Theme.of(context).textTheme.titleLarge),
@@ -147,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 12,
                   children: [
-                    Image.asset("assets/images/google.png", height: 50),
+                    Image.asset("assets/images/google.png", height: 25),
                     Text(
                       "Continue with Google",
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
