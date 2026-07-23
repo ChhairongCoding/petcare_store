@@ -16,11 +16,11 @@ class ProductCardWidgetCustom extends StatelessWidget {
     final favoriteController = Get.find<FavoriteController>();
     final screenWidth = MediaQuery.of(context).size.width;
 
-    final crossAxisCount = screenWidth < 400
-        ? 1
-        : screenWidth < 700
+    final crossAxisCount = screenWidth < 600
         ? 2
-        : 3;
+        : screenWidth < 900
+        ? 3
+        : 4;
 
     final cardWidth =
         (screenWidth - (16 * (crossAxisCount + 1))) / crossAxisCount;

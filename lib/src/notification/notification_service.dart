@@ -8,7 +8,7 @@ class NotificationService {
     try {
       print("🔔 [NotificationService] Initializing notifications...");
       const AndroidInitializationSettings androidSettings =
-          AndroidInitializationSettings('ic_launcher');
+          AndroidInitializationSettings('@mipmap/ic_launcher');
 
       const DarwinInitializationSettings iosSettings =
           DarwinInitializationSettings(

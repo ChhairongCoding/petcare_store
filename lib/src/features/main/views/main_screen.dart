@@ -15,7 +15,6 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
-        extendBody: true,
         body: _buidBody(),
         bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
