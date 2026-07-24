@@ -43,7 +43,6 @@ class NotificationController {
             "General Notifications",
             importance: Importance.max,
             priority: Priority.high,
-            largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
           );
 
       const DarwinNotificationDetails darwinNotificationDetails =
@@ -59,9 +58,7 @@ class NotificationController {
       );
 
       await NotificationService.notifications.show(
-        id:
-            DateTime.now().millisecondsSinceEpoch ~/
-            1000, // Using unique ID to avoid collision
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: title ?? "Notification",
         body: body ?? "This is notification",
         notificationDetails: details,

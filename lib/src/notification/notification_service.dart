@@ -35,6 +35,14 @@ class NotificationService {
           >()
           ?.requestPermissions(alert: true, badge: true, sound: true);
       print("🔔 [NotificationService] iOS permission request result: $granted");
+
+      // Explicitly request permissions on Android 13+
+      print("🔔 [NotificationService] Requesting Android permissions...");
+      await notifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.requestNotificationsPermission();
     } catch (e, stack) {
       print("🔔 [NotificationService] Initialization error: $e\n$stack");
     }

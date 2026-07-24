@@ -6,31 +6,42 @@ enum SnackbarType { success, error, warning, info }
 
 class CustomSnackbar {
   static void show(
-    BuildContext context, {
+    BuildContext? context, {
     required String title,
     required String message,
     SnackbarType type = SnackbarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
-    final overlayState = Overlay.of(context);
+    // Safely find the overlay state, falling back to Get.key if the context is the navigator itself
+    final overlayState =
+        (context != null ? Navigator.maybeOf(context)?.overlay : null) ??
+        Get.key.currentState?.overlay;
+
+    if (overlayState == null) return;
+
     late OverlayEntry overlayEntry;
 
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: MediaQuery.of(context).padding.top + 20,
+        top: 0,
         left: 16,
         right: 16,
-        child: Material(
-          color: Colors.transparent,
-          child: CustomSnackbarWidget(
-            title: title,
-            message: message,
-            type: type,
-            onClose: () {
-              if (overlayEntry.mounted) {
-                overlayEntry.remove();
-              }
-            },
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Material(
+              color: Colors.transparent,
+              child: CustomSnackbarWidget(
+                title: title,
+                message: message,
+                type: type,
+                onClose: () {
+                  if (overlayEntry.mounted) {
+                    overlayEntry.remove();
+                  }
+                },
+              ),
+            ),
           ),
         ),
       ),
@@ -93,6 +104,7 @@ class CustomSnackbarWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
+          width: double.infinity,
           padding: const EdgeInsets.fromLTRB(60, 16, 16, 16),
           constraints: const BoxConstraints(minHeight: 90),
           decoration: BoxDecoration(

@@ -268,11 +268,11 @@ class MyPetController extends GetxController {
     final fallbackUrl =
         dotenv.env['petBucketUrl']?.trim() ?? dotenv.env['bucketUrl']?.trim();
     if (fallbackUrl == null || fallbackUrl.isEmpty) {
-      return 'product_image';
+      return 'pet-avatars';
     }
 
     final uri = Uri.tryParse(fallbackUrl);
-    if (uri == null) return 'product_image';
+    if (uri == null) return 'pet-avatars';
 
     final segments = uri.pathSegments
         .where((segment) => segment.isNotEmpty)
@@ -283,7 +283,7 @@ class MyPetController extends GetxController {
       return segments[publicIndex + 1];
     }
 
-    return segments.isNotEmpty ? segments.last : 'product_image';
+    return segments.isNotEmpty ? segments.last : 'pet-avatars';
   }
 
   Future<void> updatePet(PetModel pet) async {

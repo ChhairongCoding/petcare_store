@@ -5,6 +5,7 @@ import 'package:petcare_store/src/features/booking/model/service.dart';
 import 'package:petcare_store/src/features/my_pet/controller/my_pet_controller.dart';
 import 'package:petcare_store/src/features/booking/controller/my_bookings_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_snackbar_widget.dart';
 
 class BookingController extends GetxController {
   final supabase = Supabase.instance.client;
@@ -123,38 +124,38 @@ class BookingController extends GetxController {
 
   Future<void> confirmBooking() async {
     if (selectedServiceId.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please select a service.',
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+      CustomSnackbar.show(
+        Get.context!,
+        title: 'Error',
+        message: 'Please select a service.',
+        type: SnackbarType.error,
       );
       return;
     }
     if (selectedPackageId.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please select a package.',
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+      CustomSnackbar.show(
+        Get.context!,
+        title: 'Error',
+        message: 'Please select a package.',
+        type: SnackbarType.error,
       );
       return;
     }
     if (selectedDate.value == null || selectedTime.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please select a date and time.',
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+      CustomSnackbar.show(
+        Get.context!,
+        title: 'Error',
+        message: 'Please select a date and time.',
+        type: SnackbarType.error,
       );
       return;
     }
     if (selectedPetId.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'Please select a pet.',
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+      CustomSnackbar.show(
+        Get.context!,
+        title: 'Error',
+        message: 'Please select a pet.',
+        type: SnackbarType.error,
       );
       return;
     }
@@ -263,11 +264,11 @@ class BookingController extends GetxController {
         barrierDismissible: false,
       );
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Could not complete booking. Please check your data.',
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+      CustomSnackbar.show(
+        Get.context!,
+        title: 'Error',
+        message: 'Could not complete booking. Please check your data.',
+        type: SnackbarType.error,
       );
     } finally {
       isLoading(false);

@@ -362,7 +362,7 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
                 children: [
                    RichText(
                      text: TextSpan(
-                        text: shippingController.defaultAddress?.fullName.toString() ?? 'Select your address',
+                        text: _selectedAddress?.fullName?.toString() ?? 'Select your address',
                         style: Get.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Get.theme.hintColor,
@@ -370,7 +370,7 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
                         children: [
                           TextSpan(text: '\u00A0\u00A0'),
                           TextSpan(
-                            text: shippingController.defaultAddress?.phoneNumber.toString() ?? '',
+                            text: _selectedAddress?.phoneNumber?.toString() ?? '',
                             style: Get.textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: Get.theme.hintColor,
@@ -382,9 +382,7 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
                     
                    ),
                   Text(
-                    shippingController.defaultAddress?.addressDetail
-                            .toString() ??
-                        'Select your address',
+                    _selectedAddress?.addressDetail?.toString() ?? 'Select your address',
                     style: Get.textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
