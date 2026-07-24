@@ -210,9 +210,19 @@ class CartController extends GetxController {
       dev.log("Variants fetched: ${variantModels.length}");
 
       /// Convert to ProductModel list
-      final productModels = productsResponse
-          .map<ProductModel>((p) => ProductModel.fromJson(p))
-          .toList();
+      final productModels = productsResponse.map<ProductModel>((p) {
+        final imagePath = p['image_path'] as String?;
+        final bucketId = p['image_bucket_id'] as String? ?? 'product_image';
+        String finalImageUrl = '';
+
+        if (imagePath != null && imagePath.isNotEmpty) {
+          finalImageUrl = imagePath.startsWith('http')
+              ? imagePath
+              : cartService.client.storage.from(bucketId).getPublicUrl(imagePath);
+        }
+
+        return ProductModel.fromJson({...p, 'image_path': finalImageUrl});
+      }).toList();
 
       /// Merge Cart + Product + Variant
       final cartItemsList = <CartItemModel>[];

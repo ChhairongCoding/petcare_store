@@ -129,10 +129,16 @@ class _LoginScreenState extends State<LoginScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 child: controller.isLoading.value
-                    ? CircularProgressIndicator.adaptive(
-                        strokeWidth: 3,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        backgroundColor: Colors.white,
+                    ? SizedBox(
+                        height: 25,
+                        width: 25,
+                        child: CircularProgressIndicator.adaptive(
+                          strokeWidth: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                          backgroundColor: Colors.white,
+                        ),
                       )
                     : Text("Login"),
                 onPressed: () async {

@@ -8,6 +8,7 @@ import 'package:petcare_store/src/features/shipping/controller/shipping_controll
 import 'package:petcare_store/src/notification/notification_controller.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timelines_plus/timelines_plus.dart';
+import 'package:petcare_store/src/widgets/reusables/custom_snackbar_widget.dart';
 
 // ── Step model (mirrors BuyNowPage) ────────────────────────────────────────
 class _StepModel {
@@ -650,6 +651,15 @@ class _ProcessBuyScreenState extends State<ProcessBuyScreen>
               ? null
               : () async {
                   if (_currentStep == 0) {
+                    if (_selectedAddress == null) {
+                      CustomSnackbar.show(
+                        context,
+                        title: 'Address Required',
+                        message: 'Please select a shipping address before proceeding to payment.',
+                        type: SnackbarType.warning,
+                      );
+                      return;
+                    }
                     // Step 0 → open payment method sheet
                     Get.bottomSheet(
                       modalBottomSheetPaymentWidget(

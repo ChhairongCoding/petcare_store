@@ -30,4 +30,20 @@ class ProfileModel {
         'avatar': avatar,
         'created_at': createdAt,
       };
+
+  ProfileModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? avatar,
+    String? createdAt,
+  }) {
+    return ProfileModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatar: avatar ?? this.avatar,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

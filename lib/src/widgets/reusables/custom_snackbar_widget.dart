@@ -5,30 +5,42 @@ import 'package:hugeicons/hugeicons.dart';
 enum SnackbarType { success, error, warning, info }
 
 class CustomSnackbar {
-  static void show({
+  static void show(
+    BuildContext context, {
     required String title,
     required String message,
     SnackbarType type = SnackbarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
-    // Defer to next frame to ensure Overlay widget is available in the widget tree
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      try {
-        Get.showSnackbar(
-          GetSnackBar(
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.transparent,
-            duration: duration,
-            messageText: CustomSnackbarWidget(
-              title: title,
-              message: message,
-              type: type,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    final overlayState = Overlay.of(context);
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 20,
+        left: 16,
+        right: 16,
+        child: Material(
+          color: Colors.transparent,
+          child: CustomSnackbarWidget(
+            title: title,
+            message: message,
+            type: type,
+            onClose: () {
+              if (overlayEntry.mounted) {
+                overlayEntry.remove();
+              }
+            },
           ),
-        );
-      } catch (_) {
-        // Silently ignore if overlay is not available yet
+        ),
+      ),
+    );
+
+    overlayState.insert(overlayEntry);
+
+    Future.delayed(duration, () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
       }
     });
   }
@@ -38,12 +50,14 @@ class CustomSnackbarWidget extends StatelessWidget {
   final String title;
   final String message;
   final SnackbarType type;
+  final VoidCallback? onClose;
 
   const CustomSnackbarWidget({
     super.key,
     required this.title,
     required this.message,
     required this.type,
+    this.onClose,
   });
 
   @override
@@ -80,7 +94,7 @@ class CustomSnackbarWidget extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.fromLTRB(60, 16, 16, 16),
-          height: 90,
+          constraints: const BoxConstraints(minHeight: 90),
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(20),
@@ -95,6 +109,7 @@ class CustomSnackbarWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 title,
@@ -163,7 +178,7 @@ class CustomSnackbarWidget extends StatelessWidget {
           top: 10,
           right: 10,
           child: GestureDetector(
-            onTap: () => Get.back(),
+            onTap: onClose ?? () => Get.back(),
             child: const Icon(Icons.close, color: Colors.white70, size: 18),
           ),
         ),

@@ -110,7 +110,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       bottom: 2,
                       right: 2,
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () => controller.changeProfilePhoto(),
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(

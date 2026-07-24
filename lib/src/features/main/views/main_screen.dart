@@ -16,6 +16,7 @@ class MainScreen extends StatelessWidget {
     return Obx(
       () => Scaffold(
         body: _buidBody(),
+        extendBody: true,
         bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
@@ -29,7 +30,11 @@ class MainScreen extends StatelessWidget {
     final bottomItem = mainController.bottomItems;
 
     return Container(
-      margin: const EdgeInsets.all(16), // floating effect
+      margin: const EdgeInsets.only(
+        left: 16,
+        right: 16,
+        bottom: 10,
+      ), // floating effect
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,

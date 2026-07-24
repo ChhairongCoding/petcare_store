@@ -323,6 +323,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               if (selectedProductVariants.isNotEmpty &&
                   _selectedVariant == null) {
                 CustomSnackbar.show(
+                  context,
                   title: 'Wait a Sec!',
                   message:
                       'Please pick your favorite options (flavor, size, etc.) first.',
